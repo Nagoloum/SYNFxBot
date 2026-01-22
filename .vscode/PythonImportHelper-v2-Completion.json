@@ -494,6 +494,14 @@
         "documentation": {}
     },
     {
+        "label": "MAX_POSITIONS_PER_SYMBOL",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
         "label": "TELEGRAM_TOKEN",
         "importPath": "config",
         "description": "config",
@@ -567,6 +575,14 @@
     },
     {
         "label": "calculate_atr",
+        "importPath": "strategy",
+        "description": "strategy",
+        "isExtraImport": true,
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "get_preset",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,

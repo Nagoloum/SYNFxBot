@@ -2,7 +2,8 @@
 import MetaTrader5 as mt5
 import logging
 
-from config import DEVIATION, MAGIC_NUMBER, SYMBOLS
+from config import DEVIATION, MAGIC_NUMBER, SYMBOLS, MAX_POSITIONS_PER_SYMBOL
+from strategy import get_preset
 from utils import send_telegram_alert
 from database import log_new_trade
 
