@@ -91,7 +91,7 @@
         "documentation": {}
     },
     {
-        "label": "datetime",
+        "label": "timezone",
         "importPath": "datetime",
         "description": "datetime",
         "isExtraImport": true,
@@ -140,14 +140,6 @@
         "documentation": {}
     },
     {
-        "label": "load_dotenv",
-        "importPath": "dotenv",
-        "description": "dotenv",
-        "isExtraImport": true,
-        "detail": "dotenv",
-        "documentation": {}
-    },
-    {
         "label": "MongoClient",
         "importPath": "pymongo",
         "description": "pymongo",
@@ -161,30 +153,6 @@
         "description": "pymongo",
         "isExtraImport": true,
         "detail": "pymongo",
-        "documentation": {}
-    },
-    {
-        "label": "ConnectionFailure",
-        "importPath": "pymongo.errors",
-        "description": "pymongo.errors",
-        "isExtraImport": true,
-        "detail": "pymongo.errors",
-        "documentation": {}
-    },
-    {
-        "label": "ConnectionFailure",
-        "importPath": "pymongo.errors",
-        "description": "pymongo.errors",
-        "isExtraImport": true,
-        "detail": "pymongo.errors",
-        "documentation": {}
-    },
-    {
-        "label": "OperationFailure",
-        "importPath": "pymongo.errors",
-        "description": "pymongo.errors",
-        "isExtraImport": true,
-        "detail": "pymongo.errors",
         "documentation": {}
     },
     {
@@ -334,14 +302,6 @@
         "documentation": {}
     },
     {
-        "label": "SYMBOL",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
         "label": "MONGODB_URI",
         "importPath": "config",
         "description": "config",
@@ -366,23 +326,7 @@
         "documentation": {}
     },
     {
-        "label": "SYMBOL",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "SYMBOL",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "TRAILING_MULTIPLIER",
+        "label": "SYMBOLS",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -391,14 +335,6 @@
     },
     {
         "label": "ATR_PERIOD",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "TIMEFRAME",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -422,7 +358,7 @@
         "documentation": {}
     },
     {
-        "label": "SYMBOL",
+        "label": "DAILY_LOSS_LIMIT",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -430,7 +366,7 @@
         "documentation": {}
     },
     {
-        "label": "TIMEFRAME",
+        "label": "SYMBOLS",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -438,7 +374,15 @@
         "documentation": {}
     },
     {
-        "label": "TIMEFRAME_M15",
+        "label": "TIMEFRAME_H4",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "TIMEFRAME_H1",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -454,7 +398,7 @@
         "documentation": {}
     },
     {
-        "label": "BIAS_THRESHOLD",
+        "label": "EMA_PERIOD",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -462,71 +406,7 @@
         "documentation": {}
     },
     {
-        "label": "NEWSAPI_KEY",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "ALPHA_VANTAGE_KEY",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "FRED_API_KEY",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "FMP_API_KEY",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "HIGH_IMPACT_PAUSE_MINUTES",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "RANGE_THRESHOLD",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "FVG_THRESHOLD",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "VOLATILITY_MIN",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "RR_RATIO",
+        "label": "ATR_WINDOW_AVG",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -542,7 +422,7 @@
         "documentation": {}
     },
     {
-        "label": "MIN_CONFIRMATIONS",
+        "label": "SL_MULTIPLIER",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -550,7 +430,39 @@
         "documentation": {}
     },
     {
-        "label": "SYMBOL",
+        "label": "TP_MULTIPLIER",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "RSI_PERIOD",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "RSI_OVERBOUGHT",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "RSI_OVERSOLD",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "PRESETS",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -574,7 +486,7 @@
         "documentation": {}
     },
     {
-        "label": "RISK_PERCENT",
+        "label": "SYMBOLS",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -662,7 +574,7 @@
         "documentation": {}
     },
     {
-        "label": "is_reversal_signal",
+        "label": "get_preset",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,
@@ -727,6 +639,30 @@
         "documentation": {}
     },
     {
+        "label": "quote_plus",
+        "importPath": "urllib.parse",
+        "description": "urllib.parse",
+        "isExtraImport": true,
+        "detail": "urllib.parse",
+        "documentation": {}
+    },
+    {
+        "label": "ConnectionFailure",
+        "importPath": "pymongo.errors",
+        "description": "pymongo.errors",
+        "isExtraImport": true,
+        "detail": "pymongo.errors",
+        "documentation": {}
+    },
+    {
+        "label": "OperationFailure",
+        "importPath": "pymongo.errors",
+        "description": "pymongo.errors",
+        "isExtraImport": true,
+        "detail": "pymongo.errors",
+        "documentation": {}
+    },
+    {
         "label": "connect_to_mt5",
         "importPath": "connexion",
         "description": "connexion",
@@ -759,28 +695,27 @@
         "documentation": {}
     },
     {
-        "label": "response",
-        "importPath": "urllib",
-        "description": "urllib",
+        "label": "init_db_connection",
+        "importPath": "database",
+        "description": "database",
         "isExtraImport": true,
-        "detail": "urllib",
+        "detail": "database",
         "documentation": {}
     },
     {
-        "label": "requests",
-        "kind": 6,
+        "label": "update_trade_on_close",
+        "importPath": "database",
+        "description": "database",
         "isExtraImport": true,
-        "importPath": "requests",
-        "description": "requests",
-        "detail": "requests",
+        "detail": "database",
         "documentation": {}
     },
     {
-        "label": "BeautifulSoup",
-        "importPath": "bs4",
-        "description": "bs4",
+        "label": "log_new_trade",
+        "importPath": "database",
+        "description": "database",
         "isExtraImport": true,
-        "detail": "bs4",
+        "detail": "database",
         "documentation": {}
     },
     {
@@ -790,6 +725,15 @@
         "importPath": "asyncio",
         "description": "asyncio",
         "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
         "documentation": {}
     },
     {
@@ -805,7 +749,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def get_db_collection():\n    uri = os.getenv(\"MONGODB_URI\")\n    if not uri:\n        st.error(\"🔴 MONGODB_URI non configuré dans .env\")\n        st.stop()\n    try:\n        client = MongoClient(uri, serverSelectionTimeoutMS=5000)\n        client.admin.command('ping')  # Test connexion\n        db = client[os.getenv(\"MONGODB_DB\", \"trading_bot\")]\n        collection = db[os.getenv(\"MONGODB_COLLECTION\", \"trades\")]",
+        "peekOfCode": "def get_db_collection():\n    uri = os.getenv(\"MONGODB_URI\")\n    if not uri:\n        st.error(\"MONGODB_URI manquant\")\n        st.stop()\n    client = MongoClient(uri)\n    db = client[os.getenv(\"MONGODB_DB\", \"trading_bot\")]\n    return db[os.getenv(\"MONGODB_COLLECTION\", \"trades\")]\ncollection = get_db_collection()\n@st.cache_data(ttl=30)",
         "detail": "app",
         "documentation": {}
     },
@@ -814,16 +758,16 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def load_trades():\n    try:\n        trades = list(trades_collection.find().sort(\"timestamp_open\", -1))\n        if not trades:\n            return pd.DataFrame()\n        df = pd.DataFrame(trades)\n        df['timestamp_open'] = pd.to_datetime(df['timestamp_open'])\n        if 'timestamp_close' in df.columns:\n            df['timestamp_close'] = pd.to_datetime(df['timestamp_close'])\n        return df",
+        "peekOfCode": "def load_trades():\n    trades = list(collection.find().sort(\"timestamp_open\", -1))\n    if not trades:\n        return pd.DataFrame()\n    df = pd.DataFrame(trades)\n    df[\"timestamp_open\"] = pd.to_datetime(df[\"timestamp_open\"])\n    if \"timestamp_close\" in df.columns:\n        df[\"timestamp_close\"] = pd.to_datetime(df[\"timestamp_close\"])\n    return df\ndf = load_trades()",
         "detail": "app",
         "documentation": {}
     },
     {
-        "label": "trades_collection",
+        "label": "collection",
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "trades_collection = get_db_collection()\n# ===================================\n# Récupération Données\n# ===================================\n@st.cache_data(ttl=30)  # Refresh données toutes les 30s\ndef load_trades():\n    try:\n        trades = list(trades_collection.find().sort(\"timestamp_open\", -1))\n        if not trades:\n            return pd.DataFrame()",
+        "peekOfCode": "collection = get_db_collection()\n@st.cache_data(ttl=30)\ndef load_trades():\n    trades = list(collection.find().sort(\"timestamp_open\", -1))\n    if not trades:\n        return pd.DataFrame()\n    df = pd.DataFrame(trades)\n    df[\"timestamp_open\"] = pd.to_datetime(df[\"timestamp_open\"])\n    if \"timestamp_close\" in df.columns:\n        df[\"timestamp_close\"] = pd.to_datetime(df[\"timestamp_close\"])",
         "detail": "app",
         "documentation": {}
     },
@@ -832,16 +776,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "df = load_trades()\n# ===================================\n# Sidebar\n# ===================================\nwith st.sidebar:\n    st.image(\"./img/pic1.png\", width=170)\n    st.title(\"🪙 XAUFxBot\")\n    st.caption(\"Bot de trading automatisé XAUUSD\")\n    st.markdown(\"---\")\n    st.metric(\"Total Trades\", len(df))",
-        "detail": "app",
-        "documentation": {}
-    },
-    {
-        "label": "total_trades",
-        "kind": 5,
-        "importPath": "app",
-        "description": "app",
-        "peekOfCode": "total_trades = len(df)\nwins = len(df[df['result'] == 'win']) if 'result' in df.columns else 0\nwin_rate = (wins / total_trades * 100) if total_trades > 0 else 0\ntotal_profit = df['profit'].sum() if 'profit' in df.columns else 0\navg_profit = df['profit'].mean() if 'profit' in df.columns and total_trades > 0 else 0\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Taux de Succès\", f\"{win_rate:.1f}%\", delta=f\"{wins} victoires\")\ncol3.metric(\"Profit Net Total\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen / Trade\", f\"{avg_profit:+.2f} USD\")\n# ===================================",
+        "peekOfCode": "df = load_trades()\n# Sidebar\nwith st.sidebar:\n    st.title(\"Volatility Bot\")\n    st.caption(\"Bot trend-following sur Volatility Indices\")\n    selected_symbol = st.selectbox(\"Marché\", [\"Tous\"] + sorted(df['symbol'].unique()) if not df.empty else [\"Tous\"])\n    if not df.empty:\n        total_trades = len(df) if selected_symbol == \"Tous\" else len(df[df['symbol'] == selected_symbol])\n        st.metric(\"Total Trades\", total_trades)\n        total_profit = df[\"profit\"].sum() if selected_symbol == \"Tous\" else df[df['symbol'] == selected_symbol][\"profit\"].sum()",
         "detail": "app",
         "documentation": {}
     },
@@ -850,7 +785,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "wins = len(df[df['result'] == 'win']) if 'result' in df.columns else 0\nwin_rate = (wins / total_trades * 100) if total_trades > 0 else 0\ntotal_profit = df['profit'].sum() if 'profit' in df.columns else 0\navg_profit = df['profit'].mean() if 'profit' in df.columns and total_trades > 0 else 0\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Taux de Succès\", f\"{win_rate:.1f}%\", delta=f\"{wins} victoires\")\ncol3.metric(\"Profit Net Total\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen / Trade\", f\"{avg_profit:+.2f} USD\")\n# ===================================\n# Graphique Équity Curve",
+        "peekOfCode": "wins = len(df[df[\"result\"] == \"win\"])\nwin_rate = wins / len(df) * 100 if len(df) > 0 else 0\ntotal_profit = df[\"profit\"].sum()\navg_profit = df[\"profit\"].mean() if len(df) > 0 else 0\ncol1.metric(\"Trades\", len(df))\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen\", f\"{avg_profit:+.2f} USD\")\n# Equity curve\nst.header(\"Évolution Capital\")",
         "detail": "app",
         "documentation": {}
     },
@@ -859,7 +794,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "win_rate = (wins / total_trades * 100) if total_trades > 0 else 0\ntotal_profit = df['profit'].sum() if 'profit' in df.columns else 0\navg_profit = df['profit'].mean() if 'profit' in df.columns and total_trades > 0 else 0\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Taux de Succès\", f\"{win_rate:.1f}%\", delta=f\"{wins} victoires\")\ncol3.metric(\"Profit Net Total\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen / Trade\", f\"{avg_profit:+.2f} USD\")\n# ===================================\n# Graphique Équity Curve\n# ===================================",
+        "peekOfCode": "win_rate = wins / len(df) * 100 if len(df) > 0 else 0\ntotal_profit = df[\"profit\"].sum()\navg_profit = df[\"profit\"].mean() if len(df) > 0 else 0\ncol1.metric(\"Trades\", len(df))\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen\", f\"{avg_profit:+.2f} USD\")\n# Equity curve\nst.header(\"Évolution Capital\")\ndf_sorted = df.sort_values(\"timestamp_open\")",
         "detail": "app",
         "documentation": {}
     },
@@ -868,7 +803,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "total_profit = df['profit'].sum() if 'profit' in df.columns else 0\navg_profit = df['profit'].mean() if 'profit' in df.columns and total_trades > 0 else 0\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Taux de Succès\", f\"{win_rate:.1f}%\", delta=f\"{wins} victoires\")\ncol3.metric(\"Profit Net Total\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen / Trade\", f\"{avg_profit:+.2f} USD\")\n# ===================================\n# Graphique Équity Curve\n# ===================================\nst.header(\"📉 Évolution du Capital (Equity Curve)\")",
+        "peekOfCode": "total_profit = df[\"profit\"].sum()\navg_profit = df[\"profit\"].mean() if len(df) > 0 else 0\ncol1.metric(\"Trades\", len(df))\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen\", f\"{avg_profit:+.2f} USD\")\n# Equity curve\nst.header(\"Évolution Capital\")\ndf_sorted = df.sort_values(\"timestamp_open\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()",
         "detail": "app",
         "documentation": {}
     },
@@ -877,34 +812,43 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "avg_profit = df['profit'].mean() if 'profit' in df.columns and total_trades > 0 else 0\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Taux de Succès\", f\"{win_rate:.1f}%\", delta=f\"{wins} victoires\")\ncol3.metric(\"Profit Net Total\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen / Trade\", f\"{avg_profit:+.2f} USD\")\n# ===================================\n# Graphique Équity Curve\n# ===================================\nst.header(\"📉 Évolution du Capital (Equity Curve)\")\nif 'profit' in df.columns and 'timestamp_open' in df.columns:",
+        "peekOfCode": "avg_profit = df[\"profit\"].mean() if len(df) > 0 else 0\ncol1.metric(\"Trades\", len(df))\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{total_profit:+.2f} USD\")\ncol4.metric(\"Profit Moyen\", f\"{avg_profit:+.2f} USD\")\n# Equity curve\nst.header(\"Évolution Capital\")\ndf_sorted = df.sort_values(\"timestamp_open\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.line(df_sorted, x=\"timestamp_open\", y=\"cum_profit\", title=\"Profit Cumulé\")",
         "detail": "app",
         "documentation": {}
     },
     {
-        "label": "display_cols",
+        "label": "df_sorted",
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "display_cols = ['timestamp_open', 'signal', 'entry_price', 'sl', 'tp', 'volume', 'result', 'profit']\nif 'timestamp_close' in df.columns:\n    display_cols.insert(1, 'timestamp_close')\ndf_display = df[display_cols].copy()\ndf_display = df_display.rename(columns={\n    'timestamp_open': 'Ouverture',\n    'timestamp_close': 'Fermeture',\n    'signal': 'Signal',\n    'entry_price': 'Prix Entrée',\n    'sl': 'Stop Loss',",
+        "peekOfCode": "df_sorted = df.sort_values(\"timestamp_open\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.line(df_sorted, x=\"timestamp_open\", y=\"cum_profit\", title=\"Profit Cumulé\")\nst.plotly_chart(fig, use_container_width=True)\n# Derniers trades\nst.header(\"Derniers Trades\")\ndisplay_df = df[[\"timestamp_open\", \"symbol\", \"signal\", \"entry_price\", \"sl\", \"tp\", \"volume\", \"result\", \"profit\"]].head(20)\nst.dataframe(display_df, use_container_width=True)\n# Performance semaine\nst.header(\"Perf Semaine\")",
         "detail": "app",
         "documentation": {}
     },
     {
-        "label": "df_display",
+        "label": "df_sorted[\"cum_profit\"]",
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "df_display = df[display_cols].copy()\ndf_display = df_display.rename(columns={\n    'timestamp_open': 'Ouverture',\n    'timestamp_close': 'Fermeture',\n    'signal': 'Signal',\n    'entry_price': 'Prix Entrée',\n    'sl': 'Stop Loss',\n    'tp': 'Take Profit',\n    'volume': 'Volume',\n    'result': 'Résultat',",
+        "peekOfCode": "df_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.line(df_sorted, x=\"timestamp_open\", y=\"cum_profit\", title=\"Profit Cumulé\")\nst.plotly_chart(fig, use_container_width=True)\n# Derniers trades\nst.header(\"Derniers Trades\")\ndisplay_df = df[[\"timestamp_open\", \"symbol\", \"signal\", \"entry_price\", \"sl\", \"tp\", \"volume\", \"result\", \"profit\"]].head(20)\nst.dataframe(display_df, use_container_width=True)\n# Performance semaine\nst.header(\"Perf Semaine\")\none_week_ago = datetime.now() - timedelta(days=7)",
         "detail": "app",
         "documentation": {}
     },
     {
-        "label": "df_display",
+        "label": "fig",
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "df_display = df_display.rename(columns={\n    'timestamp_open': 'Ouverture',\n    'timestamp_close': 'Fermeture',\n    'signal': 'Signal',\n    'entry_price': 'Prix Entrée',\n    'sl': 'Stop Loss',\n    'tp': 'Take Profit',\n    'volume': 'Volume',\n    'result': 'Résultat',\n    'profit': 'Profit (USD)'",
+        "peekOfCode": "fig = px.line(df_sorted, x=\"timestamp_open\", y=\"cum_profit\", title=\"Profit Cumulé\")\nst.plotly_chart(fig, use_container_width=True)\n# Derniers trades\nst.header(\"Derniers Trades\")\ndisplay_df = df[[\"timestamp_open\", \"symbol\", \"signal\", \"entry_price\", \"sl\", \"tp\", \"volume\", \"result\", \"profit\"]].head(20)\nst.dataframe(display_df, use_container_width=True)\n# Performance semaine\nst.header(\"Perf Semaine\")\none_week_ago = datetime.now() - timedelta(days=7)\ndf_week = df[df[\"timestamp_open\"] >= one_week_ago]",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "display_df",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "display_df = df[[\"timestamp_open\", \"symbol\", \"signal\", \"entry_price\", \"sl\", \"tp\", \"volume\", \"result\", \"profit\"]].head(20)\nst.dataframe(display_df, use_container_width=True)\n# Performance semaine\nst.header(\"Perf Semaine\")\none_week_ago = datetime.now() - timedelta(days=7)\ndf_week = df[df[\"timestamp_open\"] >= one_week_ago]\nif not df_week.empty:\n    week_profit = df_week[\"profit\"].sum()\n    st.metric(\"Profit Semaine\", f\"{week_profit:+.2f} USD\")\n# Rapport stratégie",
         "detail": "app",
         "documentation": {}
     },
@@ -913,7 +857,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "one_week_ago = datetime.now() - timedelta(days=7)\ndf_week = df[df['timestamp_open'] >= one_week_ago].copy()\nif not df_week.empty:\n    week_trades = len(df_week)\n    week_wins = len(df_week[df_week['result'] == 'win'])\n    week_win_rate = (week_wins / week_trades * 100) if week_trades > 0 else 0\n    week_profit = df_week['profit'].sum()\n    col1, col2, col3 = st.columns(3)\n    col1.metric(\"Trades Semaine\", week_trades)\n    col2.metric(\"Win Rate Semaine\", f\"{week_win_rate:.1f}%\")",
+        "peekOfCode": "one_week_ago = datetime.now() - timedelta(days=7)\ndf_week = df[df[\"timestamp_open\"] >= one_week_ago]\nif not df_week.empty:\n    week_profit = df_week[\"profit\"].sum()\n    st.metric(\"Profit Semaine\", f\"{week_profit:+.2f} USD\")\n# Rapport stratégie\nst.header(\"Rapport Stratégie\")\nst.markdown(\"\"\"\n**Stratégie :** Trend-following avec filtre volatilité.\n- **Marchés :** Volatility 25, 50, 75, 100.",
         "detail": "app",
         "documentation": {}
     },
@@ -922,7 +866,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "df_week = df[df['timestamp_open'] >= one_week_ago].copy()\nif not df_week.empty:\n    week_trades = len(df_week)\n    week_wins = len(df_week[df_week['result'] == 'win'])\n    week_win_rate = (week_wins / week_trades * 100) if week_trades > 0 else 0\n    week_profit = df_week['profit'].sum()\n    col1, col2, col3 = st.columns(3)\n    col1.metric(\"Trades Semaine\", week_trades)\n    col2.metric(\"Win Rate Semaine\", f\"{week_win_rate:.1f}%\")\n    col3.metric(\"Profit Semaine\", f\"{week_profit:+.2f} USD\")",
+        "peekOfCode": "df_week = df[df[\"timestamp_open\"] >= one_week_ago]\nif not df_week.empty:\n    week_profit = df_week[\"profit\"].sum()\n    st.metric(\"Profit Semaine\", f\"{week_profit:+.2f} USD\")\n# Rapport stratégie\nst.header(\"Rapport Stratégie\")\nst.markdown(\"\"\"\n**Stratégie :** Trend-following avec filtre volatilité.\n- **Marchés :** Volatility 25, 50, 75, 100.\n- **Bias H4 :** EMA50 + pente pour haussier/baissier/neutre.",
         "detail": "app",
         "documentation": {}
     },
@@ -949,7 +893,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "ACCOUNT_NUMBER = int(os.getenv(\"ACCOUNT_NUMBER\", \"0\"))\nPASSWORD = os.getenv(\"PASSWORD\", \"\")\nSERVER = os.getenv(\"SERVER\", \"\")\n# Params bot\nSYMBOL = \"XAUUSD\"\nTIMEFRAME = \"H1\"  # Main timeframe for zones\nTIMEFRAME_M15 = \"M30\"  # For refining zones\nVOLUME = 0.01  # Lot de base, ajusté dynamiquement\n# Params stratégie - Removed EMA/RSI, added S/D params\nATR_PERIOD = 14  # For management and volatility check",
+        "peekOfCode": "ACCOUNT_NUMBER = int(os.getenv(\"ACCOUNT_NUMBER\", \"0\"))\nPASSWORD = os.getenv(\"PASSWORD\", \"\")\nSERVER = os.getenv(\"SERVER\", \"\")\n# Symboles gérés (Volatility Indices - adapte aux noms exacts de ton broker)\nSYMBOLS = [\n    \"Volatility 25 Index\",  # Tranquille\n    \"Volatility 50 Index\",  # Tranquille\n    \"Volatility 75 Index\",  # Agressif\n    \"Volatility 100 Index\"  # Agressif\n]",
         "detail": "config",
         "documentation": {}
     },
@@ -958,7 +902,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "PASSWORD = os.getenv(\"PASSWORD\", \"\")\nSERVER = os.getenv(\"SERVER\", \"\")\n# Params bot\nSYMBOL = \"XAUUSD\"\nTIMEFRAME = \"H1\"  # Main timeframe for zones\nTIMEFRAME_M15 = \"M30\"  # For refining zones\nVOLUME = 0.01  # Lot de base, ajusté dynamiquement\n# Params stratégie - Removed EMA/RSI, added S/D params\nATR_PERIOD = 14  # For management and volatility check\nRISK_PERCENT = 0.01  # 1% du solde par trade",
+        "peekOfCode": "PASSWORD = os.getenv(\"PASSWORD\", \"\")\nSERVER = os.getenv(\"SERVER\", \"\")\n# Symboles gérés (Volatility Indices - adapte aux noms exacts de ton broker)\nSYMBOLS = [\n    \"Volatility 25 Index\",  # Tranquille\n    \"Volatility 50 Index\",  # Tranquille\n    \"Volatility 75 Index\",  # Agressif\n    \"Volatility 100 Index\"  # Agressif\n]\n# Presets par type de symbole",
         "detail": "config",
         "documentation": {}
     },
@@ -967,43 +911,43 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "SERVER = os.getenv(\"SERVER\", \"\")\n# Params bot\nSYMBOL = \"XAUUSD\"\nTIMEFRAME = \"H1\"  # Main timeframe for zones\nTIMEFRAME_M15 = \"M30\"  # For refining zones\nVOLUME = 0.01  # Lot de base, ajusté dynamiquement\n# Params stratégie - Removed EMA/RSI, added S/D params\nATR_PERIOD = 14  # For management and volatility check\nRISK_PERCENT = 0.01  # 1% du solde par trade\nRR_RATIO = 2  # Risk:Reward initial 1:2",
+        "peekOfCode": "SERVER = os.getenv(\"SERVER\", \"\")\n# Symboles gérés (Volatility Indices - adapte aux noms exacts de ton broker)\nSYMBOLS = [\n    \"Volatility 25 Index\",  # Tranquille\n    \"Volatility 50 Index\",  # Tranquille\n    \"Volatility 75 Index\",  # Agressif\n    \"Volatility 100 Index\"  # Agressif\n]\n# Presets par type de symbole\nPRESETS = {",
         "detail": "config",
         "documentation": {}
     },
     {
-        "label": "SYMBOL",
+        "label": "SYMBOLS",
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "SYMBOL = \"XAUUSD\"\nTIMEFRAME = \"H1\"  # Main timeframe for zones\nTIMEFRAME_M15 = \"M30\"  # For refining zones\nVOLUME = 0.01  # Lot de base, ajusté dynamiquement\n# Params stratégie - Removed EMA/RSI, added S/D params\nATR_PERIOD = 14  # For management and volatility check\nRISK_PERCENT = 0.01  # 1% du solde par trade\nRR_RATIO = 2  # Risk:Reward initial 1:2\nMIN_RR = 1.2  # Minimum RR to take trade\nTRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR",
+        "peekOfCode": "SYMBOLS = [\n    \"Volatility 25 Index\",  # Tranquille\n    \"Volatility 50 Index\",  # Tranquille\n    \"Volatility 75 Index\",  # Agressif\n    \"Volatility 100 Index\"  # Agressif\n]\n# Presets par type de symbole\nPRESETS = {\n    \"tranquille\": {  # Pour 25 et 50\n        \"RISK_PERCENT\": 0.005,  # 0.5% risque par trade",
         "detail": "config",
         "documentation": {}
     },
     {
-        "label": "TIMEFRAME",
+        "label": "PRESETS",
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TIMEFRAME = \"H1\"  # Main timeframe for zones\nTIMEFRAME_M15 = \"M30\"  # For refining zones\nVOLUME = 0.01  # Lot de base, ajusté dynamiquement\n# Params stratégie - Removed EMA/RSI, added S/D params\nATR_PERIOD = 14  # For management and volatility check\nRISK_PERCENT = 0.01  # 1% du solde par trade\nRR_RATIO = 2  # Risk:Reward initial 1:2\nMIN_RR = 1.2  # Minimum RR to take trade\nTRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR\nMIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry",
+        "peekOfCode": "PRESETS = {\n    \"tranquille\": {  # Pour 25 et 50\n        \"RISK_PERCENT\": 0.005,  # 0.5% risque par trade\n        \"TRAILING_MULTIPLIER\": 1.5,\n        \"VOLATILITY_LOW\": 0.7,\n        \"VOLATILITY_HIGH\": 1.8\n    },\n    \"agressif\": {  # Pour 75 et 100\n        \"RISK_PERCENT\": 0.01,   # 1% risque par trade\n        \"TRAILING_MULTIPLIER\": 1.2,",
         "detail": "config",
         "documentation": {}
     },
     {
-        "label": "TIMEFRAME_M15",
+        "label": "TIMEFRAME_H4",
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TIMEFRAME_M15 = \"M30\"  # For refining zones\nVOLUME = 0.01  # Lot de base, ajusté dynamiquement\n# Params stratégie - Removed EMA/RSI, added S/D params\nATR_PERIOD = 14  # For management and volatility check\nRISK_PERCENT = 0.01  # 1% du solde par trade\nRR_RATIO = 2  # Risk:Reward initial 1:2\nMIN_RR = 1.2  # Minimum RR to take trade\nTRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR\nMIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry\nRANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)",
+        "peekOfCode": "TIMEFRAME_H4 = \"H4\"  # Pour bias\nTIMEFRAME_H1 = \"H1\"  # Pour entrées\nATR_PERIOD = 14\nEMA_PERIOD = 50  # Pour bias H4\nATR_WINDOW_AVG = 100  # Pour filtre volatilité\nMIN_RR = 1.5\nSL_MULTIPLIER = 1.2  # 1-1.5x ATR\nTP_MULTIPLIER = 2.0  # RR 2\nBREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5",
         "detail": "config",
         "documentation": {}
     },
     {
-        "label": "VOLUME",
+        "label": "TIMEFRAME_H1",
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "VOLUME = 0.01  # Lot de base, ajusté dynamiquement\n# Params stratégie - Removed EMA/RSI, added S/D params\nATR_PERIOD = 14  # For management and volatility check\nRISK_PERCENT = 0.01  # 1% du solde par trade\nRR_RATIO = 2  # Risk:Reward initial 1:2\nMIN_RR = 1.2  # Minimum RR to take trade\nTRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR\nMIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry\nRANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)\nFVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection",
+        "peekOfCode": "TIMEFRAME_H1 = \"H1\"  # Pour entrées\nATR_PERIOD = 14\nEMA_PERIOD = 50  # Pour bias H4\nATR_WINDOW_AVG = 100  # Pour filtre volatilité\nMIN_RR = 1.5\nSL_MULTIPLIER = 1.2  # 1-1.5x ATR\nTP_MULTIPLIER = 2.0  # RR 2\nBREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle",
         "detail": "config",
         "documentation": {}
     },
@@ -1012,25 +956,25 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "ATR_PERIOD = 14  # For management and volatility check\nRISK_PERCENT = 0.01  # 1% du solde par trade\nRR_RATIO = 2  # Risk:Reward initial 1:2\nMIN_RR = 1.2  # Minimum RR to take trade\nTRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR\nMIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry\nRANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)\nFVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection\nVOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org",
+        "peekOfCode": "ATR_PERIOD = 14\nEMA_PERIOD = 50  # Pour bias H4\nATR_WINDOW_AVG = 100  # Pour filtre volatilité\nMIN_RR = 1.5\nSL_MULTIPLIER = 1.2  # 1-1.5x ATR\nTP_MULTIPLIER = 2.0  # RR 2\nBREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60",
         "detail": "config",
         "documentation": {}
     },
     {
-        "label": "RISK_PERCENT",
+        "label": "EMA_PERIOD",
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "RISK_PERCENT = 0.01  # 1% du solde par trade\nRR_RATIO = 2  # Risk:Reward initial 1:2\nMIN_RR = 1.2  # Minimum RR to take trade\nTRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR\nMIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry\nRANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)\nFVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection\nVOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage",
+        "peekOfCode": "EMA_PERIOD = 50  # Pour bias H4\nATR_WINDOW_AVG = 100  # Pour filtre volatilité\nMIN_RR = 1.5\nSL_MULTIPLIER = 1.2  # 1-1.5x ATR\nTP_MULTIPLIER = 2.0  # RR 2\nBREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40",
         "detail": "config",
         "documentation": {}
     },
     {
-        "label": "RR_RATIO",
+        "label": "ATR_WINDOW_AVG",
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "RR_RATIO = 2  # Risk:Reward initial 1:2\nMIN_RR = 1.2  # Minimum RR to take trade\nTRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR\nMIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry\nRANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)\nFVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection\nVOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED",
+        "peekOfCode": "ATR_WINDOW_AVG = 100  # Pour filtre volatilité\nMIN_RR = 1.5\nSL_MULTIPLIER = 1.2  # 1-1.5x ATR\nTP_MULTIPLIER = 2.0  # RR 2\nBREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3",
         "detail": "config",
         "documentation": {}
     },
@@ -1039,124 +983,25 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MIN_RR = 1.2  # Minimum RR to take trade\nTRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR\nMIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry\nRANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)\nFVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection\nVOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP",
+        "peekOfCode": "MIN_RR = 1.5\nSL_MULTIPLIER = 1.2  # 1-1.5x ATR\nTP_MULTIPLIER = 2.0  # RR 2\nBREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily",
         "detail": "config",
         "documentation": {}
     },
     {
-        "label": "TRAILING_MULTIPLIER",
+        "label": "SL_MULTIPLIER",
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR\nMIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry\nRANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)\nFVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection\nVOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias",
+        "peekOfCode": "SL_MULTIPLIER = 1.2  # 1-1.5x ATR\nTP_MULTIPLIER = 2.0  # RR 2\nBREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20",
         "detail": "config",
         "documentation": {}
     },
     {
-        "label": "MIN_CONFIRMATIONS",
+        "label": "TP_MULTIPLIER",
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry\nRANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)\nFVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection\nVOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias\nBIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "RANGE_THRESHOLD",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "RANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)\nFVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection\nVOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias\nBIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish\nDEVIATION = 20",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "FVG_THRESHOLD",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "FVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection\nVOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias\nBIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish\nDEVIATION = 20\nMAGIC_NUMBER = 123456",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "VOLATILITY_MIN",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "VOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets\nNEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias\nBIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish\nDEVIATION = 20\nMAGIC_NUMBER = 123456\nHIGH_IMPACT_PAUSE_MINUTES = 30",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "NEWSAPI_KEY",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "NEWSAPI_KEY = os.getenv(\"NEWSAPI_KEY\", \"\")  # NewsAPI.org\nALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias\nBIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish\nDEVIATION = 20\nMAGIC_NUMBER = 123456\nHIGH_IMPACT_PAUSE_MINUTES = 30\nBREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "ALPHA_VANTAGE_KEY",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "ALPHA_VANTAGE_KEY = os.getenv(\"ALPHA_VANTAGE_KEY\", \"\")  # Alpha Vantage\nFRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias\nBIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish\nDEVIATION = 20\nMAGIC_NUMBER = 123456\nHIGH_IMPACT_PAUSE_MINUTES = 30\nBREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque\nPARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "FRED_API_KEY",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "FRED_API_KEY = os.getenv(\"FRED_API_KEY\", \"\")  # FRED\nFMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias\nBIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish\nDEVIATION = 20\nMAGIC_NUMBER = 123456\nHIGH_IMPACT_PAUSE_MINUTES = 30\nBREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque\nPARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "FMP_API_KEY",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "FMP_API_KEY = os.getenv(\"FMP_API_KEY\", \"\")  # FMP\n# Seuils pour bias\nBIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish\nDEVIATION = 20\nMAGIC_NUMBER = 123456\nHIGH_IMPACT_PAUSE_MINUTES = 30\nBREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque\nPARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "BIAS_THRESHOLD",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "BIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish\nDEVIATION = 20\nMAGIC_NUMBER = 123456\nHIGH_IMPACT_PAUSE_MINUTES = 30\nBREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque\nPARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "DEVIATION",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "DEVIATION = 20\nMAGIC_NUMBER = 123456\nHIGH_IMPACT_PAUSE_MINUTES = 30\nBREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque\nPARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "MAGIC_NUMBER",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "MAGIC_NUMBER = 123456\nHIGH_IMPACT_PAUSE_MINUTES = 30\nBREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque\nPARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "HIGH_IMPACT_PAUSE_MINUTES",
-        "kind": 5,
-        "importPath": "config",
-        "description": "config",
-        "peekOfCode": "HIGH_IMPACT_PAUSE_MINUTES = 30\nBREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque\nPARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
+        "peekOfCode": "TP_MULTIPLIER = 2.0  # RR 2\nBREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20\nMAGIC_NUMBER = 123456",
         "detail": "config",
         "documentation": {}
     },
@@ -1165,7 +1010,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "BREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque\nPARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
+        "peekOfCode": "BREAKEVEN_MULTIPLIER = 1.0\nPARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20\nMAGIC_NUMBER = 123456\n# Telegram et MT5",
         "detail": "config",
         "documentation": {}
     },
@@ -1174,7 +1019,70 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "PARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
+        "peekOfCode": "PARTIAL_CLOSE_PERCENT = 0.5\nRSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20\nMAGIC_NUMBER = 123456\n# Telegram et MT5\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "RSI_PERIOD",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "RSI_PERIOD = 14  # Pour confirmation optionnelle\nRSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20\nMAGIC_NUMBER = 123456\n# Telegram et MT5\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "RSI_OVERBOUGHT",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "RSI_OVERBOUGHT = 60\nRSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20\nMAGIC_NUMBER = 123456\n# Telegram et MT5\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "RSI_OVERSOLD",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "RSI_OVERSOLD = 40\nMAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20\nMAGIC_NUMBER = 123456\n# Telegram et MT5\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")\n# MongoDB",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MAX_POSITIONS_PER_SYMBOL",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "MAX_POSITIONS_PER_SYMBOL = 3\nDAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20\nMAGIC_NUMBER = 123456\n# Telegram et MT5\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "DAILY_LOSS_LIMIT",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "DAILY_LOSS_LIMIT = -0.04  # -4% stop daily\nDEVIATION = 20\nMAGIC_NUMBER = 123456\n# Telegram et MT5\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "DEVIATION",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "DEVIATION = 20\nMAGIC_NUMBER = 123456\n# Telegram et MT5\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = os.getenv(\"MONGODB_COLLECTION\", \"trades\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MAGIC_NUMBER",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "MAGIC_NUMBER = 123456\n# Telegram et MT5\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = os.getenv(\"MONGODB_COLLECTION\", \"trades\")",
         "detail": "config",
         "documentation": {}
     },
@@ -1183,7 +1091,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
+        "peekOfCode": "TELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = os.getenv(\"MONGODB_COLLECTION\", \"trades\")",
         "detail": "config",
         "documentation": {}
     },
@@ -1192,7 +1100,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
+        "peekOfCode": "TELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\nMT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = os.getenv(\"MONGODB_COLLECTION\", \"trades\")",
         "detail": "config",
         "documentation": {}
     },
@@ -1201,7 +1109,34 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")",
+        "peekOfCode": "MT5_TERMINAL_PATH = os.getenv(\"MT5_TERMINAL_PATH\", r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = os.getenv(\"MONGODB_COLLECTION\", \"trades\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGODB_URI",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "MONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = os.getenv(\"MONGODB_COLLECTION\", \"trades\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "DB_NAME",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "DB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = os.getenv(\"MONGODB_COLLECTION\", \"trades\")",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "COLLECTION_NAME",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "COLLECTION_NAME = os.getenv(\"MONGODB_COLLECTION\", \"trades\")",
         "detail": "config",
         "documentation": {}
     },
@@ -1210,7 +1145,7 @@
         "kind": 2,
         "importPath": "connexion",
         "description": "connexion",
-        "peekOfCode": "def connect_to_mt5(max_retries=3, delay=5):\n    \"\"\"Connexion à MT5 avec retry et logs détaillés\"\"\"\n    terminal_path = MT5_TERMINAL_PATH or r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n    for attempt in range(1, max_retries + 1):\n        try:\n            # Si déjà initialisé, shutdown propre avant retry\n            if mt5.terminal_info() is not None:\n                mt5.shutdown()\n                time.sleep(1)\n            # logging.info(f\"Tentative de connexion MT5 #{attempt}/{max_retries}...\")",
+        "peekOfCode": "def connect_to_mt5(max_retries=3, delay=5):\n    \"\"\"Connexion MT5 avec retries\"\"\"\n    terminal_path = MT5_TERMINAL_PATH\n    for attempt in range(1, max_retries + 1):\n        try:\n            if mt5.terminal_info():\n                mt5.shutdown()\n                time.sleep(1)\n            logging.info(f\"Tentative connexion {attempt}/{max_retries}\")\n            if not mt5.initialize(path=terminal_path):",
         "detail": "connexion",
         "documentation": {}
     },
@@ -1219,7 +1154,7 @@
         "kind": 2,
         "importPath": "connexion",
         "description": "connexion",
-        "peekOfCode": "def disconnect():\n    \"\"\"Déconnexion propre de MT5\"\"\"\n    try:\n        if mt5.terminal_info() is not None:\n            mt5.shutdown()\n            logging.info(\"=== BOT DE TRADING XAUUSD ARRÉTÉ ===\")\n            # print(\"Déconnexion de MT5\")\n            send_telegram_alert(\"🛑 Bot de trading arrêté – Déconnexion\")\n    except Exception as e:\n        logging.error(f\"Erreur lors de la déconnexion MT5 : {e}\")",
+        "peekOfCode": "def disconnect():\n    \"\"\"Déconnexion\"\"\"\n    try:\n        if mt5.terminal_info():\n            mt5.shutdown()\n        logging.info(\"Bot arrêté\")\n        send_telegram_alert(\"🛑 Bot arrêté\", force=True)  # Alert close\n    except Exception as e:\n        logging.error(f\"Erreur déconnexion : {e}\")",
         "detail": "connexion",
         "documentation": {}
     },
@@ -1228,7 +1163,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def init_db_connection():\n    \"\"\"Initialise et teste la connexion MongoDB Atlas\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:\n        logging.warning(\"MONGODB_URI non défini → Stockage DB désactivé\")\n        return False\n    try:\n        client = MongoClient(\n            MONGODB_URI,\n            serverSelectionTimeoutMS=5000,  # Timeout rapide",
+        "peekOfCode": "def init_db_connection():\n    \"\"\"Initialise MongoDB\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:\n        logging.warning(\"MONGODB_URI manquant → DB désactivée\")\n        return False\n    try:\n        # Quote password\n        if \"@\" in MONGODB_URI and \":\" in MONGODB_URI.split(\"@\")[0]:\n            prefix, rest = MONGODB_URI.split(\"://\", 1)",
         "detail": "database",
         "documentation": {}
     },
@@ -1237,7 +1172,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def log_new_trade(signal, price, sl, tp, volume, ticket=None):\n    \"\"\"Log un nouveau trade à l'ouverture\"\"\"\n    if trades_collection is None:\n        logging.warning(\"DB non initialisée → Trade non logué\")\n        return None\n    trade_data = {\n        'timestamp_open': datetime.utcnow().isoformat(),\n        'signal': signal,\n        'symbol': SYMBOL,\n        'entry_price': float(price) if price is not None else None,",
+        "peekOfCode": "def log_new_trade(symbol, signal, price, sl, tp, volume, ticket=None):\n    \"\"\"Log nouveau trade\"\"\"\n    if trades_collection is None:\n        return None\n    trade_data = {\n        \"timestamp_open\": datetime.utcnow().isoformat(),\n        \"symbol\": symbol,\n        \"signal\": signal,\n        \"entry_price\": float(price) if price else None,\n        \"volume\": float(volume),",
         "detail": "database",
         "documentation": {}
     },
@@ -1246,34 +1181,7 @@
         "kind": 2,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "def update_trade_on_close(ticket, profit, result='win'):\n    \"\"\"Met à jour un trade fermé avec profit et résultat\"\"\"\n    if trades_collection is None:\n        return\n    try:\n        update_result = trades_collection.update_one(\n            {\"ticket\": ticket},\n            {\n                \"$set\": {\n                    'timestamp_close': datetime.utcnow().isoformat(),",
-        "detail": "database",
-        "documentation": {}
-    },
-    {
-        "label": "MONGODB_URI",
-        "kind": 5,
-        "importPath": "database",
-        "description": "database",
-        "peekOfCode": "MONGODB_URI = MONGODB_URI or os.getenv(\"MONGODB_URI\")\nDB_NAME = DB_NAME or os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = COLLECTION_NAME or os.getenv(\"MONGODB_COLLECTION\", \"trades\")\n# Client global\nclient = None\ntrades_collection = None\ndef init_db_connection():\n    \"\"\"Initialise et teste la connexion MongoDB Atlas\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:",
-        "detail": "database",
-        "documentation": {}
-    },
-    {
-        "label": "DB_NAME",
-        "kind": 5,
-        "importPath": "database",
-        "description": "database",
-        "peekOfCode": "DB_NAME = DB_NAME or os.getenv(\"MONGODB_DB\", \"trading_bot\")\nCOLLECTION_NAME = COLLECTION_NAME or os.getenv(\"MONGODB_COLLECTION\", \"trades\")\n# Client global\nclient = None\ntrades_collection = None\ndef init_db_connection():\n    \"\"\"Initialise et teste la connexion MongoDB Atlas\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:\n        logging.warning(\"MONGODB_URI non défini → Stockage DB désactivé\")",
-        "detail": "database",
-        "documentation": {}
-    },
-    {
-        "label": "COLLECTION_NAME",
-        "kind": 5,
-        "importPath": "database",
-        "description": "database",
-        "peekOfCode": "COLLECTION_NAME = COLLECTION_NAME or os.getenv(\"MONGODB_COLLECTION\", \"trades\")\n# Client global\nclient = None\ntrades_collection = None\ndef init_db_connection():\n    \"\"\"Initialise et teste la connexion MongoDB Atlas\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:\n        logging.warning(\"MONGODB_URI non défini → Stockage DB désactivé\")\n        return False",
+        "peekOfCode": "def update_trade_on_close(ticket, profit, result=\"win\"):\n    \"\"\"Update trade fermé\"\"\"\n    if trades_collection is None:\n        return\n    try:\n        update_result = trades_collection.update_one(\n            {\"ticket\": ticket},\n            {\"$set\": {\n                \"timestamp_close\": datetime.utcnow().isoformat(),\n                \"profit\": float(profit),",
         "detail": "database",
         "documentation": {}
     },
@@ -1282,7 +1190,7 @@
         "kind": 5,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "client = None\ntrades_collection = None\ndef init_db_connection():\n    \"\"\"Initialise et teste la connexion MongoDB Atlas\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:\n        logging.warning(\"MONGODB_URI non défini → Stockage DB désactivé\")\n        return False\n    try:\n        client = MongoClient(",
+        "peekOfCode": "client = None\ntrades_collection = None\ndef init_db_connection():\n    \"\"\"Initialise MongoDB\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:\n        logging.warning(\"MONGODB_URI manquant → DB désactivée\")\n        return False\n    try:\n        # Quote password",
         "detail": "database",
         "documentation": {}
     },
@@ -1291,8 +1199,17 @@
         "kind": 5,
         "importPath": "database",
         "description": "database",
-        "peekOfCode": "trades_collection = None\ndef init_db_connection():\n    \"\"\"Initialise et teste la connexion MongoDB Atlas\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:\n        logging.warning(\"MONGODB_URI non défini → Stockage DB désactivé\")\n        return False\n    try:\n        client = MongoClient(\n            MONGODB_URI,",
+        "peekOfCode": "trades_collection = None\ndef init_db_connection():\n    \"\"\"Initialise MongoDB\"\"\"\n    global client, trades_collection\n    if not MONGODB_URI:\n        logging.warning(\"MONGODB_URI manquant → DB désactivée\")\n        return False\n    try:\n        # Quote password\n        if \"@\" in MONGODB_URI and \":\" in MONGODB_URI.split(\"@\")[0]:",
         "detail": "database",
+        "documentation": {}
+    },
+    {
+        "label": "check_loss_limits",
+        "kind": 2,
+        "importPath": "position_manager",
+        "description": "position_manager",
+        "peekOfCode": "def check_loss_limits():\n    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)\n    now = datetime.now(timezone.utc)\n    history = mt5.history_deals_get(today_start, now)\n    if history is None or not history:\n        logging.debug(\"Aucun deal aujourd'hui ou erreur récupération\")\n        return True\n    closed_profit = sum(deal.profit for deal in history if deal.entry == mt5.DEAL_ENTRY_OUT)\n    balance = mt5.account_info().balance\n    if balance <= 0:",
+        "detail": "position_manager",
         "documentation": {}
     },
     {
@@ -1300,7 +1217,7 @@
         "kind": 2,
         "importPath": "position_manager",
         "description": "position_manager",
-        "peekOfCode": "def manage_positions():\n    \"\"\"Gère les positions ouvertes : trailing stop, breakeven, partial close, reversal\"\"\"\n    positions = mt5.positions_get(symbol=SYMBOL)\n    if not positions:\n        return  # Aucune position ouverte\n    # Récupérer données historiques pour ATR et reversal\n    timeframe_mt5 = getattr(mt5, f\"TIMEFRAME_{TIMEFRAME}\")\n    rates = mt5.copy_rates_from_pos(SYMBOL, timeframe_mt5, 0, max(ATR_PERIOD + 10, 300))\n    if rates is None or len(rates) < ATR_PERIOD + 1:\n        logging.warning(\"Pas assez de données pour gestion positions\")",
+        "peekOfCode": "def manage_positions():\n    \"\"\"Gère positions pour tous symboles\"\"\"\n    if not check_loss_limits():\n        return\n    for symbol in SYMBOLS:\n        positions = mt5.positions_get(symbol=symbol)\n        if not positions:\n            continue\n        rates_h1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H1, 0, ATR_PERIOD + 10)\n        if not rates_h1:",
         "detail": "position_manager",
         "documentation": {}
     },
@@ -1309,8 +1226,17 @@
         "kind": 2,
         "importPath": "position_manager",
         "description": "position_manager",
-        "peekOfCode": "def close_position(pos):\n    \"\"\"Ferme complètement une position\"\"\"\n    tick = mt5.symbol_info_tick(SYMBOL)\n    if tick is None:\n        logging.error(f\"Pas de tick pour fermer #{pos.ticket}\")\n        return\n    close_price = tick.bid if pos.type == mt5.ORDER_TYPE_BUY else tick.ask\n    close_request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,\n        \"symbol\": SYMBOL,",
+        "peekOfCode": "def close_position(symbol, pos, reason=\"manual\"):\n    \"\"\"Ferme position\"\"\"\n    tick = mt5.symbol_info_tick(symbol)\n    if not tick:\n        return\n    close_price = tick.bid if pos.type == mt5.ORDER_TYPE_BUY else tick.ask\n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,\n        \"symbol\": symbol,\n        \"volume\": pos.volume,",
         "detail": "position_manager",
+        "documentation": {}
+    },
+    {
+        "label": "get_preset",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def get_preset(symbol):\n    \"\"\"Retourne preset basé sur symbole\"\"\"\n    if \"25\" in symbol or \"50\" in symbol:\n        return PRESETS[\"tranquille\"]\n    else:\n        return PRESETS[\"agressif\"]\ndef calculate_atr(df, period):\n    \"\"\"Calcul ATR\"\"\"\n    high_low = df['high'] - df['low']\n    high_close = abs(df['high'] - df['close'].shift())",
+        "detail": "strategy",
         "documentation": {}
     },
     {
@@ -1318,169 +1244,16 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def calculate_atr(df, period):\n    high_low = df['high'] - df['low']\n    high_close = abs(df['high'] - df['close'].shift())\n    low_close = abs(df['low'] - df['close'].shift())\n    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)\n    return tr.rolling(window=period).mean()\n# ========================\n# Analyse Fondamentale Automatisée\n# ========================\ndef get_news_bias():",
+        "peekOfCode": "def calculate_atr(df, period):\n    \"\"\"Calcul ATR\"\"\"\n    high_low = df['high'] - df['low']\n    high_close = abs(df['high'] - df['close'].shift())\n    low_close = abs(df['low'] - df['close'].shift())\n    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)\n    return tr.rolling(window=period).mean()\ndef calculate_rsi(df, period):\n    \"\"\"Calcul RSI\"\"\"\n    delta = df['close'].diff()",
         "detail": "strategy",
         "documentation": {}
     },
     {
-        "label": "get_news_bias",
+        "label": "calculate_rsi",
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_news_bias():\n    if not NEWSAPI_KEY:\n        return 0\n    url = f\"https://newsapi.org/v2/everything?q=gold+price+XAUUSD&apiKey={NEWSAPI_KEY}\"\n    try:\n        response = requests.get(url)\n        data = response.json()['articles']\n        positive = sum(1 for a in data if 'rally' in a['title'].lower())\n        negative = sum(1 for a in data if 'drop' in a['title'].lower())\n        return 2 if positive > negative else -2 if negative > positive else 0  # Poids 2",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_inflation_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_inflation_score():\n    if not FRED_API_KEY:\n        return 0\n    url = f\"https://api.stlouisfed.org/fred/series/observations?series_id=PCEPI&api_key={FRED_API_KEY}&file_type=json\"\n    try:\n        response = requests.get(url)\n        value = float(response.json()['observations'][-1]['value'])\n        return 3 if value > 3 else -1 if value < 2 else 0  # Poids 3\n    except:\n        return 0",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_usd_dxy_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_usd_dxy_score():\n    if not ALPHA_VANTAGE_KEY:\n        return 0\n    url = f\"https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey={ALPHA_VANTAGE_KEY}\"\n    try:\n        response = requests.get(url)\n        last = float(response.json()['Time Series FX (Daily)'][list(response.json()['Time Series FX (Daily)'].keys())[0]]['4. close'])\n        prev = float(response.json()['Time Series FX (Daily)'][list(response.json()['Time Series FX (Daily)'].keys())[1]]['4. close'])\n        return 2.5 if last < prev else -2.5 if last > prev else 0  # Poids 2.5\n    except:",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_gdp_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_gdp_score():\n    if not FRED_API_KEY:\n        return 0\n    url = f\"https://api.stlouisfed.org/fred/series/observations?series_id=GDP&api_key={FRED_API_KEY}&file_type=json\"\n    try:\n        value = float(response.json()['observations'][-1]['value'])\n        return -2 if value > 2 else 2 if value < 0 else 0  # Poids 2\n    except:\n        return 0\ndef get_geopolitical_vix_score():",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_geopolitical_vix_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_geopolitical_vix_score():\n    if not FRED_API_KEY:\n        return 0\n    url = f\"https://api.stlouisfed.org/fred/series/observations?series_id=VIXCLS&api_key={FRED_API_KEY}&file_type=json\"\n    try:\n        vix = float(response.json()['observations'][-1]['value'])\n        return 1.5 if vix > 20 else 0  # Poids 1.5\n    except:\n        return 0\ndef get_supply_demand_score():",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_supply_demand_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_supply_demand_score():\n    url = \"https://www.gold.org/goldhub/data/gold-demand-by-country\"\n    try:\n        response = requests.get(url)\n        soup = BeautifulSoup(response.text, 'html.parser')\n        # Ex. : Parse dernier demand value (ajustez selector)\n        demand_text = soup.find('div', class_='demand-value').text.strip()\n        demand = float(demand_text.replace(',', '')) if demand_text else 0\n        return 1.5 if demand > 1000 else -1.5 if demand < 800 else 0  # Poids 1.5\n    except:",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_cot_sentiment_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_cot_sentiment_score():\n    if not FMP_API_KEY:\n        return 0\n    url = f\"https://financialmodelingprep.com/api/v4/commitment_of_traders_report/{SYMBOL}?apikey={FMP_API_KEY}\"\n    try:\n        response = requests.get(url)\n        data = response.json()[-1]\n        net = data['long_positions'] - data['short_positions']\n        return 1.5 if net > 0 else -1.5  # Poids 1.5\n    except:",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_oil_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_oil_score():\n    if not ALPHA_VANTAGE_KEY:\n        return 0\n    url = f\"https://www.alphavantage.co/query?function=WTI&interval=daily&apikey={ALPHA_VANTAGE_KEY}\"\n    try:\n        response = requests.get(url)\n        last = float(response.json()['data'][0]['value'])\n        prev = float(response.json()['data'][1]['value'])\n        return 2 if last > prev else -2  # Poids 2\n    except:",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_seasonality_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_seasonality_score(current_month):\n    return 1 if current_month in [12, 1, 2] else -1 if current_month in [6, 7, 8] else 0  # Poids 1\ndef get_fundamental_bias(current_time):\n    \"\"\"Bias combiné avec scores pondérés\"\"\"\n    scores = 0.0  # Utiliser float pour éviter problèmes d'addition\n    scores += get_news_bias()                  # Géopolitique inclus\n    scores += get_inflation_score()\n    scores += get_usd_dxy_score()\n    scores += get_gdp_score()\n    scores += get_geopolitical_vix_score()",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_fundamental_bias",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_fundamental_bias(current_time):\n    \"\"\"Bias combiné avec scores pondérés\"\"\"\n    scores = 0.0  # Utiliser float pour éviter problèmes d'addition\n    scores += get_news_bias()                  # Géopolitique inclus\n    scores += get_inflation_score()\n    scores += get_usd_dxy_score()\n    scores += get_gdp_score()\n    scores += get_geopolitical_vix_score()\n    scores += get_supply_demand_score()\n    scores += get_cot_sentiment_score()",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "find_swings",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def find_swings(df, lookback=5):\n    \"\"\"Find swing highs and lows\"\"\"\n    df['swing_high'] = df['high'][(df['high'].shift(1) < df['high']) & (df['high'].shift(-1) < df['high'])]\n    df['swing_low'] = df['low'][(df['low'].shift(1) > df['low']) & (df['low'].shift(-1) > df['low'])]\n    return df\ndef detect_accumulation(df: pd.DataFrame, atr: float, lookback: int = 30, threshold_multiplier: float = None) -> bool:\n    \"\"\"\n    Détecte une phase d'accumulation/consolidation de manière robuste.\n    \"\"\"\n    if len(df) < lookback:",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "detect_accumulation",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def detect_accumulation(df: pd.DataFrame, atr: float, lookback: int = 30, threshold_multiplier: float = None) -> bool:\n    \"\"\"\n    Détecte une phase d'accumulation/consolidation de manière robuste.\n    \"\"\"\n    if len(df) < lookback:\n        return False\n    from config import RANGE_THRESHOLD\n    multiplier = threshold_multiplier if threshold_multiplier is not None else RANGE_THRESHOLD\n    recent_high = df['high'].iloc[-lookback:]\n    recent_low = df['low'].iloc[-lookback:]",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "find_pivot_candle",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def find_pivot_candle(df, direction):\n    \"\"\"Find last pivot candle in accumulation\"\"\"\n    if direction == 'demand':\n        pivot_idx = df['low'].iloc[-20:].idxmin()  # Lowest low in recent range\n    else:  # supply\n        pivot_idx = df['high'].iloc[-20:].idxmax()  # Highest high\n    return df.loc[pivot_idx]\ndef refine_in_m30(pivot_time):\n    \"\"\"Affinage de la zone pivot sur M30 (H1 / 2)\"\"\"\n    timeframe_m30 = getattr(mt5, f\"TIMEFRAME_{TIMEFRAME_M15}\")",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "refine_in_m30",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def refine_in_m30(pivot_time):\n    \"\"\"Affinage de la zone pivot sur M30 (H1 / 2)\"\"\"\n    timeframe_m30 = getattr(mt5, f\"TIMEFRAME_{TIMEFRAME_M15}\")\n    start = pivot_time - timedelta(hours=4)\n    end = pivot_time + timedelta(hours=2)\n    rates = mt5.copy_rates_range(SYMBOL, timeframe_m30, start, end)\n    if rates is None or len(rates) == 0:\n        return None\n    df_m30 = pd.DataFrame(rates)\n    atr_m30 = calculate_atr(df_m30, ATR_PERIOD).iloc[-1]",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "check_bos",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def check_bos(df):\n    \"\"\"Break of Structure\"\"\"\n    last_high = df['swing_high'].dropna().iloc[-1] if not df['swing_high'].dropna().empty else df['high'].max()\n    last_low = df['swing_low'].dropna().iloc[-1] if not df['swing_low'].dropna().empty else df['low'].min()\n    if df['close'].iloc[-1] > last_high:\n        return True, 'bullish'  # BOS up\n    elif df['close'].iloc[-1] < last_low:\n        return True, 'bearish'  # BOS down\n    return False, None\ndef check_fvg(df, atr):",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "check_fvg",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def check_fvg(df, atr):\n    \"\"\"Fair Value Gap / Imbalance\"\"\"\n    for i in range(1, len(df)-1):\n        gap = abs(df['open'].iloc[i+1] - df['close'].iloc[i-1])\n        if gap > atr * FVG_THRESHOLD:\n            return True\n    return False\ndef check_liquidity_sweep(df):\n    \"\"\"Liquidity internal/external (wick sweeping highs/lows)\"\"\"\n    recent_wick_low = df['low'].iloc[-1] < df['swing_low'].dropna().iloc[-2] if len(df['swing_low'].dropna()) > 1 else False",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "check_liquidity_sweep",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def check_liquidity_sweep(df):\n    \"\"\"Liquidity internal/external (wick sweeping highs/lows)\"\"\"\n    recent_wick_low = df['low'].iloc[-1] < df['swing_low'].dropna().iloc[-2] if len(df['swing_low'].dropna()) > 1 else False\n    recent_wick_high = df['high'].iloc[-1] > df['swing_high'].dropna().iloc[-2] if len(df['swing_high'].dropna()) > 1 else False\n    return recent_wick_low or recent_wick_high  # Sweep detected\ndef check_swing_non_recupere(df, direction):\n    \"\"\"Swing low/high non récupéré\"\"\"\n    if direction == 'demand':\n        return df['low'].iloc[-1] > df['swing_low'].dropna().iloc[-2] if len(df['swing_low'].dropna()) > 1 else False\n    else:",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "check_swing_non_recupere",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def check_swing_non_recupere(df, direction):\n    \"\"\"Swing low/high non récupéré\"\"\"\n    if direction == 'demand':\n        return df['low'].iloc[-1] > df['swing_low'].dropna().iloc[-2] if len(df['swing_low'].dropna()) > 1 else False\n    else:\n        return df['high'].iloc[-1] < df['swing_high'].dropna().iloc[-2] if len(df['swing_high'].dropna()) > 1 else False\n    confirm_count = 0\n    conf_details = []\n    bos, bos_dir = check_bos(df)\n    if bos and ((direction == 'demand' and bos_dir == 'bullish') or (direction == 'supply' and bos_dir == 'bearish')):",
+        "peekOfCode": "def calculate_rsi(df, period):\n    \"\"\"Calcul RSI\"\"\"\n    delta = df['close'].diff()\n    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()\n    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()\n    rs = gain / loss\n    return 100 - (100 / (1 + rs))\ndef get_trend_bias(symbol):\n    \"\"\"Bias H4 : EMA50 + pente\"\"\"\n    rates_h4 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H4, 0, EMA_PERIOD + 10)",
         "detail": "strategy",
         "documentation": {}
     },
@@ -1489,16 +1262,25 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_trend_bias():\n    \"\"\"Analyse de la tendance actuelle sur H4 (demande explicite)\"\"\"\n    timeframe_h4 = mt5.TIMEFRAME_H4\n    rates_h4 = mt5.copy_rates_from_pos(SYMBOL, timeframe_h4, 0, 100)\n    if rates_h4 is None or len(rates_h4) < 50:\n        logging.warning(\"Pas assez de données H4 pour trend bias\")\n        return 'neutral'\n    df_h4 = pd.DataFrame(rates_h4)\n    df_h4 = find_swings(df_h4)\n    bos, bos_dir = check_bos(df_h4)",
+        "peekOfCode": "def get_trend_bias(symbol):\n    \"\"\"Bias H4 : EMA50 + pente\"\"\"\n    rates_h4 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H4, 0, EMA_PERIOD + 10)\n    if rates_h4 is None or len(rates_h4) < EMA_PERIOD + 1:\n        return \"neutral\"\n    df_h4 = pd.DataFrame(rates_h4)\n    ema = df_h4['close'].ewm(span=EMA_PERIOD, adjust=False).mean()\n    atr_h4 = calculate_atr(df_h4, ATR_PERIOD).iloc[-1]\n    current_price = df_h4['close'].iloc[-1]\n    ema_current = ema.iloc[-1]",
         "detail": "strategy",
         "documentation": {}
     },
     {
-        "label": "get_confirmations",
+        "label": "find_pullback_zone",
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_confirmations(df, atr, direction):\n    conf_count = 0\n    details = []\n    if 'detect_fvg' in globals() and check_fvg(df, atr):\n        conf_count += 1\n        details.append(\"FVG\")\n    bos, _ = check_bos(df)\n    if bos:\n        conf_count += 1\n        details.append(\"BOS\")",
+        "peekOfCode": "def find_pullback_zone(df, bias):\n    \"\"\"Zone S/D simplifiée : dernier swing comme support/resistance\"\"\"\n    df['swing_high'] = df['high'][(df['high'].shift(1) < df['high']) & (df['high'].shift(-1) < df['high'])]\n    df['swing_low'] = df['low'][(df['low'].shift(1) > df['low']) & (df['low'].shift(-1) > df['low'])]\n    if bias == \"bullish\":\n        zone_low = df['swing_low'].dropna().iloc[-1] if not df['swing_low'].dropna().empty else None\n        return zone_low, None  # Support pour pullback BUY\n    elif bias == \"bearish\":\n        zone_high = df['swing_high'].dropna().iloc[-1] if not df['swing_high'].dropna().empty else None\n        return None, zone_high  # Resistance pour pullback SELL",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "check_rejection_candle",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def check_rejection_candle(df, bias, zone_low, zone_high):\n    \"\"\"Confirmation : bougie rejet (mèche + close dans sens bias)\"\"\"\n    last_candle = df.iloc[-1]\n    if bias == \"bullish\" and zone_low:\n        if last_candle['low'] <= zone_low and last_candle['close'] > last_candle['open']:\n            return True\n    elif bias == \"bearish\" and zone_high:\n        if last_candle['high'] >= zone_high and last_candle['close'] < last_candle['open']:\n            return True\n    return False",
         "detail": "strategy",
         "documentation": {}
     },
@@ -1507,16 +1289,7 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def generate_signal(current_time):\n    current_hour_utc = current_time.hour\n    if not (6 <= current_hour_utc <= 17):\n        logging.info(f\"Hors session active ({current_hour_utc}h UTC) → Skip\")\n        return None\n    if not mt5.symbol_select(SYMBOL, True):\n        return None\n    tick = mt5.symbol_info_tick(SYMBOL)\n    if tick is None:\n        return None",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "is_reversal_signal",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def is_reversal_signal(df, position_type):\n    bos, bos_dir = check_bos(df)\n    if position_type == mt5.ORDER_TYPE_BUY and bos and bos_dir == 'bearish':\n        return True\n    if position_type == mt5.ORDER_TYPE_SELL and bos and bos_dir == 'bullish':\n        return True\n    return False",
+        "peekOfCode": "def generate_signal(symbol):\n    \"\"\"Génère signal pour un symbole\"\"\"\n    preset = get_preset(symbol)\n    volatility_low = preset[\"VOLATILITY_LOW\"]\n    volatility_high = preset[\"VOLATILITY_HIGH\"]\n    bias = get_trend_bias(symbol)\n    if bias == \"neutral\":\n        logging.debug(f\"{symbol} : Bias neutre → Skip\")\n        return None\n    rates_h1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H1, 0, ATR_WINDOW_AVG + 50)",
         "detail": "strategy",
         "documentation": {}
     },
@@ -1525,7 +1298,7 @@
         "kind": 2,
         "importPath": "trader",
         "description": "trader",
-        "peekOfCode": "def calculate_lot_size(sl_distance_points, account_balance):\n    symbol_info = mt5.symbol_info(SYMBOL)\n    point_value = symbol_info.point_value or 1.0\n    risk_amount = account_balance * RISK_PERCENT\n    lot_size = risk_amount / (sl_distance_points * point_value)\n    lot_size = max(round(lot_size, 2), 0.01)\n    return lot_size\ndef execute_trade(signal, sl=None, tp=None):\n    if not mt5.symbol_select(SYMBOL, True):\n        return",
+        "peekOfCode": "def calculate_lot_size(symbol, sl_distance_points, account_balance, risk_percent):\n    \"\"\"Calcul lot basé sur risque\"\"\"\n    symbol_info = mt5.symbol_info(symbol)\n    if not symbol_info or symbol_info.point == 0:\n        return 0.01\n    point_value = symbol_info.trade_contract_size * symbol_info.point\n    risk_amount = account_balance * risk_percent\n    lot_size = risk_amount / (sl_distance_points * point_value)\n    return max(round(lot_size, 2), 0.01)\ndef execute_trade(symbol, signal, sl, tp):",
         "detail": "trader",
         "documentation": {}
     },
@@ -1534,7 +1307,7 @@
         "kind": 2,
         "importPath": "trader",
         "description": "trader",
-        "peekOfCode": "def execute_trade(signal, sl=None, tp=None):\n    if not mt5.symbol_select(SYMBOL, True):\n        return\n    tick = mt5.symbol_info_tick(SYMBOL)\n    if tick is None:\n        return\n    price = tick.ask if signal == \"BUY\" else tick.bid\n    order_type = mt5.ORDER_TYPE_BUY if signal == \"BUY\" else mt5.ORDER_TYPE_SELL\n    # Use provided SL/TP\n    if sl is None or tp is None:",
+        "peekOfCode": "def execute_trade(symbol, signal, sl, tp):\n    \"\"\"Exécute trade si < max positions\"\"\"\n    positions = mt5.positions_get(symbol=symbol)\n    if positions and len(positions) >= MAX_POSITIONS_PER_SYMBOL:\n        logging.info(f\"{symbol} : Max positions atteint → Skip\")\n        return\n    tick = mt5.symbol_info_tick(symbol)\n    if not tick:\n        return\n    price = tick.ask if signal == \"BUY\" else tick.bid",
         "detail": "trader",
         "documentation": {}
     },
@@ -1543,7 +1316,7 @@
         "kind": 2,
         "importPath": "utils",
         "description": "utils",
-        "peekOfCode": "def setup_logging():\n    \"\"\"Configure les logs : fichier quotidien + console\"\"\"\n    if not os.path.exists(\"logs\"):\n        os.makedirs(\"logs\")\n    log_filename = f\"logs/bot_{datetime.now().strftime('%Y%m%d')}.log\"\n    logging.basicConfig(\n        level=logging.INFO,\n        format=\"%(asctime)s | %(levelname)s | %(message)s\",\n        handlers=[\n            logging.FileHandler(log_filename, encoding='utf-8'),",
+        "peekOfCode": "def setup_logging():\n    \"\"\"Configure logging : fichier quotidien + console\"\"\"\n    if not os.path.exists(\"logs\"):\n        os.makedirs(\"logs\")\n    log_filename = f\"logs/bot_{datetime.now().strftime('%Y%m%d')}.log\"\n    logging.basicConfig(\n        level=logging.INFO,\n        format=\"%(asctime)s | %(levelname)s | %(message)s\",\n        handlers=[\n            logging.StreamHandler(sys.stdout),",
         "detail": "utils",
         "documentation": {}
     },
@@ -1552,7 +1325,7 @@
         "kind": 2,
         "importPath": "utils",
         "description": "utils",
-        "peekOfCode": "def send_telegram_alert(message: str):\n    \"\"\"Envoie une alerte Telegram de manière synchrone\"\"\"\n    if not message or not message.strip():\n        import traceback\n        logging.warning(\"Tentative d'envoi Telegram avec message vide !\")\n        logging.warning(\"Stacktrace de l'appel:\\n\" + traceback.format_stack(limit=5))\n        return\n    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:\n        logging.warning(\"Config Telegram manquante – Alerte ignorée\")\n        return",
+        "peekOfCode": "def send_telegram_alert(message: str, force=False):\n    \"\"\"Envoie alerte Telegram seulement pour événements clés (launch, close bot, open/close position)\"\"\"\n    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:\n        logging.warning(\"Config Telegram manquante\")\n        return\n    try:\n        bot = Bot(token=TELEGRAM_TOKEN)\n        asyncio.run(bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message.strip(), parse_mode=\"HTML\"))\n    except Exception as e:\n        logging.error(f\"Échec Telegram : {e}\")",
         "detail": "utils",
         "documentation": {}
     }

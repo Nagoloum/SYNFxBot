@@ -1,51 +1,43 @@
-# main.py - Ajoutez cette ligne avec les autres imports
-import MetaTrader5 as mt5 
-# main.py - VERSION FINALE, CORRIGÉE ET AMÉLIORÉE
+# main.py - Point d'entrée bot multi-symboles
+import MetaTrader5 as mt5
 import time
 import logging
 from datetime import datetime, timezone
 
-# Imports corrigés
-from config import SYMBOL
+from config import SYMBOLS
 from connexion import connect_to_mt5, disconnect
 from strategy import generate_signal
 from trader import execute_trade
 from utils import setup_logging, send_telegram_alert
 from position_manager import manage_positions
+from database import init_db_connection  # Pour forcer init
 
-# Optionnel : Test MongoDB (décommentez si vous utilisez database.py)
-# from database import client as mongo_client
-
-# main.py - Updated hours to 6-17
-# ... (imports same)
 
 if __name__ == "__main__":
     setup_logging()
-    logging.info("=== BOT DE TRADING XAUUSD DÉMARRÉ ===\n")
-    send_telegram_alert("🚀 Bot de trading XAUUSD démarré !")
+    logging.info("=== BOT VOLATILITY INDICES DÉMARRÉ ===")
+    send_telegram_alert("🚀 Bot VOLATILITY démarré !", force=True)
 
     if not connect_to_mt5():
-        logging.critical("Échec connexion MT5 – Arrêt du bot")
-        exit()
+        logging.critical("Échec MT5 → Arrêt")
+        exit(1)
 
     try:
         while True:
             manage_positions()
 
-            current_time = datetime.now(timezone.utc)
-            signal_info = generate_signal(current_time)
-            if signal_info:
-                if isinstance(signal_info, tuple):
-                    signal, sl, tp = signal_info
-                    execute_trade(signal, sl, tp)  # Pass SL/TP to trader
-                else:
-                    execute_trade(signal_info)
+            for symbol in SYMBOLS:
+                if not mt5.symbol_select(symbol, True):
+                    continue
 
-            positions = mt5.positions_get(symbol=SYMBOL)
-            sleep_time = 30 if positions and len(positions) > 0 else 60
-            time.sleep(sleep_time)
+                signal_info = generate_signal(symbol)
+                if signal_info:
+                    signal, sl, tp = signal_info
+                    execute_trade(symbol, signal, sl, tp)
+
+            time.sleep(60)  # Check chaque minute
 
     except KeyboardInterrupt:
-        logging.info("=== DECONNEXION ===\n")
+        logging.info("Interruption manuelle")
     finally:
         disconnect()

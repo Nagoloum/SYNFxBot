@@ -1,48 +1,64 @@
-# config.py
-from dotenv import load_dotenv # pyright: ignore[reportMissingImports]
+# config.py - Configuration pour le bot multi-symboles Volatility Indices
+from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-# Compte de trading (inchangé)
+# Compte MT5
 ACCOUNT_NUMBER = int(os.getenv("ACCOUNT_NUMBER", "0"))
 PASSWORD = os.getenv("PASSWORD", "")
 SERVER = os.getenv("SERVER", "")
 
-# Params bot
-SYMBOL = "XAUUSD"
-TIMEFRAME = "H1"  # Main timeframe for zones
-TIMEFRAME_M15 = "M30"  # For refining zones
-VOLUME = 0.01  # Lot de base, ajusté dynamiquement
+# Symboles gérés (Volatility Indices - adapte aux noms exacts de ton broker)
+SYMBOLS = [
+    "Volatility 25 Index",  # Tranquille
+    "Volatility 50 Index",  # Tranquille
+    "Volatility 75 Index",  # Agressif
+    "Volatility 100 Index"  # Agressif
+]
 
-# Params stratégie - Removed EMA/RSI, added S/D params
-ATR_PERIOD = 14  # For management and volatility check
-RISK_PERCENT = 0.01  # 1% du solde par trade
-RR_RATIO = 2  # Risk:Reward initial 1:2
-MIN_RR = 1.2  # Minimum RR to take trade
-TRAILING_MULTIPLIER = 1.2  # Trailing = 1x ATR quand profit > 1x ATR
-MIN_CONFIRMATIONS = 2  # At least 2 confirmations for entry
-RANGE_THRESHOLD = 1.5  # ATR multiplier for detecting accumulation range (flat)
-FVG_THRESHOLD = 0.3  # ATR multiplier for FVG detection
-VOLATILITY_MIN = 0.4  # Min ATR ratio to avoid flat markets
+# Presets par type de symbole
+PRESETS = {
+    "tranquille": {  # Pour 25 et 50
+        "RISK_PERCENT": 0.005,  # 0.5% risque par trade
+        "TRAILING_MULTIPLIER": 1.5,
+        "VOLATILITY_LOW": 0.7,
+        "VOLATILITY_HIGH": 1.8
+    },
+    "agressif": {  # Pour 75 et 100
+        "RISK_PERCENT": 0.01,   # 1% risque par trade
+        "TRAILING_MULTIPLIER": 1.2,
+        "VOLATILITY_LOW": 0.6,
+        "VOLATILITY_HIGH": 2.0
+    }
+}
 
-NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")  # NewsAPI.org
-ALPHA_VANTAGE_KEY = os.getenv("ALPHA_VANTAGE_KEY", "")  # Alpha Vantage
-FRED_API_KEY = os.getenv("FRED_API_KEY", "")  # FRED
-FMP_API_KEY = os.getenv("FMP_API_KEY", "")  # FMP
-
-# Seuils pour bias
-BIAS_THRESHOLD = 3.0  # Sum scores >3 bullish, < -3 bearish
+# Params communs
+TIMEFRAME_H4 = "H4"  # Pour bias
+TIMEFRAME_H1 = "H1"  # Pour entrées
+ATR_PERIOD = 14
+EMA_PERIOD = 50  # Pour bias H4
+ATR_WINDOW_AVG = 100  # Pour filtre volatilité
+MIN_RR = 1.5
+SL_MULTIPLIER = 1.2  # 1-1.5x ATR
+TP_MULTIPLIER = 2.0  # RR 2
+BREAKEVEN_MULTIPLIER = 1.0
+PARTIAL_CLOSE_PERCENT = 0.5
+RSI_PERIOD = 14  # Pour confirmation optionnelle
+RSI_OVERBOUGHT = 60
+RSI_OVERSOLD = 40
+MAX_POSITIONS_PER_SYMBOL = 3
+DAILY_LOSS_LIMIT = -0.04  # -4% stop daily
 
 DEVIATION = 20
 MAGIC_NUMBER = 123456
 
-HIGH_IMPACT_PAUSE_MINUTES = 30
-
-BREAKEVEN_MULTIPLIER = 1  # Breakeven quand profit = 1x risque
-PARTIAL_CLOSE_PERCENT = 0.5  # Fermer 50% à breakeven
-
+# Telegram et MT5
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
-
 MT5_TERMINAL_PATH = os.getenv("MT5_TERMINAL_PATH", r"C:\Program Files\MetaTrader 5\terminal64.exe")
+
+# MongoDB
+MONGODB_URI = os.getenv("MONGODB_URI", "")
+DB_NAME = os.getenv("MONGODB_DB", "trading_bot")
+COLLECTION_NAME = os.getenv("MONGODB_COLLECTION", "trades")
