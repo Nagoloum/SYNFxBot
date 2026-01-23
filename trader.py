@@ -2,7 +2,7 @@
 import MetaTrader5 as mt5
 import logging
 
-from config import DEVIATION, MAGIC_NUMBER, SYMBOLS, MAX_POSITIONS_PER_SYMBOL
+from config import DEVIATION, MAGIC_NUMBER, SYMBOLS
 from strategy import get_preset
 from utils import send_telegram_alert
 from database import log_new_trade
@@ -21,12 +21,7 @@ def calculate_lot_size(symbol, sl_distance_points, account_balance, risk_percent
 
 
 def execute_trade(symbol, signal, sl, tp):
-    """Exécute trade si < max positions"""
-    positions = mt5.positions_get(symbol=symbol)
-    if positions and len(positions) >= MAX_POSITIONS_PER_SYMBOL:
-        logging.info(f"{symbol} : Max positions atteint → Skip")
-        return
-
+    """Exécute trade sans limite de positions"""  # MODIF: Suppression check max positions pour illimité
     tick = mt5.symbol_info_tick(symbol)
     if not tick:
         return

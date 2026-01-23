@@ -6,7 +6,7 @@ import logging
 from config import (
     TIMEFRAME_H4, TIMEFRAME_H1, ATR_PERIOD, EMA_PERIOD, ATR_WINDOW_AVG,
     MIN_RR, SL_MULTIPLIER, TP_MULTIPLIER, RSI_PERIOD, RSI_OVERBOUGHT, RSI_OVERSOLD,
-    PRESETS
+    PRESETS, EDGE_SCORE_MIN  # MODIF: Ajout EDGE_SCORE_MIN dans config (e.g., 0.6 pour seuil 60%)
 )
 
 
@@ -75,15 +75,47 @@ def find_pullback_zone(df, bias):
 
 
 def check_rejection_candle(df, bias, zone_low, zone_high):
-    """Confirmation : bougie rejet (mèche + close dans sens bias)"""
+    """Confirmation : bougie rejet (mèche + close dans sens bias) + pin bar/engulfing"""  # MODIF: Renforcement price action
     last_candle = df.iloc[-1]
+    prev_candle = df.iloc[-2]
+
+    # Base rejection
+    rejection = False
     if bias == "bullish" and zone_low:
         if last_candle['low'] <= zone_low and last_candle['close'] > last_candle['open']:
-            return True
+            rejection = True
     elif bias == "bearish" and zone_high:
         if last_candle['high'] >= zone_high and last_candle['close'] < last_candle['open']:
-            return True
-    return False
+            rejection = True
+
+    if not rejection:
+        return False
+
+    # Ajout pattern price action: pin bar (mèche > 2/3 body) ou engulfing
+    body = abs(last_candle['close'] - last_candle['open'])
+    wick_lower = last_candle['open'] - last_candle['low'] if last_candle['close'] > last_candle['open'] else last_candle['close'] - last_candle['low']
+    wick_upper = last_candle['high'] - last_candle['open'] if last_candle['close'] > last_candle['open'] else last_candle['high'] - last_candle['close']
+    
+    is_pin_bar = (wick_lower > 2 * body or wick_upper > 2 * body) and body > 0
+    
+    is_engulfing = (body > abs(prev_candle['close'] - prev_candle['open'])) and (
+        (bias == "bullish" and last_candle['close'] > prev_candle['high'] and last_candle['open'] < prev_candle['low']) or
+        (bias == "bearish" and last_candle['close'] < prev_candle['low'] and last_candle['open'] > prev_candle['high'])
+    )
+    
+    return is_pin_bar or is_engulfing
+
+
+def calculate_edge_score(df, atr, atr_avg, rsi, bias):  # MODIF: Nouveau pour edge
+    """Score edge simple (0-1) basé sur stats rapides: volatilité stable + RSI extrême + trend strength"""
+    vol_stable = 1 if atr_avg * 0.8 < atr < atr_avg * 1.2 else 0  # Volatilité dans bande moyenne
+    rsi_edge = 1 if (bias == "bullish" and rsi < 40) or (bias == "bearish" and rsi > 60) else 0  # Oversold/overbought plus agressif
+    trend_strength = (df['close'].iloc[-1] - df['close'].iloc[-10]) / atr if atr > 0 else 0  # Momentum récent > 1 ATR
+    trend_edge = 1 if abs(trend_strength) > 1 else 0
+    
+    score = (vol_stable + rsi_edge + trend_edge) / 3
+    logging.debug(f"Edge score: {score}")
+    return score
 
 
 def generate_signal(symbol):
@@ -126,6 +158,12 @@ def generate_signal(symbol):
         logging.debug(f"{symbol} : RSI non confirmant → Skip")
         return None
 
+    # MODIF: Filtre edge
+    edge_score = calculate_edge_score(df_h1, atr, atr_avg, rsi, bias)
+    if edge_score < EDGE_SCORE_MIN:
+        logging.debug(f"{symbol} : Edge score trop faible {edge_score} → Skip")
+        return None
+
     current_price = df_h1['close'].iloc[-1]
     if signal == "BUY":
         sl = zone_low - atr * SL_MULTIPLIER if zone_low else current_price - atr * SL_MULTIPLIER
@@ -139,5 +177,5 @@ def generate_signal(symbol):
         logging.debug(f"{symbol} : RR trop faible {rr} → Skip")
         return None
 
-    logging.info(f"{symbol} : Signal {signal} validé RR {rr}")
+    logging.info(f"{symbol} : Signal {signal} validé RR {rr} Edge {edge_score}")
     return signal, sl, tp

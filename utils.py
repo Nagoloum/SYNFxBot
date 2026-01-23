@@ -31,7 +31,7 @@ def setup_logging():
     # logging.info("Logging initialisé")
 
 
-def send_telegram_alert(message: str, force=False):
+def send_telegram_alert(message: str, force=True):
     """Envoie alerte Telegram seulement pour événements clés (launch, close bot, open/close position)"""
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
         logging.warning("Config Telegram manquante")

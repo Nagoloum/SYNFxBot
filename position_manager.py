@@ -3,8 +3,8 @@ import MetaTrader5 as mt5
 import logging
 import pandas as pd
 
-from config import ATR_PERIOD, BREAKEVEN_MULTIPLIER, PARTIAL_CLOSE_PERCENT, DAILY_LOSS_LIMIT, SYMBOLS
-from strategy import calculate_atr, get_preset
+from config import ATR_PERIOD, BREAKEVEN_MULTIPLIER, PARTIAL_CLOSE_PERCENT, DAILY_LOSS_LIMIT, SYMBOLS, DRAWDDOWN_MAX_PCT  # MODIF: Ajout DRAWDDOWN_MAX_PCT dans config (ajoute-le : e.g., DRAWDDOWN_MAX_PCT = -0.05)
+from strategy import calculate_atr, get_preset, check_rejection_candle  # MODIF: Import check_rejection_candle pour reversal
 from utils import send_telegram_alert
 from database import update_trade_on_close
 from datetime import datetime, timezone, timedelta
@@ -35,9 +35,29 @@ def check_loss_limits():
     return True
 
 
+def check_global_drawdown():
+    """Check drawdown flottant global"""  # MODIF: Nouveau pour gestion risque
+    account = mt5.account_info()
+    if not account:
+        return True
+    floating_pnl = account.profit
+    equity = account.equity
+    drawdown_pct = floating_pnl / account.balance if account.balance > 0 else 0
+    if drawdown_pct < DRAWDDOWN_MAX_PCT:
+        logging.warning(f"Drawdown max atteint: {drawdown_pct*100:.2f}% → Fermeture toutes positions")
+        return False
+    return True
+
+
 def manage_positions():
     """Gère positions pour tous symboles"""
-    if not check_loss_limits():
+    if not check_loss_limits() or not check_global_drawdown():  # MODIF: Ajout check drawdown
+        # Fermer toutes positions si limite atteinte
+        for symbol in SYMBOLS:
+            positions = mt5.positions_get(symbol=symbol)
+            if positions:
+                for pos in positions:
+                    close_position(symbol, pos, reason="drawdown_limit")
         return
 
     for symbol in SYMBOLS:
@@ -104,7 +124,11 @@ def manage_positions():
                     if result_trailing.retcode == mt5.TRADE_RETCODE_DONE:
                         logging.info(f"{symbol} : Trailing SL updated {ticket}")
 
-            # Close si reversal ou manual (mais pas de reversal dans nouvelle strat)
+            # MODIF: Close sur reversal price action
+            bias_opposite = "bearish" if pos_type == "BUY" else "bullish"
+            zone_low, zone_high = None, None  # Simplifié, utilise dernier swing
+            if check_rejection_candle(df, bias_opposite, zone_low, zone_high):  # Reuse fonction, mais pour opposite
+                close_position(symbol, pos, reason="reversal_price_action")
 
 
 def close_position(symbol, pos, reason="manual"):
@@ -131,8 +155,8 @@ def close_position(symbol, pos, reason="manual"):
     result = mt5.order_send(request)
     if result.retcode == mt5.TRADE_RETCODE_DONE:
         profit = result.profit  # Approx, mieux utiliser history
-        logging.info(f"{symbol} : Position fermée {pos.ticket} profit {profit}")
-        send_telegram_alert(f"❌ Position fermée {symbol} ticket {pos.ticket} profit {profit}", force=True)
+        logging.info(f"{symbol} : Position fermée {pos.ticket} profit {profit} raison {reason}")
+        send_telegram_alert(f"❌ Position fermée {symbol} ticket {pos.ticket} profit {profit} ({reason})", force=True)
         outcome = "win" if profit > 0 else "loss" if profit < 0 else "breakeven"
         update_trade_on_close(pos.ticket, profit, outcome)
     else:

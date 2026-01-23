@@ -1,118 +1,88 @@
-# app.py - Dashboard Streamlit multi-symboles avec rapport stratégie
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 import pandas as pd
 import plotly.express as px
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
 
 load_dotenv()
 
-st.set_page_config(page_title="Volatility Bot Dashboard", page_icon="📈", layout="wide")
+st.set_page_config(page_title="V100 Bot Monitor", page_icon="📉", layout="wide")
 
+# --- CONNEXION DB ---
 @st.cache_resource(ttl=60)
 def get_db_collection():
     uri = os.getenv("MONGODB_URI")
-    if not uri:
-        st.error("MONGODB_URI manquant")
-        st.stop()
-
+    # Configuration en dur pour correspondre à ta base SYNTHBOT
     client = MongoClient(uri)
-    db = client[os.getenv("MONGODB_DB", "trading_bot")]
-    return db[os.getenv("MONGODB_COLLECTION", "trades")]
-
+    db = client["SYNTHBOT"]
+    return db["trades_v100"]
 
 collection = get_db_collection()
 
-
-@st.cache_data(ttl=30)
+# --- CHARGEMENT ---
+@st.cache_data(ttl=10)
 def load_trades():
-    trades = list(collection.find().sort("timestamp_open", -1))
+    trades = list(collection.find().sort("open_time", -1))
     if not trades:
         return pd.DataFrame()
-
     df = pd.DataFrame(trades)
-    df["timestamp_open"] = pd.to_datetime(df["timestamp_open"])
-    if "timestamp_close" in df.columns:
-        df["timestamp_close"] = pd.to_datetime(df["timestamp_close"])
+    
+    # Conversion dates et types
+    if "open_time" in df.columns:
+        df["open_time"] = pd.to_datetime(df["open_time"])
+    if "close_time" in df.columns:
+        df["close_time"] = pd.to_datetime(df["close_time"])
+    if "profit" in df.columns:
+        df["profit"] = pd.to_numeric(df["profit"]).fillna(0.0)
     return df
 
+# Rafraîchissement automatique toutes les 30 sec
+st_autorefresh(interval=30000, key="data_update")
 
 df = load_trades()
 
-# Sidebar
-with st.sidebar:
-    st.title("Volatility Bot")
-    st.caption("Bot trend-following sur Volatility Indices")
-    selected_symbol = st.selectbox("Marché", ["Tous"] + sorted(df['symbol'].unique()) if not df.empty else ["Tous"])
-
-    if not df.empty:
-        total_trades = len(df) if selected_symbol == "Tous" else len(df[df['symbol'] == selected_symbol])
-        st.metric("Total Trades", total_trades)
-        total_profit = df["profit"].sum() if selected_symbol == "Tous" else df[df['symbol'] == selected_symbol]["profit"].sum()
-        st.metric("Profit Total", f"{total_profit:.2f} USD")
-
-    st.caption(f"Mise à jour : {datetime.now().strftime('%H:%M:%S')}")
-    if st.button("Rafraîchir"):
-        st.rerun()
-
-st_autorefresh(interval=300000)  # 5 min
-
-# Titre
-st.title("Dashboard Volatility Bot")
+st.title("📈 Dashboard Volatility 100")
 
 if df.empty:
-    st.warning("Aucun trade")
+    st.warning("⚠️ Aucune donnée trouvée dans SYNTHBOT.trades_v100")
     st.stop()
 
-# Filtre df par symbole
-if selected_symbol != "Tous":
-    df = df[df['symbol'] == selected_symbol]
-
-# Stats globales
-st.header("Stats Globales")
+# --- INDICATEURS ---
 col1, col2, col3, col4 = st.columns(4)
-wins = len(df[df["result"] == "win"])
-win_rate = wins / len(df) * 100 if len(df) > 0 else 0
-total_profit = df["profit"].sum()
-avg_profit = df["profit"].mean() if len(df) > 0 else 0
+total_trades = len(df)
+wins = len(df[df["profit"] > 0])
+win_rate = (wins / total_trades * 100) if total_trades > 0 else 0
+net_profit = df["profit"].sum()
+open_pos = len(df[df["status"] == "OPEN"])
 
-col1.metric("Trades", len(df))
+col1.metric("Total Trades", total_trades)
 col2.metric("Win Rate", f"{win_rate:.1f}%")
-col3.metric("Profit Net", f"{total_profit:+.2f} USD")
-col4.metric("Profit Moyen", f"{avg_profit:+.2f} USD")
+col3.metric("Profit Net", f"{net_profit:.2f} USD")
+col4.metric("Positions Ouvertes", open_pos)
 
-# Equity curve
-st.header("Évolution Capital")
-df_sorted = df.sort_values("timestamp_open")
+# --- GRAPHIQUE ---
+st.subheader("Performance Cumulée")
+df_sorted = df.sort_values("open_time")
 df_sorted["cum_profit"] = df_sorted["profit"].cumsum()
-fig = px.line(df_sorted, x="timestamp_open", y="cum_profit", title="Profit Cumulé")
+fig = px.area(df_sorted, x="open_time", y="cum_profit", 
+              labels={"cum_profit": "Profit (USD)", "open_time": "Date"},
+              color_discrete_sequence=["#00CC96"])
 st.plotly_chart(fig, use_container_width=True)
 
-# Derniers trades
-st.header("Derniers Trades")
-display_df = df[["timestamp_open", "symbol", "signal", "entry_price", "sl", "tp", "volume", "result", "profit"]].head(20)
-st.dataframe(display_df, use_container_width=True)
+# --- HISTORIQUE ---
+st.subheader("Dernières Transactions")
+# On filtre les colonnes pour un affichage propre
+display_cols = ["ticket", "type", "open_price", "close_price", "profit", "status", "open_time"]
+available = [c for c in display_cols if c in df.columns]
 
-# Performance semaine
-st.header("Perf Semaine")
-one_week_ago = datetime.now() - timedelta(days=7)
-df_week = df[df["timestamp_open"] >= one_week_ago]
-if not df_week.empty:
-    week_profit = df_week["profit"].sum()
-    st.metric("Profit Semaine", f"{week_profit:+.2f} USD")
+def style_profit(val):
+    color = 'red' if val < 0 else 'green'
+    return f'color: {color}'
 
-# Rapport stratégie
-st.header("Rapport Stratégie")
-st.markdown("""
-**Stratégie :** Trend-following avec filtre volatilité.
-- **Marchés :** Volatility 25, 50, 75, 100.
-- **Bias H4 :** EMA50 + pente pour haussier/baissier/neutre.
-- **Filtre Volatilité H1 :** ATR vs avg, skip si trop calme/violent.
-- **Entrée :** Pullback sur zone S/D avec rejet + RSI.
-- **Gestion :** SL 1.2x ATR, TP 2x, breakeven/partial/trailing.
-- **Risque :** 0.5-1% par trade, max 3 pos/symbol, stop -4% daily.
-- **Stats Globales :** Voir ci-dessus.
-""")
+st.dataframe(
+    df[available].style.applymap(style_profit, subset=['profit'] if 'profit' in df.columns else []),
+    use_container_width=True
+)
