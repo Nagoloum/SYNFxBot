@@ -1,121 +1,120 @@
 import MetaTrader5 as mt5
 import time
 import logging
-from config import SYMBOL, LOT_SIZE, MAGIC_NUMBER
+from datetime import datetime
+from config import SYMBOL, LOT_SIZE
 from utils import setup_logging, send_telegram_alert
-from database import init_db, save_open, save_close 
+from database import init_db
 from connexion import connect_to_mt5, disconnect
+from strategy import (close_partial_v100, get_smart_signal,
+    get_smart_signal, handle_trade_closure, is_volatility_good, move_sl_to_be, open_trade_v100)
 
-# --- CONFIGURATION SÉCURITÉ ---
-MAX_ALLOWED_SPREAD = 0.60  # Ne pas ouvrir si le spread est trop élevé
+def monitor_active_trade(ticket, lot, signal_data):
+    """
+    Surveille la position ouverte en temps réel pour gérer :
+    1. La clôture partielle (50% du volume)
+    2. Le passage en Break-Even (sécurisation du SL)
+    3. La détection de clôture finale (SL ou TP touché)
+    """
+    half_done = False
+    print(f"👀 Surveillance active du ticket {ticket} lancée...")
 
-def get_filling_mode():
-    """Détermine le mode de remplissage supporté"""
-    symbol_info = mt5.symbol_info(SYMBOL)
-    if not symbol_info: return 1
-    filling_mode = symbol_info.filling_mode
-    if filling_mode & 1: return mt5.ORDER_FILLING_FOK
-    elif filling_mode & 2: return mt5.ORDER_FILLING_IOC
-    return mt5.ORDER_FILLING_FOK
-
-def open_trade_v100():
-    """Ouvre une position BUY avec vérification du spread"""
-    mt5.symbol_select(SYMBOL, True)
-    tick = mt5.symbol_info_tick(SYMBOL)
-    if tick is None:
-        logging.error("Prix indisponible")
-        return None
-
-    # Vérification du spread (Ask - Bid)
-    spread = tick.ask - tick.bid
-    if spread > MAX_ALLOWED_SPREAD:
-        logging.warning(f"⚠️ Spread trop élevé : {spread:.2f}. Entrée annulée.")
-        return None
-
-    vol = float(LOT_SIZE)
-    request = {
-        "action": mt5.TRADE_ACTION_DEAL,
-        "symbol": SYMBOL,
-        "volume": vol,
-        "type": mt5.ORDER_TYPE_BUY,
-        "price": tick.ask,
-        "magic": MAGIC_NUMBER,
-        "comment": "Bot 1min V100",
-        "type_filling": get_filling_mode(),
-        "type_time": mt5.ORDER_TIME_GTC,
-    }
-    
-    result = mt5.order_send(request)
-    if result and result.retcode == mt5.TRADE_RETCODE_DONE:
-        msg = f"🚀 POSITION OUVERTE | Ticket: {result.order} | Prix: {result.price} | Spread: {spread:.2f}"
-        logging.info(msg)
-        send_telegram_alert(msg, force=True)
-        # Enregistrement avec les noms de colonnes synchronisés
-        save_open(result.order, "BUY", result.price)
-        return result.order
-    else:
-        err = result.comment if result else mt5.last_error()
-        logging.error(f"❌ Erreur Ouverture : {err}")
-        return None
-
-def close_trade_v100(ticket):
-    """Ferme la position et calcule le profit final"""
-    positions = mt5.positions_get(ticket=ticket)
-    if not positions: return
-
-    pos = positions[0]
-    tick = mt5.symbol_info_tick(SYMBOL)
-    # Pour fermer un BUY, on vend au prix BID
-    price_close = tick.bid 
-    
-    request = {
-        "action": mt5.TRADE_ACTION_DEAL,
-        "symbol": SYMBOL,
-        "volume": pos.volume,
-        "type": mt5.ORDER_TYPE_SELL,
-        "position": ticket,
-        "price": price_close,
-        "magic": MAGIC_NUMBER,
-        "type_filling": get_filling_mode(),
-        "type_time": mt5.ORDER_TIME_GTC,
-    }
-    
-    result = mt5.order_send(request)
-    if result and result.retcode == mt5.TRADE_RETCODE_DONE:
-        time.sleep(1) # Attente sync historique
+    while True:
+        # Récupération de l'état de la position
+        positions = mt5.positions_get(ticket=ticket)
         
-        # FORMULE DU PROFIT : (Prix Fermeture - Prix Ouverture) * Volume
-        # Le spread est inclus car on ouvre au Ask et ferme au Bid
-        history = mt5.history_deals_get(ticket=result.order)
-        if history:
-            real_profit = history[0].profit
-        else:
-            real_profit = (price_close - pos.price_open) * pos.volume
+        # Si la position n'existe plus (fermée par SL, TP ou manuellement)
+        if not positions:
+            handle_trade_closure(ticket, lot, "SL/TP SERVEUR")
+            break
+        
+        pos = positions[0]
+        current_price = pos.price_current
+        tp_target = pos.tp
+        entry_price = pos.price_open
+        
+        # LOGIQUE DE GESTION PARTIELLE ET BREAK-EVEN
+        if not half_done:
+            # Calcul de la progression : On vise le niveau tp_half défini par la stratégie
+            target_reached = False
+            if pos.type == mt5.ORDER_TYPE_BUY:
+                target_reached = current_price >= signal_data['tp_half']
+            elif pos.type == mt5.ORDER_TYPE_SELL:
+                target_reached = current_price <= signal_data['tp_half']
             
-        msg = f"✅ POSITION FERMÉE | Ticket: {ticket} | Profit: {real_profit:.2f} USD"
-        logging.info(msg)
-        send_telegram_alert(msg, force=True)
-        save_close(ticket, real_profit, price_close)
+            if target_reached:
+                print(f"🎯 Objectif partiel atteint pour {ticket}. Exécution de la gestion de risque...")
+                
+                # 1. Fermeture de 50% du lot
+                if close_partial_v100(ticket, pos.volume / 2):
+                    # 2. Déplacement du SL au prix d'entrée
+                    if move_sl_to_be(ticket):
+                        half_done = True
+                        msg_be = f"🛡️ SÉCURITÉ : Partiel encaissé et Break-Even activé pour le ticket {ticket}"
+                        print(msg_be)
+                        send_telegram_alert(msg_be)
+
+        # Petite pause pour ne pas saturer le processeur
+        time.sleep(1)
 
 if __name__ == "__main__":
+    # Initialisation
     setup_logging()
     init_db() 
+    
     if connect_to_mt5():
-        logging.info(f"=== BOT V100 LANCÉ | LOT: {LOT_SIZE} ===")
+        print(f"🤖 BOT DE TRADING {SYMBOL} DÉMARRÉ ")
+        
+        last_notif_time = 0
+        
         try:
             while True:
+                
+                # Vérification de la connexion terminal
                 if not mt5.terminal_info().connected:
+                    print("⚠️ Connexion MT5 perdue, reconnexion...")
                     connect_to_mt5()
+                    time.sleep(5)
                     continue
                 
-                ticket = open_trade_v100()
-                if ticket:
-                    logging.info("Position ouverte... attente de 60s")
-                    time.sleep(60)
-                    close_trade_v100(ticket)
+                # Vérification des heures de trading
+                vol_ok, vol_msg = is_volatility_good()
                 
-                time.sleep(2) # Pause sécurité entre cycles
+                if not vol_ok:
+                    if time.time() - last_notif_time > 3600:
+                        print(f"⚠️ {vol_msg}")
+                        send_telegram_alert(f"⚠️ {vol_msg}", force=True)
+                        last_notif_time = time.time()
+                    time.sleep(300)  # Attendre 5 minutes avant de revérifier
+                    continue
+
+                # Vérifier si une position du bot est déjà en cours sur le symbole
+                existing_positions = mt5.positions_get(symbol=SYMBOL)
+                
+                if not existing_positions:
+                    # Analyse du marché pour trouver un signal SMC + OTE + FVG
+                    signal = get_smart_signal()
+                    
+                    if signal:
+                        print(f"🔥 Signal détecté : {signal['reason']} sur {signal['tf']}")
+                        # On adapte le signal pour open_trade_v100
+                        # On ajoute des niveaux de secours si non fournis par la figure
+                        if 'sl' not in signal:
+                            signal['sl'] = mt5.symbol_info_tick(SYMBOL).ask - 15.0
+                            signal['tp'] = mt5.symbol_info_tick(SYMBOL).ask + 45.0
+                            signal['tp_half'] = mt5.symbol_info_tick(SYMBOL).ask + 20.0
+                            
+                        ticket, lot = open_trade_v100(signal)
+                        if ticket:
+                            monitor_active_trade(ticket, lot, signal)
+                
+                # Fréquence de scan du marché (toutes le 5 secondes)
+                time.sleep(5)
+
         except KeyboardInterrupt:
-            logging.info("Arrêt bot")
+            print("🛑 Arrêt du bot par l'utilisateur.")
+            if existing_positions:
+                for pos in existing_positions:
+                    handle_trade_closure(pos.ticket, pos.volume, "ARRÊT BOT")
         finally:
             disconnect()

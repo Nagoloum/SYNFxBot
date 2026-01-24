@@ -17,7 +17,7 @@ def connect_to_mt5(max_retries=3, delay=5):
                 mt5.shutdown()
                 time.sleep(1)
 
-            logging.info(f"Tentative connexion {attempt}/{max_retries}")
+            # logging.info(f"Tentative connexion {attempt}/{max_retries}")
             if not mt5.initialize(path=terminal_path):
                 error = mt5.last_error()
                 logging.error(f"Init MT5 échoué : {error}")

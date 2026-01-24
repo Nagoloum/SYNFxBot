@@ -1,181 +1,430 @@
-# strategy.py - Nouvelle stratégie trend-following avec filtres
-import MetaTrader5 as mt5
+import time
 import pandas as pd
+import pandas_ta as ta
+import MetaTrader5 as mt5
+import numpy as np
 import logging
+from datetime import datetime
 
-from config import (
-    TIMEFRAME_H4, TIMEFRAME_H1, ATR_PERIOD, EMA_PERIOD, ATR_WINDOW_AVG,
-    MIN_RR, SL_MULTIPLIER, TP_MULTIPLIER, RSI_PERIOD, RSI_OVERBOUGHT, RSI_OVERSOLD,
-    PRESETS, EDGE_SCORE_MIN  # MODIF: Ajout EDGE_SCORE_MIN dans config (e.g., 0.6 pour seuil 60%)
-)
+from database import save_open, collection
+from utils import send_telegram_alert
+from config import SYMBOL, MAGIC_NUMBER, START_HOUR, END_HOUR
+
+# ─── PARAMÈTRES TECHNIQUES ────────────────────────────────────────────────
+MIN_LOT_V100     = 1.0
+EMA_PERIOD_H4    = 50
+MAX_ALLOWED_SPREAD = 0.60
 
 
-def get_preset(symbol):
-    """Retourne preset basé sur symbole"""
-    if "25" in symbol or "50" in symbol:
-        return PRESETS["tranquille"]
+def get_price_data(symbol, timeframe, n_bars=300):
+    """Récupère les données OHLCV"""
+    rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)
+    if rates is None or len(rates) == 0:
+        return pd.DataFrame()
+    df = pd.DataFrame(rates)
+    df['time'] = pd.to_datetime(df['time'], unit='s')
+    return df
+
+
+def get_zigzag(df, depth=10, zz_column_name='zz'):
+    zz_result = ta.zigzag(high=df['high'], low=df['low'], depth=depth)
+    
+    if isinstance(zz_result, pd.Series):
+        df[zz_column_name] = zz_result
+    elif isinstance(zz_result, pd.DataFrame):
+        # Prendre la colonne qui contient le plus de valeurs non-null
+        best_col = zz_result.notna().sum().idxmax()
+        df[zz_column_name] = zz_result[best_col]
+        # logging.info(f"Colonne zigzag sélectionnée automatiquement : {best_col}")
     else:
-        return PRESETS["agressif"]
+        raise ValueError("ta.zigzag a retourné un type inattendu")
+    
+    return df.dropna(subset=[zz_column_name])
+
+def detect_advanced_patterns(df):
+    """Détection simple W / M via ZigZag"""
+    peaks = get_zigzag(df)
+    if len(peaks) < 5:
+        return None
+
+    p = peaks['zz'].values
+    # Double Bottom (W)
+    if p[-1] > p[-2] and abs(p[-2] - p[-4]) < (p[-1] * 0.002) and p[-3] > p[-2]:
+        return "DOUBLE_BOTTOM_W"
+    # Double Top (M)
+    if p[-1] < p[-2] and abs(p[-2] - p[-4]) < (p[-1] * 0.002) and p[-3] < p[-2]:
+        return "DOUBLE_TOP_M"
+    return None
 
 
-def calculate_atr(df, period):
-    """Calcul ATR"""
-    high_low = df['high'] - df['low']
-    high_close = abs(df['high'] - df['close'].shift())
-    low_close = abs(df['low'] - df['close'].shift())
-    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
-    return tr.rolling(window=period).mean()
+def analyze_market_structure(df):
+    """État du marché : tendance ou range (M30 ou H1 recommandé)"""
+    if len(df) < 50:
+        return "INSUFFISANT", 0, 0
+
+    adx = ta.adx(df['high'], df['low'], df['close'], length=14)
+    current_adx = adx['ADX_14'].iloc[-1]
+
+    resistance = df['high'].rolling(window=20).max().iloc[-1]
+    support    = df['low'].rolling(window=20).min().iloc[-1]
+
+    if current_adx < 22:
+        return "ACCUMULATION (RANGE)", support, resistance
+
+    ema = ta.ema(df['close'], length=50).iloc[-1]
+    status = "HAUSSIÈRE" if df['close'].iloc[-1] > ema else "BAISSIÈRE"
+    return status, support, resistance
 
 
-def calculate_rsi(df, period):
-    """Calcul RSI"""
-    delta = df['close'].diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-    rs = gain / loss
-    return 100 - (100 / (1 + rs))
+def get_market_trend_h4():
+    """Filtre de tendance haute timeframe (H4)"""
+    df = get_price_data(SYMBOL, mt5.TIMEFRAME_H4, 100)
+    if df.empty:
+        return "NEUTRAL"
+    df['ema_50'] = ta.ema(df['close'], length=EMA_PERIOD_H4)
+    return "UP" if df['close'].iloc[-1] > df['ema_50'].iloc[-1] else "DOWN"
 
 
-def get_trend_bias(symbol):
-    """Bias H4 : EMA50 + pente"""
-    rates_h4 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H4, 0, EMA_PERIOD + 10)
-    if rates_h4 is None or len(rates_h4) < EMA_PERIOD + 1:
-        return "neutral"
-
-    df_h4 = pd.DataFrame(rates_h4)
-    ema = df_h4['close'].ewm(span=EMA_PERIOD, adjust=False).mean()
-    atr_h4 = calculate_atr(df_h4, ATR_PERIOD).iloc[-1]
-
-    current_price = df_h4['close'].iloc[-1]
-    ema_current = ema.iloc[-1]
-    ema_prev = ema.iloc[-2]
-    pente_positive = ema_current > ema_prev
-
-    if current_price > ema_current + atr_h4:
-        return "neutral"  # Oscillation
-    if current_price > ema_current and pente_positive:
-        return "bullish"
-    elif current_price < ema_current and not pente_positive:
-        return "bearish"
-    return "neutral"
+def check_fvg(df):
+    """Fair Value Gap simple sur les 3 dernières bougies"""
+    if len(df) < 3:
+        return False, None
+    if df['high'].iloc[-3] < df['low'].iloc[-1]:
+        return True, "BULLISH"
+    if df['low'].iloc[-3] > df['high'].iloc[-1]:
+        return True, "BEARISH"
+    return False, None
 
 
-def find_pullback_zone(df, bias):
-    """Zone S/D simplifiée : dernier swing comme support/resistance"""
-    df['swing_high'] = df['high'][(df['high'].shift(1) < df['high']) & (df['high'].shift(-1) < df['high'])]
-    df['swing_low'] = df['low'][(df['low'].shift(1) > df['low']) & (df['low'].shift(-1) > df['low'])]
+def analyze_amd_priority(symbol):
+    """Priorise l'accumulation → manipulation sur les TF hautes"""
+    tfs = [
+        (mt5.TIMEFRAME_H4,  "H4"),
+        (mt5.TIMEFRAME_H1,  "H1"),
+        (mt5.TIMEFRAME_M30, "M30")
+    ]
 
-    if bias == "bullish":
-        zone_low = df['swing_low'].dropna().iloc[-1] if not df['swing_low'].dropna().empty else None
-        return zone_low, None  # Support pour pullback BUY
-    elif bias == "bearish":
-        zone_high = df['swing_high'].dropna().iloc[-1] if not df['swing_high'].dropna().empty else None
-        return None, zone_high  # Resistance pour pullback SELL
+    for tf_val, tf_name in tfs:
+        df = get_price_data(symbol, tf_val, 120)
+        if df.empty:
+            continue
+
+        # Bandes de Bollinger → bandwidth faible = compression / accumulation
+        bb = ta.bbands(df['close'], length=20, std=2)
+        if 'BBU_20_2.0' not in bb.columns:
+            continue
+
+        bandwidth = (bb['BBU_20_2.0'] - bb['BBL_20_2.0']) / bb['BBM_20_2.0']
+        avg_bandwidth = bandwidth.rolling(50).mean().iloc[-1]
+
+        if bandwidth.iloc[-1] < avg_bandwidth * 0.80:
+            # Range détecté → on cherche la manipulation (fakeout)
+            high_range = df['high'].tail(15).max()
+            low_range  = df['low'].tail(15).min()
+            current_price = mt5.symbol_info_tick(symbol).ask
+
+            if current_price < low_range - 0.1:   # fake breakdown → opportunité achat
+                return {
+                    "type": "BUY",
+                    "reason": f"AMD_MANIPULATION_{tf_name}",
+                    "tf": tf_name,
+                    "context": "Accumulation → Fake breakdown"
+                }
+            elif current_price > high_range + 0.1:  # fake breakout → opportunité vente
+                return {
+                    "type": "SELL",
+                    "reason": f"AMD_MANIPULATION_{tf_name}",
+                    "tf": tf_name,
+                    "context": "Accumulation → Fake breakout"
+                }
+    return None
+
+
+def get_smart_signal():
+    """
+    Stratégie principale – Ordre de priorité :
+      1. AMD Manipulation (H4 > H1 > M30)
+      2. Figures chartistes W/M sur M5
+      3. Rebond sur support dynamique M5
+      4. (optionnel) Structure + OTE + FVG alignés
+    """
+    # ── 1. Priorité AMD Manipulation ─────────────────────────────────────
+    amd_signal = analyze_amd_priority(SYMBOL)
+    if amd_signal:
+        logging.info(f"AMD PRIORITAIRE → {amd_signal['reason']}")
+        return amd_signal
+
+    # ── 2. Figures chartistes M5 ─────────────────────────────────────────
+    df_m5 = get_price_data(SYMBOL, mt5.TIMEFRAME_M5, 200)
+    if not df_m5.empty:
+        pattern = detect_advanced_patterns(df_m5)
+        if pattern:
+            bias = "BUY" if "BOTTOM" in pattern else "SELL"
+            return {
+                "type": bias,
+                "reason": pattern,
+                "tf": "M5"
+            }
+
+    # ── 3. Rebond support / résistance dynamique M5 ───────────────────────
+    if not df_m5.empty:
+        current_p = mt5.symbol_info_tick(SYMBOL).ask
+        dynamic_support = df_m5['low'].rolling(50).min().iloc[-1]
+        if current_p <= dynamic_support * 1.0005:  # petite marge
+            return {
+                "type": "BUY",
+                "reason": "DYNAMIC_SUPPORT_M5",
+                "tf": "M5"
+            }
+
+    # ── 4. Stratégie classique Structure + OTE + FVG (si tu veux la garder) ──
+    trend_h4 = get_market_trend_h4()
+    df_m30 = get_price_data(SYMBOL, mt5.TIMEFRAME_M30, 300)
+    if df_m30.empty:
+        return None
+
+    status, sup, res = analyze_market_structure(df_m30)
+    has_fvg, fvg_type = check_fvg(df_m30)
+
+    if status == "ACCUMULATION (RANGE)":
+        return None
+
+    current_p = mt5.symbol_info_tick(SYMBOL).ask
+    recent_low  = df_m30['low'].tail(40).min()
+    recent_high = df_m30['high'].tail(40).max()
+    range_val   = recent_high - recent_low
+
+    if range_val < 0.0001:  # protection division par zéro
+        return None
+
+    ote_buy  = recent_high - range_val * 0.705
+    ote_sell = recent_low  + range_val * 0.705
+
+    if (trend_h4 == "UP" and status == "HAUSSIÈRE" and
+        current_p <= ote_buy + 0.0005 and has_fvg and fvg_type == "BULLISH"):
+        return {
+            "type": "BUY",
+            "reason": "OTE+FVG_BULL_H4",
+            "tf": "M30",
+            "sl": recent_low - 0.0008 * 10,   # 8 pips sous swing low
+            "tp": recent_high + 0.0010 * 10,
+            "tp_half": recent_high
+        }
+
+    if (trend_h4 == "DOWN" and status == "BAISSIÈRE" and
+        current_p >= ote_sell - 0.0005 and has_fvg and fvg_type == "BEARISH"):
+        return {
+            "type": "SELL",
+            "reason": "OTE+FVG_BEAR_H4",
+            "tf": "M30",
+            "sl": recent_high + 0.0008 * 10,
+            "tp": recent_low - 0.0010 * 10,
+            "tp_half": recent_low
+        }
+
+    return None
+
+def find_swings(df):
+    """Identifie les fractales pour Fibonacci"""
+    df['high_swing'] = df['high'][(df['high'] == df['high'].rolling(11, center=True).max())]
+    df['low_swing'] = df['low'][(df['low'] == df['low'].rolling(11, center=True).min())]
+    
+    try:
+        last_low = df['low_swing'].dropna().iloc[-1]
+        last_high = df['high_swing'].dropna().iloc[-1]
+        return last_low, last_high
+    except IndexError:
+        return None, None
+
+
+def open_trade_v100(signal):
+    """Exécute l'ordre et notifie la console/bot avec détails lot et prix"""
+    tick = mt5.symbol_info_tick(SYMBOL)
+    lot = float(max(MIN_LOT_V100, 1.0)) # Sécurité lot minimum
+    
+    price = tick.ask if signal['type'] == "BUY" else tick.bid
+    
+    request = {
+        "action": mt5.TRADE_ACTION_DEAL,
+        "symbol": SYMBOL,
+        "volume": lot,
+        "type": mt5.ORDER_TYPE_BUY if signal['type'] == "BUY" else mt5.ORDER_TYPE_SELL,
+        "price": price,
+        "sl": float(signal['sl']),
+        "tp": float(signal['tp']),
+        "magic": MAGIC_NUMBER,
+        "comment": "SMC_PRO_V100",
+        "type_filling": mt5.ORDER_FILLING_FOK,
+        "type_time": mt5.ORDER_TIME_GTC,
+    }
+
+    result = mt5.order_send(request)
+    if result.retcode == mt5.TRADE_RETCODE_DONE:
+        msg = (f"🚀 POSITION {signal['type']} | Lot: {lot}\n"
+               f"Entrée: {result.price:.2f}\nSL: {signal['sl']:.2f} | TP: {signal['tp']:.2f}")
+        print(f"\n--- EXECUTION ---\n{msg}\n-----------------\n")
+        send_telegram_alert(msg, force=True)
+        save_open(result.order, signal['type'], result.price)
+        return result.order, lot
+    else:
+        print(f"❌ Erreur ouverture : {result.comment}")
+        return None, 0
+
+def update_db_profit(ticket, profit, close_price, status="CLOSED"):
+    """Met à jour MongoDB en ajoutant le profit (gère partiels et BE)"""
+    collection.update_one(
+        {"ticket": ticket},
+        {"$inc": {"profit": float(profit)}, 
+         "$set": {"close_price": float(close_price), "status": status, "close_time": datetime.utcnow()}}
+    )
+
+def handle_trade_closure(ticket, lot, reason):
+    """Notification finale lors du SL ou TP avec profit réel BD"""
+    # Attendre la synchro historique
+    time.sleep(1)
+    history = mt5.history_deals_get(position=ticket)
+    if history:
+        total_profit = sum(deal.profit for deal in history)
+        msg = (f"🏁 TRADE TERMINE ({reason})\nTicket: {ticket} | Lot: {lot}\n"
+               f"Résultat Final: {total_profit:.2f} USD")
+        print(f"\n--- CLOTURE ---\n{msg}\n---------------\n")
+        send_telegram_alert(msg, force=True)
+
+def close_partial_v100(ticket, vol):
+    """Ferme 50% et notifie le retrait partiel"""
+    pos_list = mt5.positions_get(ticket=ticket)
+    if not pos_list: return False
+    
+    pos = pos_list[0]
+    tick = mt5.symbol_info_tick(SYMBOL)
+    
+    request = {
+        "action": mt5.TRADE_ACTION_DEAL,
+        "symbol": SYMBOL,
+        "volume": float(vol),
+        "type": mt5.ORDER_TYPE_SELL if pos.type == mt5.ORDER_TYPE_BUY else mt5.ORDER_TYPE_BUY,
+        "position": ticket,
+        "price": tick.bid if pos.type == mt5.ORDER_TYPE_BUY else tick.ask,
+        "magic": MAGIC_NUMBER,
+        "comment": "PARTIEL 50%",
+        "type_filling": mt5.ORDER_FILLING_FOK,
+    }
+    
+    result = mt5.order_send(request)
+    if result.retcode == mt5.TRADE_RETCODE_DONE:
+        time.sleep(0.5)
+        deal = mt5.history_deals_get(ticket=result.order)[0]
+        update_db_profit(ticket, deal.profit, result.price, status="PARTIAL_TAKEN")
+        msg = f"💰 PARTIEL ENCAISSÉ : +{deal.profit:.2f} USD pour le ticket {ticket}"
+        print(msg)
+        send_telegram_alert(msg)
+        return True
+    return False
+
+def move_sl_to_be(ticket):
+    """Déplace le SL au prix d'entrée (Break-Even)"""
+    pos_list = mt5.positions_get(ticket=ticket)
+    if not pos_list: return False
+    
+    pos = pos_list[0]
+    request = {
+        "action": mt5.TRADE_ACTION_SLTP,
+        "position": ticket,
+        "sl": pos.price_open,
+        "tp": pos.tp
+    }
+    result = mt5.order_send(request)
+    if result.retcode == mt5.TRADE_RETCODE_DONE:
+        msg = f"🛡️ BREAK-EVEN : SL sécurisé à {pos.price_open} pour {ticket}"
+        print(msg)
+        send_telegram_alert(msg)
+        return True
+    return False
+
+def is_volatility_good():
+    """Vérifie l'heure et la volatilité via l'ATR"""
+    now = datetime.utcnow().hour
+    
+    # 1. Vérification Horaire
+    if not (START_HOUR <= now < END_HOUR):
+        msg = f"⏳ Marché hors session : {now}h GMT. Bonne volatilité entre {START_HOUR}h et {END_HOUR}h GMT."
+        return False, msg
+
+    # 2. Vérification Technique (ATR)
+    df = get_price_data(SYMBOL, mt5.TIMEFRAME_M5, 50)
+    if df.empty: return False, "Données indisponibles"
+    
+    atr = ta.atr(df['high'], df['low'], df['close'], length=14)
+    current_atr = atr.iloc[-1]
+    avg_atr = atr.mean()
+
+    # Si la volatilité actuelle est 20% sous la moyenne, on évite
+    if current_atr < (avg_atr * 0.8):
+        msg = f"📉 Volatilité trop faible (ATR: {current_atr:.2f}). Le marché dort."
+        return False, msg
+
+    return True, "Volatilité OK"
+
+def detect_chart_patterns(df):
+    """Détecte les figures chartistes redoutables (W, M, ETE)"""
+    if len(df) < 20: return None
+    
+    last_prices = df['close'].values
+    highs = df['high'].values
+    lows = df['low'].values
+
+    # 1. Double Bas (W) / Double Sommet (M)
+    # On compare les derniers creux/sommets locaux
+    if lows[-1] > lows[-5] and abs(lows[-5] - lows[-10]) < (lows[-1] * 0.001):
+        return "DOUBLE_BOTTOM"
+    if highs[-1] < highs[-5] and abs(highs[-5] - highs[-10]) < (highs[-1] * 0.001):
+        return "DOUBLE_TOP"
+
+    # 2. Détection de Triangle (Compression de volatilité)
+    atr = ta.atr(df['high'], df['low'], df['close'], length=14).iloc[-1]
+    if atr < ta.atr(df['high'], df['low'], df['close'], length=14).mean() * 0.6:
+        return "TRIANGLE_COMPRESSION"
+
+    return None
+
+def analyze_amd_cycle(symbol, timeframe):
+    """Logique Accumulation - Manipulation - Distribution"""
+    df = get_price_data(symbol, timeframe, 100)
+    if df.empty: return None
+    
+    # 1. Accumulation : Range étroit et volume faible
+    std_dev = df['close'].tail(20).std()
+    avg_std = df['close'].rolling(50).std().mean()
+    
+    is_accumulating = std_dev < (avg_std * 0.7)
+    
+    if is_accumulating:
+        # On définit les bornes du range
+        high_range = df['high'].tail(20).max()
+        low_range = df['low'].tail(20).min()
+        
+        # 2. Manipulation : Le prix casse le range puis réintègre brutalement
+        current_price = mt5.symbol_info_tick(symbol).ask
+        
+        # Exemple Manipulation Haussière (on casse le bas pour acheter)
+        if current_price < low_range:
+            return {"phase": "MANIPULATION", "bias": "BUY", "level": low_range}
+            
+    return None
+
+def get_best_timeframe_amd():
+    """Cherche l'accumulation sur les TF les plus hautes en priorité"""
+    timeframes = [
+        (mt5.TIMEFRAME_H4, "H4"),
+        (mt5.TIMEFRAME_H1, "H1"),
+        (mt5.TIMEFRAME_M30, "M30")
+    ]
+    
+    for tf, name in timeframes:
+        amd_data = analyze_amd_cycle(SYMBOL, tf)
+        if amd_data:
+            print(f"💎 Accumulation majeure détectée sur {name}. Priorité AMD activée.")
+            return tf, amd_data
+            
     return None, None
 
-
-def check_rejection_candle(df, bias, zone_low, zone_high):
-    """Confirmation : bougie rejet (mèche + close dans sens bias) + pin bar/engulfing"""  # MODIF: Renforcement price action
-    last_candle = df.iloc[-1]
-    prev_candle = df.iloc[-2]
-
-    # Base rejection
-    rejection = False
-    if bias == "bullish" and zone_low:
-        if last_candle['low'] <= zone_low and last_candle['close'] > last_candle['open']:
-            rejection = True
-    elif bias == "bearish" and zone_high:
-        if last_candle['high'] >= zone_high and last_candle['close'] < last_candle['open']:
-            rejection = True
-
-    if not rejection:
-        return False
-
-    # Ajout pattern price action: pin bar (mèche > 2/3 body) ou engulfing
-    body = abs(last_candle['close'] - last_candle['open'])
-    wick_lower = last_candle['open'] - last_candle['low'] if last_candle['close'] > last_candle['open'] else last_candle['close'] - last_candle['low']
-    wick_upper = last_candle['high'] - last_candle['open'] if last_candle['close'] > last_candle['open'] else last_candle['high'] - last_candle['close']
-    
-    is_pin_bar = (wick_lower > 2 * body or wick_upper > 2 * body) and body > 0
-    
-    is_engulfing = (body > abs(prev_candle['close'] - prev_candle['open'])) and (
-        (bias == "bullish" and last_candle['close'] > prev_candle['high'] and last_candle['open'] < prev_candle['low']) or
-        (bias == "bearish" and last_candle['close'] < prev_candle['low'] and last_candle['open'] > prev_candle['high'])
-    )
-    
-    return is_pin_bar or is_engulfing
-
-
-def calculate_edge_score(df, atr, atr_avg, rsi, bias):  # MODIF: Nouveau pour edge
-    """Score edge simple (0-1) basé sur stats rapides: volatilité stable + RSI extrême + trend strength"""
-    vol_stable = 1 if atr_avg * 0.8 < atr < atr_avg * 1.2 else 0  # Volatilité dans bande moyenne
-    rsi_edge = 1 if (bias == "bullish" and rsi < 40) or (bias == "bearish" and rsi > 60) else 0  # Oversold/overbought plus agressif
-    trend_strength = (df['close'].iloc[-1] - df['close'].iloc[-10]) / atr if atr > 0 else 0  # Momentum récent > 1 ATR
-    trend_edge = 1 if abs(trend_strength) > 1 else 0
-    
-    score = (vol_stable + rsi_edge + trend_edge) / 3
-    logging.debug(f"Edge score: {score}")
-    return score
-
-
-def generate_signal(symbol):
-    """Génère signal pour un symbole"""
-    preset = get_preset(symbol)
-    volatility_low = preset["VOLATILITY_LOW"]
-    volatility_high = preset["VOLATILITY_HIGH"]
-
-    bias = get_trend_bias(symbol)
-    if bias == "neutral":
-        logging.debug(f"{symbol} : Bias neutre → Skip")
-        return None
-
-    rates_h1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H1, 0, ATR_WINDOW_AVG + 50)
-    if rates_h1 is None or len(rates_h1) < ATR_WINDOW_AVG + 1:
-        return None
-
-    df_h1 = pd.DataFrame(rates_h1)
-    atr = calculate_atr(df_h1, ATR_PERIOD).iloc[-1]
-    atr_avg = calculate_atr(df_h1, ATR_PERIOD).mean()
-
-    if atr < atr_avg * volatility_low or atr > atr_avg * volatility_high:
-        logging.debug(f"{symbol} : Volatilité hors limites → Skip")
-        return None
-
-    zone_low, zone_high = find_pullback_zone(df_h1, bias)
-    if not zone_low and not zone_high:
-        return None
-
-    if not check_rejection_candle(df_h1, bias, zone_low, zone_high):
-        logging.debug(f"{symbol} : Pas de bougie rejet → Skip")
-        return None
-
-    rsi = calculate_rsi(df_h1, RSI_PERIOD).iloc[-1]
-    if bias == "bullish" and rsi > RSI_OVERSOLD:
-        signal = "BUY"
-    elif bias == "bearish" and rsi < RSI_OVERBOUGHT:
-        signal = "SELL"
-    else:
-        logging.debug(f"{symbol} : RSI non confirmant → Skip")
-        return None
-
-    # MODIF: Filtre edge
-    edge_score = calculate_edge_score(df_h1, atr, atr_avg, rsi, bias)
-    if edge_score < EDGE_SCORE_MIN:
-        logging.debug(f"{symbol} : Edge score trop faible {edge_score} → Skip")
-        return None
-
-    current_price = df_h1['close'].iloc[-1]
-    if signal == "BUY":
-        sl = zone_low - atr * SL_MULTIPLIER if zone_low else current_price - atr * SL_MULTIPLIER
-        tp = current_price + atr * TP_MULTIPLIER
-    else:
-        sl = zone_high + atr * SL_MULTIPLIER if zone_high else current_price + atr * SL_MULTIPLIER
-        tp = current_price - atr * TP_MULTIPLIER
-
-    rr = abs(current_price - tp) / abs(current_price - sl) if abs(current_price - sl) > 0 else 0
-    if rr < MIN_RR:
-        logging.debug(f"{symbol} : RR trop faible {rr} → Skip")
-        return None
-
-    logging.info(f"{symbol} : Signal {signal} validé RR {rr} Edge {edge_score}")
-    return signal, sl, tp

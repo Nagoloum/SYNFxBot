@@ -43,31 +43,31 @@
         "documentation": {}
     },
     {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timezone",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
         "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
         "importPath": "datetime",
         "description": "datetime",
         "isExtraImport": true,
@@ -223,175 +223,7 @@
         "documentation": {}
     },
     {
-        "label": "MAGIC_NUMBER",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "ATR_PERIOD",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "BREAKEVEN_MULTIPLIER",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "PARTIAL_CLOSE_PERCENT",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "DAILY_LOSS_LIMIT",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "SYMBOLS",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "DRAWDDOWN_MAX_PCT",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "TIMEFRAME_H4",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "TIMEFRAME_H1",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "ATR_PERIOD",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "EMA_PERIOD",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "ATR_WINDOW_AVG",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "MIN_RR",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "SL_MULTIPLIER",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "TP_MULTIPLIER",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "RSI_PERIOD",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "RSI_OVERBOUGHT",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "RSI_OVERSOLD",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "PRESETS",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "EDGE_SCORE_MIN  # MODIF: Ajout EDGE_SCORE_MIN dans config e.g.",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "0.6 pour seuil 60%",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "DEVIATION",
+        "label": "SYMBOL",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -407,7 +239,15 @@
         "documentation": {}
     },
     {
-        "label": "SYMBOLS",
+        "label": "START_HOUR",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "END_HOUR",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -463,14 +303,6 @@
         "documentation": {}
     },
     {
-        "label": "send_telegram_alert",
-        "importPath": "utils",
-        "description": "utils",
-        "isExtraImport": true,
-        "detail": "utils",
-        "documentation": {}
-    },
-    {
         "label": "init_db",
         "importPath": "database",
         "description": "database",
@@ -487,23 +319,7 @@
         "documentation": {}
     },
     {
-        "label": "save_close",
-        "importPath": "database",
-        "description": "database",
-        "isExtraImport": true,
-        "detail": "database",
-        "documentation": {}
-    },
-    {
-        "label": "update_trade_on_close",
-        "importPath": "database",
-        "description": "database",
-        "isExtraImport": true,
-        "detail": "database",
-        "documentation": {}
-    },
-    {
-        "label": "log_new_trade",
+        "label": "collection",
         "importPath": "database",
         "description": "database",
         "isExtraImport": true,
@@ -527,7 +343,7 @@
         "documentation": {}
     },
     {
-        "label": "calculate_atr",
+        "label": "close_partial_v100",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,
@@ -535,7 +351,7 @@
         "documentation": {}
     },
     {
-        "label": "get_preset",
+        "label": "get_smart_signal",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,
@@ -543,7 +359,7 @@
         "documentation": {}
     },
     {
-        "label": "check_rejection_candle",
+        "label": "get_smart_signal",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,
@@ -551,11 +367,53 @@
         "documentation": {}
     },
     {
-        "label": "get_preset",
+        "label": "handle_trade_closure",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,
         "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "is_volatility_good",
+        "importPath": "strategy",
+        "description": "strategy",
+        "isExtraImport": true,
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "move_sl_to_be",
+        "importPath": "strategy",
+        "description": "strategy",
+        "isExtraImport": true,
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "open_trade_v100",
+        "importPath": "strategy",
+        "description": "strategy",
+        "isExtraImport": true,
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "pandas_ta",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas_ta",
+        "description": "pandas_ta",
+        "detail": "pandas_ta",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
         "documentation": {}
     },
     {
@@ -589,7 +447,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def get_db_collection():\n    uri = os.getenv(\"MONGODB_URI\")\n    # Configuration en dur pour correspondre à ta base SYNTHBOT\n    client = MongoClient(uri)\n    db = client[\"SYNTHBOT\"]\n    return db[\"trades_v100\"]\ncollection = get_db_collection()\n# --- CHARGEMENT ---\n@st.cache_data(ttl=10)\ndef load_trades():",
+        "peekOfCode": "def get_db_collection():\n    uri = os.getenv(\"MONGODB_URI\")\n    client = MongoClient(uri)\n    db = client[\"SYNTHBOT\"]\n    return db[\"trades_v100\"]\ncollection = get_db_collection()\n# --- CHARGEMENT DES DONNÉES ---\n@st.cache_data(ttl=10)\ndef load_trades():\n    trades = list(collection.find().sort(\"open_time\", -1))",
         "detail": "app",
         "documentation": {}
     },
@@ -598,7 +456,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def load_trades():\n    trades = list(collection.find().sort(\"open_time\", -1))\n    if not trades:\n        return pd.DataFrame()\n    df = pd.DataFrame(trades)\n    # Conversion dates et types\n    if \"open_time\" in df.columns:\n        df[\"open_time\"] = pd.to_datetime(df[\"open_time\"])\n    if \"close_time\" in df.columns:\n        df[\"close_time\"] = pd.to_datetime(df[\"close_time\"])",
+        "peekOfCode": "def load_trades():\n    trades = list(collection.find().sort(\"open_time\", -1))\n    if not trades:\n        return pd.DataFrame()\n    df = pd.DataFrame(trades)\n    # Conversion forcée en datetime\n    if \"open_time\" in df.columns:\n        df[\"open_time\"] = pd.to_datetime(df[\"open_time\"])\n    if \"close_time\" in df.columns:\n        df[\"close_time\"] = pd.to_datetime(df[\"close_time\"])",
         "detail": "app",
         "documentation": {}
     },
@@ -607,7 +465,7 @@
         "kind": 2,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "def style_profit(val):\n    color = 'red' if val < 0 else 'green'\n    return f'color: {color}'\nst.dataframe(\n    df[available].style.applymap(style_profit, subset=['profit'] if 'profit' in df.columns else []),\n    use_container_width=True\n)",
+        "peekOfCode": "def style_profit(val):\n    return f'color: {\"red\" if val < 0 else \"green\"}'\nst.dataframe(\n    df[available].style.applymap(style_profit, subset=['profit']),\n    use_container_width=True\n)",
         "detail": "app",
         "documentation": {}
     },
@@ -616,7 +474,16 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "collection = get_db_collection()\n# --- CHARGEMENT ---\n@st.cache_data(ttl=10)\ndef load_trades():\n    trades = list(collection.find().sort(\"open_time\", -1))\n    if not trades:\n        return pd.DataFrame()\n    df = pd.DataFrame(trades)\n    # Conversion dates et types\n    if \"open_time\" in df.columns:",
+        "peekOfCode": "collection = get_db_collection()\n# --- CHARGEMENT DES DONNÉES ---\n@st.cache_data(ttl=10)\ndef load_trades():\n    trades = list(collection.find().sort(\"open_time\", -1))\n    if not trades:\n        return pd.DataFrame()\n    df = pd.DataFrame(trades)\n    # Conversion forcée en datetime\n    if \"open_time\" in df.columns:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "df_raw",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "df_raw = load_trades()\n# --- BARRE LATÉRALE (FILTRES) ---\nwith st.sidebar:\n    st.title(\"📈 Volatility 100 Index\")\n    st.title(\"⚙️ Filtres Statistiques\")\n    # 1. Filtre de Période\n    periode = st.selectbox(\n        \"Choisir la période\",\n        [\"Tout\", \"Aujourd'hui\", \"Cette Semaine\", \"Ce Mois\", \"Cette Année\"]\n    )",
         "detail": "app",
         "documentation": {}
     },
@@ -625,7 +492,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "df = load_trades()\nst.title(\"📈 Dashboard Volatility 100\")\nif df.empty:\n    st.warning(\"⚠️ Aucune donnée trouvée dans SYNTHBOT.trades_v100\")\n    st.stop()\n# --- INDICATEURS ---\ncol1, col2, col3, col4 = st.columns(4)\ntotal_trades = len(df)\nwins = len(df[df[\"profit\"] > 0])\nwin_rate = (wins / total_trades * 100) if total_trades > 0 else 0",
+        "peekOfCode": "df = df_raw.copy()\nif not df.empty:\n    now = datetime.now()\n    if periode == \"Aujourd'hui\":\n        # Filtrer depuis minuit (00:00:00)\n        start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)\n        df = df[df[\"open_time\"] >= start_date]\n    elif periode == \"Cette Semaine\":\n        # Filtrer les 7 derniers jours\n        start_date = now - timedelta(days=7)",
         "detail": "app",
         "documentation": {}
     },
@@ -634,7 +501,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "total_trades = len(df)\nwins = len(df[df[\"profit\"] > 0])\nwin_rate = (wins / total_trades * 100) if total_trades > 0 else 0\nnet_profit = df[\"profit\"].sum()\nopen_pos = len(df[df[\"status\"] == \"OPEN\"])\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Positions Ouvertes\", open_pos)\n# --- GRAPHIQUE ---",
+        "peekOfCode": "total_trades = len(df)\nwins = len(df[df[\"profit\"] > 0])\nwin_rate = (wins / total_trades * 100) if total_trades > 0 else 0\nnet_profit = df[\"profit\"].sum()\navg_profit = df[\"profit\"].mean() if total_trades > 0 else 0\ncol1.metric(\"Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Moyenne/Trade\", f\"{avg_profit:+.2f} USD\")\n# --- GRAPHIQUE ---",
         "detail": "app",
         "documentation": {}
     },
@@ -643,7 +510,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "wins = len(df[df[\"profit\"] > 0])\nwin_rate = (wins / total_trades * 100) if total_trades > 0 else 0\nnet_profit = df[\"profit\"].sum()\nopen_pos = len(df[df[\"status\"] == \"OPEN\"])\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Positions Ouvertes\", open_pos)\n# --- GRAPHIQUE ---\nst.subheader(\"Performance Cumulée\")",
+        "peekOfCode": "wins = len(df[df[\"profit\"] > 0])\nwin_rate = (wins / total_trades * 100) if total_trades > 0 else 0\nnet_profit = df[\"profit\"].sum()\navg_profit = df[\"profit\"].mean() if total_trades > 0 else 0\ncol1.metric(\"Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Moyenne/Trade\", f\"{avg_profit:+.2f} USD\")\n# --- GRAPHIQUE ---\nst.subheader(\"Évolution du Profit\")",
         "detail": "app",
         "documentation": {}
     },
@@ -652,7 +519,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "win_rate = (wins / total_trades * 100) if total_trades > 0 else 0\nnet_profit = df[\"profit\"].sum()\nopen_pos = len(df[df[\"status\"] == \"OPEN\"])\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Positions Ouvertes\", open_pos)\n# --- GRAPHIQUE ---\nst.subheader(\"Performance Cumulée\")\ndf_sorted = df.sort_values(\"open_time\")",
+        "peekOfCode": "win_rate = (wins / total_trades * 100) if total_trades > 0 else 0\nnet_profit = df[\"profit\"].sum()\navg_profit = df[\"profit\"].mean() if total_trades > 0 else 0\ncol1.metric(\"Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Moyenne/Trade\", f\"{avg_profit:+.2f} USD\")\n# --- GRAPHIQUE ---\nst.subheader(\"Évolution du Profit\")\ndf_sorted = df.sort_values(\"open_time\")",
         "detail": "app",
         "documentation": {}
     },
@@ -661,16 +528,16 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "net_profit = df[\"profit\"].sum()\nopen_pos = len(df[df[\"status\"] == \"OPEN\"])\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Positions Ouvertes\", open_pos)\n# --- GRAPHIQUE ---\nst.subheader(\"Performance Cumulée\")\ndf_sorted = df.sort_values(\"open_time\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()",
+        "peekOfCode": "net_profit = df[\"profit\"].sum()\navg_profit = df[\"profit\"].mean() if total_trades > 0 else 0\ncol1.metric(\"Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Moyenne/Trade\", f\"{avg_profit:+.2f} USD\")\n# --- GRAPHIQUE ---\nst.subheader(\"Évolution du Profit\")\ndf_sorted = df.sort_values(\"open_time\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()",
         "detail": "app",
         "documentation": {}
     },
     {
-        "label": "open_pos",
+        "label": "avg_profit",
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "open_pos = len(df[df[\"status\"] == \"OPEN\"])\ncol1.metric(\"Total Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Positions Ouvertes\", open_pos)\n# --- GRAPHIQUE ---\nst.subheader(\"Performance Cumulée\")\ndf_sorted = df.sort_values(\"open_time\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.area(df_sorted, x=\"open_time\", y=\"cum_profit\", ",
+        "peekOfCode": "avg_profit = df[\"profit\"].mean() if total_trades > 0 else 0\ncol1.metric(\"Trades\", total_trades)\ncol2.metric(\"Win Rate\", f\"{win_rate:.1f}%\")\ncol3.metric(\"Profit Net\", f\"{net_profit:.2f} USD\")\ncol4.metric(\"Moyenne/Trade\", f\"{avg_profit:+.2f} USD\")\n# --- GRAPHIQUE ---\nst.subheader(\"Évolution du Profit\")\ndf_sorted = df.sort_values(\"open_time\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.area(df_sorted, x=\"open_time\", y=\"cum_profit\", ",
         "detail": "app",
         "documentation": {}
     },
@@ -679,7 +546,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "df_sorted = df.sort_values(\"open_time\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.area(df_sorted, x=\"open_time\", y=\"cum_profit\", \n              labels={\"cum_profit\": \"Profit (USD)\", \"open_time\": \"Date\"},\n              color_discrete_sequence=[\"#00CC96\"])\nst.plotly_chart(fig, use_container_width=True)\n# --- HISTORIQUE ---\nst.subheader(\"Dernières Transactions\")\n# On filtre les colonnes pour un affichage propre\ndisplay_cols = [\"ticket\", \"type\", \"open_price\", \"close_price\", \"profit\", \"status\", \"open_time\"]",
+        "peekOfCode": "df_sorted = df.sort_values(\"open_time\")\ndf_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.area(df_sorted, x=\"open_time\", y=\"cum_profit\", \n              labels={\"cum_profit\": \"Profit (USD)\", \"open_time\": \"Date\"},\n              color_discrete_sequence=[\"#00CC96\"])\nst.plotly_chart(fig, use_container_width=True)\n# --- TABLEAU ---\nst.subheader(\"Détails des Positions\")\ndisplay_cols = [\"ticket\", \"type\", \"open_price\", \"close_price\", \"profit\", \"status\", \"open_time\"]\navailable = [c for c in display_cols if c in df.columns]",
         "detail": "app",
         "documentation": {}
     },
@@ -688,7 +555,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "df_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.area(df_sorted, x=\"open_time\", y=\"cum_profit\", \n              labels={\"cum_profit\": \"Profit (USD)\", \"open_time\": \"Date\"},\n              color_discrete_sequence=[\"#00CC96\"])\nst.plotly_chart(fig, use_container_width=True)\n# --- HISTORIQUE ---\nst.subheader(\"Dernières Transactions\")\n# On filtre les colonnes pour un affichage propre\ndisplay_cols = [\"ticket\", \"type\", \"open_price\", \"close_price\", \"profit\", \"status\", \"open_time\"]\navailable = [c for c in display_cols if c in df.columns]",
+        "peekOfCode": "df_sorted[\"cum_profit\"] = df_sorted[\"profit\"].cumsum()\nfig = px.area(df_sorted, x=\"open_time\", y=\"cum_profit\", \n              labels={\"cum_profit\": \"Profit (USD)\", \"open_time\": \"Date\"},\n              color_discrete_sequence=[\"#00CC96\"])\nst.plotly_chart(fig, use_container_width=True)\n# --- TABLEAU ---\nst.subheader(\"Détails des Positions\")\ndisplay_cols = [\"ticket\", \"type\", \"open_price\", \"close_price\", \"profit\", \"status\", \"open_time\"]\navailable = [c for c in display_cols if c in df.columns]\ndef style_profit(val):",
         "detail": "app",
         "documentation": {}
     },
@@ -697,7 +564,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "fig = px.area(df_sorted, x=\"open_time\", y=\"cum_profit\", \n              labels={\"cum_profit\": \"Profit (USD)\", \"open_time\": \"Date\"},\n              color_discrete_sequence=[\"#00CC96\"])\nst.plotly_chart(fig, use_container_width=True)\n# --- HISTORIQUE ---\nst.subheader(\"Dernières Transactions\")\n# On filtre les colonnes pour un affichage propre\ndisplay_cols = [\"ticket\", \"type\", \"open_price\", \"close_price\", \"profit\", \"status\", \"open_time\"]\navailable = [c for c in display_cols if c in df.columns]\ndef style_profit(val):",
+        "peekOfCode": "fig = px.area(df_sorted, x=\"open_time\", y=\"cum_profit\", \n              labels={\"cum_profit\": \"Profit (USD)\", \"open_time\": \"Date\"},\n              color_discrete_sequence=[\"#00CC96\"])\nst.plotly_chart(fig, use_container_width=True)\n# --- TABLEAU ---\nst.subheader(\"Détails des Positions\")\ndisplay_cols = [\"ticket\", \"type\", \"open_price\", \"close_price\", \"profit\", \"status\", \"open_time\"]\navailable = [c for c in display_cols if c in df.columns]\ndef style_profit(val):\n    return f'color: {\"red\" if val < 0 else \"green\"}'",
         "detail": "app",
         "documentation": {}
     },
@@ -706,7 +573,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "display_cols = [\"ticket\", \"type\", \"open_price\", \"close_price\", \"profit\", \"status\", \"open_time\"]\navailable = [c for c in display_cols if c in df.columns]\ndef style_profit(val):\n    color = 'red' if val < 0 else 'green'\n    return f'color: {color}'\nst.dataframe(\n    df[available].style.applymap(style_profit, subset=['profit'] if 'profit' in df.columns else []),\n    use_container_width=True\n)",
+        "peekOfCode": "display_cols = [\"ticket\", \"type\", \"open_price\", \"close_price\", \"profit\", \"status\", \"open_time\"]\navailable = [c for c in display_cols if c in df.columns]\ndef style_profit(val):\n    return f'color: {\"red\" if val < 0 else \"green\"}'\nst.dataframe(\n    df[available].style.applymap(style_profit, subset=['profit']),\n    use_container_width=True\n)",
         "detail": "app",
         "documentation": {}
     },
@@ -715,7 +582,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "available = [c for c in display_cols if c in df.columns]\ndef style_profit(val):\n    color = 'red' if val < 0 else 'green'\n    return f'color: {color}'\nst.dataframe(\n    df[available].style.applymap(style_profit, subset=['profit'] if 'profit' in df.columns else []),\n    use_container_width=True\n)",
+        "peekOfCode": "available = [c for c in display_cols if c in df.columns]\ndef style_profit(val):\n    return f'color: {\"red\" if val < 0 else \"green\"}'\nst.dataframe(\n    df[available].style.applymap(style_profit, subset=['profit']),\n    use_container_width=True\n)",
         "detail": "app",
         "documentation": {}
     },
@@ -769,7 +636,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "LOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"",
+        "peekOfCode": "LOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 ",
         "detail": "config",
         "documentation": {}
     },
@@ -778,7 +645,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"",
+        "peekOfCode": "MAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
         "detail": "config",
         "documentation": {}
     },
@@ -787,7 +654,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"",
+        "peekOfCode": "TELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
         "detail": "config",
         "documentation": {}
     },
@@ -796,7 +663,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"",
+        "peekOfCode": "TELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
         "detail": "config",
         "documentation": {}
     },
@@ -805,7 +672,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"",
+        "peekOfCode": "MONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
         "detail": "config",
         "documentation": {}
     },
@@ -814,7 +681,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "DB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"",
+        "peekOfCode": "DB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
         "detail": "config",
         "documentation": {}
     },
@@ -823,7 +690,25 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "COLLECTION_NAME = \"trades_v100\"",
+        "peekOfCode": "COLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "START_HOUR",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "START_HOUR = 8 \nEND_HOUR = 20",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "END_HOUR",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "END_HOUR = 20",
         "detail": "config",
         "documentation": {}
     },
@@ -832,7 +717,7 @@
         "kind": 2,
         "importPath": "connexion",
         "description": "connexion",
-        "peekOfCode": "def connect_to_mt5(max_retries=3, delay=5):\n    \"\"\"Connexion MT5 avec retries\"\"\"\n    terminal_path = MT5_TERMINAL_PATH\n    for attempt in range(1, max_retries + 1):\n        try:\n            if mt5.terminal_info():\n                mt5.shutdown()\n                time.sleep(1)\n            logging.info(f\"Tentative connexion {attempt}/{max_retries}\")\n            if not mt5.initialize(path=terminal_path):",
+        "peekOfCode": "def connect_to_mt5(max_retries=3, delay=5):\n    \"\"\"Connexion MT5 avec retries\"\"\"\n    terminal_path = MT5_TERMINAL_PATH\n    for attempt in range(1, max_retries + 1):\n        try:\n            if mt5.terminal_info():\n                mt5.shutdown()\n                time.sleep(1)\n            # logging.info(f\"Tentative connexion {attempt}/{max_retries}\")\n            if not mt5.initialize(path=terminal_path):",
         "detail": "connexion",
         "documentation": {}
     },
@@ -882,165 +767,183 @@
         "documentation": {}
     },
     {
-        "label": "get_filling_mode",
+        "label": "monitor_active_trade",
         "kind": 2,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "def get_filling_mode():\n    \"\"\"Détermine le mode de remplissage supporté\"\"\"\n    symbol_info = mt5.symbol_info(SYMBOL)\n    if not symbol_info: return 1\n    filling_mode = symbol_info.filling_mode\n    if filling_mode & 1: return mt5.ORDER_FILLING_FOK\n    elif filling_mode & 2: return mt5.ORDER_FILLING_IOC\n    return mt5.ORDER_FILLING_FOK\ndef open_trade_v100():\n    \"\"\"Ouvre une position BUY avec vérification du spread\"\"\"",
+        "peekOfCode": "def monitor_active_trade(ticket, lot, signal_data):\n    \"\"\"\n    Surveille la position ouverte en temps réel pour gérer :\n    1. La clôture partielle (50% du volume)\n    2. Le passage en Break-Even (sécurisation du SL)\n    3. La détection de clôture finale (SL ou TP touché)\n    \"\"\"\n    half_done = False\n    print(f\"👀 Surveillance active du ticket {ticket} lancée...\")\n    while True:",
         "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "get_price_data",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def get_price_data(symbol, timeframe, n_bars=300):\n    \"\"\"Récupère les données OHLCV\"\"\"\n    rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)\n    if rates is None or len(rates) == 0:\n        return pd.DataFrame()\n    df = pd.DataFrame(rates)\n    df['time'] = pd.to_datetime(df['time'], unit='s')\n    return df\ndef get_zigzag(df, depth=10, zz_column_name='zz'):\n    zz_result = ta.zigzag(high=df['high'], low=df['low'], depth=depth)",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "get_zigzag",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def get_zigzag(df, depth=10, zz_column_name='zz'):\n    zz_result = ta.zigzag(high=df['high'], low=df['low'], depth=depth)\n    if isinstance(zz_result, pd.Series):\n        df[zz_column_name] = zz_result\n    elif isinstance(zz_result, pd.DataFrame):\n        # Prendre la colonne qui contient le plus de valeurs non-null\n        best_col = zz_result.notna().sum().idxmax()\n        df[zz_column_name] = zz_result[best_col]\n        # logging.info(f\"Colonne zigzag sélectionnée automatiquement : {best_col}\")\n    else:",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "detect_advanced_patterns",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def detect_advanced_patterns(df):\n    \"\"\"Détection simple W / M via ZigZag\"\"\"\n    peaks = get_zigzag(df)\n    if len(peaks) < 5:\n        return None\n    p = peaks['zz'].values\n    # Double Bottom (W)\n    if p[-1] > p[-2] and abs(p[-2] - p[-4]) < (p[-1] * 0.002) and p[-3] > p[-2]:\n        return \"DOUBLE_BOTTOM_W\"\n    # Double Top (M)",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_market_structure",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def analyze_market_structure(df):\n    \"\"\"État du marché : tendance ou range (M30 ou H1 recommandé)\"\"\"\n    if len(df) < 50:\n        return \"INSUFFISANT\", 0, 0\n    adx = ta.adx(df['high'], df['low'], df['close'], length=14)\n    current_adx = adx['ADX_14'].iloc[-1]\n    resistance = df['high'].rolling(window=20).max().iloc[-1]\n    support    = df['low'].rolling(window=20).min().iloc[-1]\n    if current_adx < 22:\n        return \"ACCUMULATION (RANGE)\", support, resistance",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "get_market_trend_h4",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def get_market_trend_h4():\n    \"\"\"Filtre de tendance haute timeframe (H4)\"\"\"\n    df = get_price_data(SYMBOL, mt5.TIMEFRAME_H4, 100)\n    if df.empty:\n        return \"NEUTRAL\"\n    df['ema_50'] = ta.ema(df['close'], length=EMA_PERIOD_H4)\n    return \"UP\" if df['close'].iloc[-1] > df['ema_50'].iloc[-1] else \"DOWN\"\ndef check_fvg(df):\n    \"\"\"Fair Value Gap simple sur les 3 dernières bougies\"\"\"\n    if len(df) < 3:",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "check_fvg",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def check_fvg(df):\n    \"\"\"Fair Value Gap simple sur les 3 dernières bougies\"\"\"\n    if len(df) < 3:\n        return False, None\n    if df['high'].iloc[-3] < df['low'].iloc[-1]:\n        return True, \"BULLISH\"\n    if df['low'].iloc[-3] > df['high'].iloc[-1]:\n        return True, \"BEARISH\"\n    return False, None\ndef analyze_amd_priority(symbol):",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_amd_priority",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def analyze_amd_priority(symbol):\n    \"\"\"Priorise l'accumulation → manipulation sur les TF hautes\"\"\"\n    tfs = [\n        (mt5.TIMEFRAME_H4,  \"H4\"),\n        (mt5.TIMEFRAME_H1,  \"H1\"),\n        (mt5.TIMEFRAME_M30, \"M30\")\n    ]\n    for tf_val, tf_name in tfs:\n        df = get_price_data(symbol, tf_val, 120)\n        if df.empty:",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "get_smart_signal",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def get_smart_signal():\n    \"\"\"\n    Stratégie principale – Ordre de priorité :\n      1. AMD Manipulation (H4 > H1 > M30)\n      2. Figures chartistes W/M sur M5\n      3. Rebond sur support dynamique M5\n      4. (optionnel) Structure + OTE + FVG alignés\n    \"\"\"\n    # ── 1. Priorité AMD Manipulation ─────────────────────────────────────\n    amd_signal = analyze_amd_priority(SYMBOL)",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "find_swings",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def find_swings(df):\n    \"\"\"Identifie les fractales pour Fibonacci\"\"\"\n    df['high_swing'] = df['high'][(df['high'] == df['high'].rolling(11, center=True).max())]\n    df['low_swing'] = df['low'][(df['low'] == df['low'].rolling(11, center=True).min())]\n    try:\n        last_low = df['low_swing'].dropna().iloc[-1]\n        last_high = df['high_swing'].dropna().iloc[-1]\n        return last_low, last_high\n    except IndexError:\n        return None, None",
+        "detail": "strategy",
         "documentation": {}
     },
     {
         "label": "open_trade_v100",
         "kind": 2,
-        "importPath": "main",
-        "description": "main",
-        "peekOfCode": "def open_trade_v100():\n    \"\"\"Ouvre une position BUY avec vérification du spread\"\"\"\n    mt5.symbol_select(SYMBOL, True)\n    tick = mt5.symbol_info_tick(SYMBOL)\n    if tick is None:\n        logging.error(\"Prix indisponible\")\n        return None\n    # Vérification du spread (Ask - Bid)\n    spread = tick.ask - tick.bid\n    if spread > MAX_ALLOWED_SPREAD:",
-        "detail": "main",
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def open_trade_v100(signal):\n    \"\"\"Exécute l'ordre et notifie la console/bot avec détails lot et prix\"\"\"\n    tick = mt5.symbol_info_tick(SYMBOL)\n    lot = float(max(MIN_LOT_V100, 1.0)) # Sécurité lot minimum\n    price = tick.ask if signal['type'] == \"BUY\" else tick.bid\n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,\n        \"symbol\": SYMBOL,\n        \"volume\": lot,\n        \"type\": mt5.ORDER_TYPE_BUY if signal['type'] == \"BUY\" else mt5.ORDER_TYPE_SELL,",
+        "detail": "strategy",
         "documentation": {}
     },
     {
-        "label": "close_trade_v100",
+        "label": "update_db_profit",
         "kind": 2,
-        "importPath": "main",
-        "description": "main",
-        "peekOfCode": "def close_trade_v100(ticket):\n    \"\"\"Ferme la position et calcule le profit final\"\"\"\n    positions = mt5.positions_get(ticket=ticket)\n    if not positions: return\n    pos = positions[0]\n    tick = mt5.symbol_info_tick(SYMBOL)\n    # Pour fermer un BUY, on vend au prix BID\n    price_close = tick.bid \n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,",
-        "detail": "main",
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def update_db_profit(ticket, profit, close_price, status=\"CLOSED\"):\n    \"\"\"Met à jour MongoDB en ajoutant le profit (gère partiels et BE)\"\"\"\n    collection.update_one(\n        {\"ticket\": ticket},\n        {\"$inc\": {\"profit\": float(profit)}, \n         \"$set\": {\"close_price\": float(close_price), \"status\": status, \"close_time\": datetime.utcnow()}}\n    )\ndef handle_trade_closure(ticket, lot, reason):\n    \"\"\"Notification finale lors du SL ou TP avec profit réel BD\"\"\"\n    # Attendre la synchro historique",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "handle_trade_closure",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def handle_trade_closure(ticket, lot, reason):\n    \"\"\"Notification finale lors du SL ou TP avec profit réel BD\"\"\"\n    # Attendre la synchro historique\n    time.sleep(1)\n    history = mt5.history_deals_get(position=ticket)\n    if history:\n        total_profit = sum(deal.profit for deal in history)\n        msg = (f\"🏁 TRADE TERMINE ({reason})\\nTicket: {ticket} | Lot: {lot}\\n\"\n               f\"Résultat Final: {total_profit:.2f} USD\")\n        print(f\"\\n--- CLOTURE ---\\n{msg}\\n---------------\\n\")",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "close_partial_v100",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def close_partial_v100(ticket, vol):\n    \"\"\"Ferme 50% et notifie le retrait partiel\"\"\"\n    pos_list = mt5.positions_get(ticket=ticket)\n    if not pos_list: return False\n    pos = pos_list[0]\n    tick = mt5.symbol_info_tick(SYMBOL)\n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,\n        \"symbol\": SYMBOL,\n        \"volume\": float(vol),",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "move_sl_to_be",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def move_sl_to_be(ticket):\n    \"\"\"Déplace le SL au prix d'entrée (Break-Even)\"\"\"\n    pos_list = mt5.positions_get(ticket=ticket)\n    if not pos_list: return False\n    pos = pos_list[0]\n    request = {\n        \"action\": mt5.TRADE_ACTION_SLTP,\n        \"position\": ticket,\n        \"sl\": pos.price_open,\n        \"tp\": pos.tp",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "is_volatility_good",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def is_volatility_good():\n    \"\"\"Vérifie l'heure et la volatilité via l'ATR\"\"\"\n    now = datetime.utcnow().hour\n    # 1. Vérification Horaire\n    if not (START_HOUR <= now < END_HOUR):\n        msg = f\"⏳ Marché hors session : {now}h GMT. Bonne volatilité entre {START_HOUR}h et {END_HOUR}h GMT.\"\n        return False, msg\n    # 2. Vérification Technique (ATR)\n    df = get_price_data(SYMBOL, mt5.TIMEFRAME_M5, 50)\n    if df.empty: return False, \"Données indisponibles\"",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "detect_chart_patterns",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def detect_chart_patterns(df):\n    \"\"\"Détecte les figures chartistes redoutables (W, M, ETE)\"\"\"\n    if len(df) < 20: return None\n    last_prices = df['close'].values\n    highs = df['high'].values\n    lows = df['low'].values\n    # 1. Double Bas (W) / Double Sommet (M)\n    # On compare les derniers creux/sommets locaux\n    if lows[-1] > lows[-5] and abs(lows[-5] - lows[-10]) < (lows[-1] * 0.001):\n        return \"DOUBLE_BOTTOM\"",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_amd_cycle",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def analyze_amd_cycle(symbol, timeframe):\n    \"\"\"Logique Accumulation - Manipulation - Distribution\"\"\"\n    df = get_price_data(symbol, timeframe, 100)\n    if df.empty: return None\n    # 1. Accumulation : Range étroit et volume faible\n    std_dev = df['close'].tail(20).std()\n    avg_std = df['close'].rolling(50).std().mean()\n    is_accumulating = std_dev < (avg_std * 0.7)\n    if is_accumulating:\n        # On définit les bornes du range",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "get_best_timeframe_amd",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def get_best_timeframe_amd():\n    \"\"\"Cherche l'accumulation sur les TF les plus hautes en priorité\"\"\"\n    timeframes = [\n        (mt5.TIMEFRAME_H4, \"H4\"),\n        (mt5.TIMEFRAME_H1, \"H1\"),\n        (mt5.TIMEFRAME_M30, \"M30\")\n    ]\n    for tf, name in timeframes:\n        amd_data = analyze_amd_cycle(SYMBOL, tf)\n        if amd_data:",
+        "detail": "strategy",
         "documentation": {}
     },
     {
         "label": "MAX_ALLOWED_SPREAD",
         "kind": 5,
-        "importPath": "main",
-        "description": "main",
-        "peekOfCode": "MAX_ALLOWED_SPREAD = 0.60  # Ne pas ouvrir si le spread est trop élevé\ndef get_filling_mode():\n    \"\"\"Détermine le mode de remplissage supporté\"\"\"\n    symbol_info = mt5.symbol_info(SYMBOL)\n    if not symbol_info: return 1\n    filling_mode = symbol_info.filling_mode\n    if filling_mode & 1: return mt5.ORDER_FILLING_FOK\n    elif filling_mode & 2: return mt5.ORDER_FILLING_IOC\n    return mt5.ORDER_FILLING_FOK\ndef open_trade_v100():",
-        "detail": "main",
-        "documentation": {}
-    },
-    {
-        "label": "check_loss_limits",
-        "kind": 2,
-        "importPath": "position_manager",
-        "description": "position_manager",
-        "peekOfCode": "def check_loss_limits():\n    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)\n    now = datetime.now(timezone.utc)\n    history = mt5.history_deals_get(today_start, now)\n    if history is None or not history:\n        logging.debug(\"Aucun deal aujourd'hui ou erreur récupération\")\n        return True\n    closed_profit = sum(deal.profit for deal in history if deal.entry == mt5.DEAL_ENTRY_OUT)\n    balance = mt5.account_info().balance\n    if balance <= 0:",
-        "detail": "position_manager",
-        "documentation": {}
-    },
-    {
-        "label": "check_global_drawdown",
-        "kind": 2,
-        "importPath": "position_manager",
-        "description": "position_manager",
-        "peekOfCode": "def check_global_drawdown():\n    \"\"\"Check drawdown flottant global\"\"\"  # MODIF: Nouveau pour gestion risque\n    account = mt5.account_info()\n    if not account:\n        return True\n    floating_pnl = account.profit\n    equity = account.equity\n    drawdown_pct = floating_pnl / account.balance if account.balance > 0 else 0\n    if drawdown_pct < DRAWDDOWN_MAX_PCT:\n        logging.warning(f\"Drawdown max atteint: {drawdown_pct*100:.2f}% → Fermeture toutes positions\")",
-        "detail": "position_manager",
-        "documentation": {}
-    },
-    {
-        "label": "manage_positions",
-        "kind": 2,
-        "importPath": "position_manager",
-        "description": "position_manager",
-        "peekOfCode": "def manage_positions():\n    \"\"\"Gère positions pour tous symboles\"\"\"\n    if not check_loss_limits() or not check_global_drawdown():  # MODIF: Ajout check drawdown\n        # Fermer toutes positions si limite atteinte\n        for symbol in SYMBOLS:\n            positions = mt5.positions_get(symbol=symbol)\n            if positions:\n                for pos in positions:\n                    close_position(symbol, pos, reason=\"drawdown_limit\")\n        return",
-        "detail": "position_manager",
-        "documentation": {}
-    },
-    {
-        "label": "close_position",
-        "kind": 2,
-        "importPath": "position_manager",
-        "description": "position_manager",
-        "peekOfCode": "def close_position(symbol, pos, reason=\"manual\"):\n    \"\"\"Ferme position\"\"\"\n    tick = mt5.symbol_info_tick(symbol)\n    if not tick:\n        return\n    close_price = tick.bid if pos.type == mt5.ORDER_TYPE_BUY else tick.ask\n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,\n        \"symbol\": symbol,\n        \"volume\": pos.volume,",
-        "detail": "position_manager",
-        "documentation": {}
-    },
-    {
-        "label": "get_preset",
-        "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_preset(symbol):\n    \"\"\"Retourne preset basé sur symbole\"\"\"\n    if \"25\" in symbol or \"50\" in symbol:\n        return PRESETS[\"tranquille\"]\n    else:\n        return PRESETS[\"agressif\"]\ndef calculate_atr(df, period):\n    \"\"\"Calcul ATR\"\"\"\n    high_low = df['high'] - df['low']\n    high_close = abs(df['high'] - df['close'].shift())",
+        "peekOfCode": "MAX_ALLOWED_SPREAD = 0.60\ndef get_price_data(symbol, timeframe, n_bars=300):\n    \"\"\"Récupère les données OHLCV\"\"\"\n    rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)\n    if rates is None or len(rates) == 0:\n        return pd.DataFrame()\n    df = pd.DataFrame(rates)\n    df['time'] = pd.to_datetime(df['time'], unit='s')\n    return df\ndef get_zigzag(df, depth=10, zz_column_name='zz'):",
         "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "calculate_atr",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def calculate_atr(df, period):\n    \"\"\"Calcul ATR\"\"\"\n    high_low = df['high'] - df['low']\n    high_close = abs(df['high'] - df['close'].shift())\n    low_close = abs(df['low'] - df['close'].shift())\n    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)\n    return tr.rolling(window=period).mean()\ndef calculate_rsi(df, period):\n    \"\"\"Calcul RSI\"\"\"\n    delta = df['close'].diff()",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "calculate_rsi",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def calculate_rsi(df, period):\n    \"\"\"Calcul RSI\"\"\"\n    delta = df['close'].diff()\n    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()\n    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()\n    rs = gain / loss\n    return 100 - (100 / (1 + rs))\ndef get_trend_bias(symbol):\n    \"\"\"Bias H4 : EMA50 + pente\"\"\"\n    rates_h4 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H4, 0, EMA_PERIOD + 10)",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "get_trend_bias",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def get_trend_bias(symbol):\n    \"\"\"Bias H4 : EMA50 + pente\"\"\"\n    rates_h4 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H4, 0, EMA_PERIOD + 10)\n    if rates_h4 is None or len(rates_h4) < EMA_PERIOD + 1:\n        return \"neutral\"\n    df_h4 = pd.DataFrame(rates_h4)\n    ema = df_h4['close'].ewm(span=EMA_PERIOD, adjust=False).mean()\n    atr_h4 = calculate_atr(df_h4, ATR_PERIOD).iloc[-1]\n    current_price = df_h4['close'].iloc[-1]\n    ema_current = ema.iloc[-1]",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "find_pullback_zone",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def find_pullback_zone(df, bias):\n    \"\"\"Zone S/D simplifiée : dernier swing comme support/resistance\"\"\"\n    df['swing_high'] = df['high'][(df['high'].shift(1) < df['high']) & (df['high'].shift(-1) < df['high'])]\n    df['swing_low'] = df['low'][(df['low'].shift(1) > df['low']) & (df['low'].shift(-1) > df['low'])]\n    if bias == \"bullish\":\n        zone_low = df['swing_low'].dropna().iloc[-1] if not df['swing_low'].dropna().empty else None\n        return zone_low, None  # Support pour pullback BUY\n    elif bias == \"bearish\":\n        zone_high = df['swing_high'].dropna().iloc[-1] if not df['swing_high'].dropna().empty else None\n        return None, zone_high  # Resistance pour pullback SELL",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "check_rejection_candle",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def check_rejection_candle(df, bias, zone_low, zone_high):\n    \"\"\"Confirmation : bougie rejet (mèche + close dans sens bias) + pin bar/engulfing\"\"\"  # MODIF: Renforcement price action\n    last_candle = df.iloc[-1]\n    prev_candle = df.iloc[-2]\n    # Base rejection\n    rejection = False\n    if bias == \"bullish\" and zone_low:\n        if last_candle['low'] <= zone_low and last_candle['close'] > last_candle['open']:\n            rejection = True\n    elif bias == \"bearish\" and zone_high:",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "calculate_edge_score",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def calculate_edge_score(df, atr, atr_avg, rsi, bias):  # MODIF: Nouveau pour edge\n    \"\"\"Score edge simple (0-1) basé sur stats rapides: volatilité stable + RSI extrême + trend strength\"\"\"\n    vol_stable = 1 if atr_avg * 0.8 < atr < atr_avg * 1.2 else 0  # Volatilité dans bande moyenne\n    rsi_edge = 1 if (bias == \"bullish\" and rsi < 40) or (bias == \"bearish\" and rsi > 60) else 0  # Oversold/overbought plus agressif\n    trend_strength = (df['close'].iloc[-1] - df['close'].iloc[-10]) / atr if atr > 0 else 0  # Momentum récent > 1 ATR\n    trend_edge = 1 if abs(trend_strength) > 1 else 0\n    score = (vol_stable + rsi_edge + trend_edge) / 3\n    logging.debug(f\"Edge score: {score}\")\n    return score\ndef generate_signal(symbol):",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "generate_signal",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def generate_signal(symbol):\n    \"\"\"Génère signal pour un symbole\"\"\"\n    preset = get_preset(symbol)\n    volatility_low = preset[\"VOLATILITY_LOW\"]\n    volatility_high = preset[\"VOLATILITY_HIGH\"]\n    bias = get_trend_bias(symbol)\n    if bias == \"neutral\":\n        logging.debug(f\"{symbol} : Bias neutre → Skip\")\n        return None\n    rates_h1 = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H1, 0, ATR_WINDOW_AVG + 50)",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "calculate_lot_size",
-        "kind": 2,
-        "importPath": "trader",
-        "description": "trader",
-        "peekOfCode": "def calculate_lot_size(symbol, sl_distance_points, account_balance, risk_percent):\n    \"\"\"Calcul lot basé sur risque\"\"\"\n    symbol_info = mt5.symbol_info(symbol)\n    if not symbol_info or symbol_info.point == 0:\n        return 0.01\n    point_value = symbol_info.trade_contract_size * symbol_info.point\n    risk_amount = account_balance * risk_percent\n    lot_size = risk_amount / (sl_distance_points * point_value)\n    return max(round(lot_size, 2), 0.01)\ndef execute_trade(symbol, signal, sl, tp):",
-        "detail": "trader",
-        "documentation": {}
-    },
-    {
-        "label": "execute_trade",
-        "kind": 2,
-        "importPath": "trader",
-        "description": "trader",
-        "peekOfCode": "def execute_trade(symbol, signal, sl, tp):\n    \"\"\"Exécute trade sans limite de positions\"\"\"  # MODIF: Suppression check max positions pour illimité\n    tick = mt5.symbol_info_tick(symbol)\n    if not tick:\n        return\n    price = tick.ask if signal == \"BUY\" else tick.bid\n    order_type = mt5.ORDER_TYPE_BUY if signal == \"BUY\" else mt5.ORDER_TYPE_SELL\n    account_info = mt5.account_info()\n    if not account_info:\n        return",
-        "detail": "trader",
         "documentation": {}
     },
     {
