@@ -8,217 +8,205 @@ from datetime import datetime
 
 from database import save_open, collection
 from utils import send_telegram_alert
-from config import SYMBOL, MAGIC_NUMBER, START_HOUR, END_HOUR
+from config import SYMBOL, MAGIC_NUMBER
 
 # ─── PARAMÈTRES TECHNIQUES ────────────────────────────────────────────────
-MIN_LOT_V100     = 1.0
 EMA_PERIOD_H4    = 50
 MAX_ALLOWED_SPREAD = 0.60
 
-
-def get_price_data(symbol, timeframe, n_bars=300):
-    """Récupère les données OHLCV"""
+def get_price_data(symbol, timeframe, n_bars=400):
+    """Récupère les données OHLCV pour un symbole spécifique"""
     rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)
     if rates is None or len(rates) == 0:
+        logging.warning(f"Données indisponibles pour {symbol} en TF {timeframe}")
         return pd.DataFrame()
     df = pd.DataFrame(rates)
     df['time'] = pd.to_datetime(df['time'], unit='s')
     return df
 
-
-def get_zigzag(df, depth=10, zz_column_name='zz'):
-    zz_result = ta.zigzag(high=df['high'], low=df['low'], depth=depth)
+def get_dynamic_lot(symbol, risk_percent=0.01):
+    """Calcule le lot minimal ou basé sur le risque pour chaque indice"""
+    symbol_info = mt5.symbol_info(symbol)
+    if symbol_info is None:
+        return 0.1
     
-    if isinstance(zz_result, pd.Series):
-        df[zz_column_name] = zz_result
-    elif isinstance(zz_result, pd.DataFrame):
-        # Prendre la colonne qui contient le plus de valeurs non-null
-        best_col = zz_result.notna().sum().idxmax()
-        df[zz_column_name] = zz_result[best_col]
-        # logging.info(f"Colonne zigzag sélectionnée automatiquement : {best_col}")
-    else:
-        raise ValueError("ta.zigzag a retourné un type inattendu")
-    
-    return df.dropna(subset=[zz_column_name])
+    # Pour les indices synthétiques, on commence souvent par le lot minimal autorisé
+    # car la volatilité est déjà intrinsèquement élevée.
+    min_lot = symbol_info.volume_min
+    return min_lot
 
-def detect_advanced_patterns(df):
-    """Détection simple W / M via ZigZag"""
-    peaks = get_zigzag(df)
+def get_zigzag(df, depth=10):
+    """Calcule les points hauts et bas (ZigZag) avec sécurité"""
+    try:
+        zz_df = ta.zigzag(df['high'], df['low'], depth=depth)
+        zigzag_col = None
+        for col in zz_df.columns:
+            if col.startswith('ZIGZAGs'):
+                zigzag_col = col
+                break
+        
+        if zigzag_col is None:
+            df['zz'] = np.nan
+        else:
+            df['zz'] = zz_df[zigzag_col]
+        
+        peaks = df.dropna(subset=['zz']).copy()
+        return peaks
+    except Exception as e:
+        logging.error(f"Erreur ZigZag : {e}")
+        return pd.DataFrame()
+
+def detect_advanced_patterns(symbol, df):
+    """Détection W / M via ZigZag adaptée au symbole"""
+    peaks = get_zigzag(df, depth=6)
     if len(peaks) < 5:
         return None
 
     p = peaks['zz'].values
+    # Seuil de tolérance adapté à la volatilité de l'indice
+    tolerance = p[-1] * 0.002 
+
     # Double Bottom (W)
-    if p[-1] > p[-2] and abs(p[-2] - p[-4]) < (p[-1] * 0.002) and p[-3] > p[-2]:
+    if p[-1] > p[-2] and abs(p[-2] - p[-4]) < tolerance and p[-3] > p[-2]:
         return "DOUBLE_BOTTOM_W"
+    
     # Double Top (M)
-    if p[-1] < p[-2] and abs(p[-2] - p[-4]) < (p[-1] * 0.002) and p[-3] < p[-2]:
+    if p[-1] < p[-2] and abs(p[-2] - p[-4]) < tolerance and p[-3] < p[-2]:
         return "DOUBLE_TOP_M"
+
     return None
 
+def get_market_trend_h4(symbol):
+    """Filtre de tendance haute timeframe (H4) pour un symbole"""
+    df = get_price_data(symbol, mt5.TIMEFRAME_H4, 200)
+    if df.empty: return "NEUTRAL"
+    
+    df['ema_50'] = ta.ema(df['close'], length=EMA_PERIOD_H4)
+    if df['ema_50'].isna().all(): return "NEUTRAL"
+    
+    trend = "UP" if df['close'].iloc[-1] > df['ema_50'].iloc[-1] else "DOWN"
+    return trend
+
+def analyze_amd_priority(symbol):
+    """Logique Accumulation -> Manipulation sur H1 avec gestion d'erreur robuste"""
+    # Augmenter le nombre de bougies pour être sûr d'avoir assez de data
+    df = get_price_data(symbol, mt5.TIMEFRAME_H1, 200) 
+    if df.empty or len(df) < 50: 
+        return None
+
+    # Calcul des Bandes de Bollinger
+    bb = ta.bbands(df['close'], length=20, std=2)
+    
+    # Correction : On cherche les colonnes dynamiquement pour éviter l'erreur de nom
+    if bb is None or bb.empty:
+        return None
+        
+    # On récupère les noms exacts des colonnes générées
+    col_upper = [c for c in bb.columns if c.startswith('BBU')][0]
+    col_lower = [c for c in bb.columns if c.startswith('BBL')][0]
+    col_mid   = [c for c in bb.columns if c.startswith('BBM')][0]
+
+    # Calcul de la compression (Accumulation)
+    bandwidth = (bb[col_upper] - bb[col_lower]) / bb[col_mid]
+    avg_bandwidth = bandwidth.rolling(30).mean().iloc[-1]
+    
+    # Si les données sont NaN (pas assez de recul), on sort
+    if pd.isna(avg_bandwidth):
+        return None
+
+    if bandwidth.iloc[-1] < avg_bandwidth * 0.85:
+        # On définit le range sur les 10 dernières bougies
+        high_range = df['high'].tail(10).max()
+        low_range  = df['low'].tail(10).min()
+        tick = mt5.symbol_info_tick(symbol)
+        
+        if not tick: return None
+        
+        if tick.ask < low_range: # Fake breakdown (Manipulation)
+            return {"type": "BUY", "reason": "AMD_MANIP_BUY", "tf": "H1"}
+        elif tick.bid > high_range: # Fake breakout (Manipulation)
+            return {"type": "SELL", "reason": "AMD_MANIP_SELL", "tf": "H1"}
+            
+    return None
 
 def analyze_market_structure(df):
     """État du marché : tendance ou range (M30 ou H1 recommandé)"""
+    logging.info(f"[MARKET STRUCTURE] Analyse sur {len(df)} bougies")
     if len(df) < 50:
+        logging.warning("[MARKET STRUCTURE] Données insuffisantes pour analyse.")
         return "INSUFFISANT", 0, 0
 
     adx = ta.adx(df['high'], df['low'], df['close'], length=14)
     current_adx = adx['ADX_14'].iloc[-1]
+    logging.info(f"[MARKET STRUCTURE] ADX actuel : {current_adx:.2f}")
 
     resistance = df['high'].rolling(window=20).max().iloc[-1]
     support    = df['low'].rolling(window=20).min().iloc[-1]
-
+    logging.info(f"[MARKET STRUCTURE] Support: {support:.5f} | Résistance: {resistance:.5f}")
     if current_adx < 22:
+        logging.info("[MARKET STRUCTURE] Marché en ACCUMULATION (RANGE) détecté.")
         return "ACCUMULATION (RANGE)", support, resistance
 
     ema = ta.ema(df['close'], length=50).iloc[-1]
     status = "HAUSSIÈRE" if df['close'].iloc[-1] > ema else "BAISSIÈRE"
+    logging.info(f"[MARKET STRUCTURE] Tendance détectée : {status} | (EMA50: {ema:.5f})")
     return status, support, resistance
 
 
-def get_market_trend_h4():
-    """Filtre de tendance haute timeframe (H4)"""
-    df = get_price_data(SYMBOL, mt5.TIMEFRAME_H4, 100)
-    if df.empty:
-        return "NEUTRAL"
-    df['ema_50'] = ta.ema(df['close'], length=EMA_PERIOD_H4)
-    return "UP" if df['close'].iloc[-1] > df['ema_50'].iloc[-1] else "DOWN"
-
-
-def check_fvg(df):
+def check_fvg(df, lookback=5, min_gap=0.50):
+    logging.info("[FVG] Vérification Fair Value Gap")
     """Fair Value Gap simple sur les 3 dernières bougies"""
     if len(df) < 3:
+        logging.warning("[FVG] Données insuffisantes pour analyse FVG. Pas assezde de bougies.")
         return False, None
     if df['high'].iloc[-3] < df['low'].iloc[-1]:
+        logging.info("[FVG] Fair Value Gap BULLISH détecté.")
+        logging.info(f"[FVG] Gap détecté → zone : {df['high'].iloc[-3]:.5f} - {df['low'].iloc[-1]:.5f}")
         return True, "BULLISH"
     if df['low'].iloc[-3] > df['high'].iloc[-1]:
+        logging.info("[FVG] Fair Value Gap BEARISH détecté.")
+        logging.info(f"[FVG] Gap détecté → zone : {df['low'].iloc[-3]:.5f} - {df['high'].iloc[-1]:.5f}")
         return True, "BEARISH"
+    logging.info("[FVG] Aucun Fair Value Gap détecté.")
     return False, None
 
+def get_smart_signal(symbol):
+    """Analyse complète pour un symbole donné"""
+    tick = mt5.symbol_info_tick(symbol)
+    if not tick: return None
 
-def analyze_amd_priority(symbol):
-    """Priorise l'accumulation → manipulation sur les TF hautes"""
-    tfs = [
-        (mt5.TIMEFRAME_H4,  "H4"),
-        (mt5.TIMEFRAME_H1,  "H1"),
-        (mt5.TIMEFRAME_M30, "M30")
-    ]
+    # 1. Priorité AMD
+    amd = analyze_amd_priority(symbol)
+    if amd: return amd
 
-    for tf_val, tf_name in tfs:
-        df = get_price_data(symbol, tf_val, 120)
-        if df.empty:
-            continue
+    # 2. Figures Chartistes H1
+    df_h1 = get_price_data(symbol, mt5.TIMEFRAME_H1, 200)
+    pattern = detect_advanced_patterns(symbol, df_h1)
+    if pattern:
+        return {"type": "BUY" if "BOTTOM" in pattern else "SELL", "reason": pattern, "tf": "H1"}
 
-        # Bandes de Bollinger → bandwidth faible = compression / accumulation
-        bb = ta.bbands(df['close'], length=20, std=2)
-        if 'BBU_20_2.0' not in bb.columns:
-            continue
+    # 3. Structure SMC (OTE + Trend)
+    trend = get_market_trend_h4(symbol)
+    df_m15 = get_price_data(symbol, mt5.TIMEFRAME_M15, 100)
+    if df_m15.empty: return None
 
-        bandwidth = (bb['BBU_20_2.0'] - bb['BBL_20_2.0']) / bb['BBM_20_2.0']
-        avg_bandwidth = bandwidth.rolling(50).mean().iloc[-1]
-
-        if bandwidth.iloc[-1] < avg_bandwidth * 0.80:
-            # Range détecté → on cherche la manipulation (fakeout)
-            high_range = df['high'].tail(15).max()
-            low_range  = df['low'].tail(15).min()
-            current_price = mt5.symbol_info_tick(symbol).ask
-
-            if current_price < low_range - 0.1:   # fake breakdown → opportunité achat
-                return {
-                    "type": "BUY",
-                    "reason": f"AMD_MANIPULATION_{tf_name}",
-                    "tf": tf_name,
-                    "context": "Accumulation → Fake breakdown"
-                }
-            elif current_price > high_range + 0.1:  # fake breakout → opportunité vente
-                return {
-                    "type": "SELL",
-                    "reason": f"AMD_MANIPULATION_{tf_name}",
-                    "tf": tf_name,
-                    "context": "Accumulation → Fake breakout"
-                }
-    return None
-
-
-def get_smart_signal():
-    """
-    Stratégie principale – Ordre de priorité :
-      1. AMD Manipulation (H4 > H1 > M30)
-      2. Figures chartistes W/M sur M5
-      3. Rebond sur support dynamique M5
-      4. (optionnel) Structure + OTE + FVG alignés
-    """
-    # ── 1. Priorité AMD Manipulation ─────────────────────────────────────
-    amd_signal = analyze_amd_priority(SYMBOL)
-    if amd_signal:
-        logging.info(f"AMD PRIORITAIRE → {amd_signal['reason']}")
-        return amd_signal
-
-    # ── 2. Figures chartistes M5 ─────────────────────────────────────────
-    df_m5 = get_price_data(SYMBOL, mt5.TIMEFRAME_M5, 200)
-    if not df_m5.empty:
-        pattern = detect_advanced_patterns(df_m5)
-        if pattern:
-            bias = "BUY" if "BOTTOM" in pattern else "SELL"
-            return {
-                "type": bias,
-                "reason": pattern,
-                "tf": "M5"
-            }
-
-    # ── 3. Rebond support / résistance dynamique M5 ───────────────────────
-    if not df_m5.empty:
-        current_p = mt5.symbol_info_tick(SYMBOL).ask
-        dynamic_support = df_m5['low'].rolling(50).min().iloc[-1]
-        if current_p <= dynamic_support * 1.0005:  # petite marge
-            return {
-                "type": "BUY",
-                "reason": "DYNAMIC_SUPPORT_M5",
-                "tf": "M5"
-            }
-
-    # ── 4. Stratégie classique Structure + OTE + FVG (si tu veux la garder) ──
-    trend_h4 = get_market_trend_h4()
-    df_m30 = get_price_data(SYMBOL, mt5.TIMEFRAME_M30, 300)
-    if df_m30.empty:
-        return None
-
-    status, sup, res = analyze_market_structure(df_m30)
-    has_fvg, fvg_type = check_fvg(df_m30)
-
-    if status == "ACCUMULATION (RANGE)":
-        return None
-
-    current_p = mt5.symbol_info_tick(SYMBOL).ask
-    recent_low  = df_m30['low'].tail(40).min()
-    recent_high = df_m30['high'].tail(40).max()
-    range_val   = recent_high - recent_low
-
-    if range_val < 0.0001:  # protection division par zéro
-        return None
-
-    ote_buy  = recent_high - range_val * 0.705
-    ote_sell = recent_low  + range_val * 0.705
-
-    if (trend_h4 == "UP" and status == "HAUSSIÈRE" and
-        current_p <= ote_buy + 0.0005 and has_fvg and fvg_type == "BULLISH"):
+    recent_low = df_m15['low'].tail(30).min()
+    recent_high = df_m15['high'].tail(30).max()
+    range_val = recent_high - recent_low
+    
+    if trend == "UP" and tick.ask <= recent_high - (range_val * 0.705):
         return {
-            "type": "BUY",
-            "reason": "OTE+FVG_BULL_H4",
-            "tf": "M30",
-            "sl": recent_low - 0.0008 * 10,   # 8 pips sous swing low
-            "tp": recent_high + 0.0010 * 10,
+            "type": "BUY", "reason": "SMC_OTE_BUY", "tf": "M15",
+            "sl": recent_low - (range_val * 0.1),
+            "tp": recent_high + (range_val * 0.5),
             "tp_half": recent_high
         }
-
-    if (trend_h4 == "DOWN" and status == "BAISSIÈRE" and
-        current_p >= ote_sell - 0.0005 and has_fvg and fvg_type == "BEARISH"):
+    
+    if trend == "DOWN" and tick.bid >= recent_low + (range_val * 0.705):
         return {
-            "type": "SELL",
-            "reason": "OTE+FVG_BEAR_H4",
-            "tf": "M30",
-            "sl": recent_high + 0.0008 * 10,
-            "tp": recent_low - 0.0010 * 10,
+            "type": "SELL", "reason": "SMC_OTE_SELL", "tf": "M15",
+            "sl": recent_high + (range_val * 0.1),
+            "tp": recent_low - (range_val * 0.5),
             "tp_half": recent_low
         }
 
@@ -236,40 +224,6 @@ def find_swings(df):
     except IndexError:
         return None, None
 
-
-def open_trade_v100(signal):
-    """Exécute l'ordre et notifie la console/bot avec détails lot et prix"""
-    tick = mt5.symbol_info_tick(SYMBOL)
-    lot = float(max(MIN_LOT_V100, 1.0)) # Sécurité lot minimum
-    
-    price = tick.ask if signal['type'] == "BUY" else tick.bid
-    
-    request = {
-        "action": mt5.TRADE_ACTION_DEAL,
-        "symbol": SYMBOL,
-        "volume": lot,
-        "type": mt5.ORDER_TYPE_BUY if signal['type'] == "BUY" else mt5.ORDER_TYPE_SELL,
-        "price": price,
-        "sl": float(signal['sl']),
-        "tp": float(signal['tp']),
-        "magic": MAGIC_NUMBER,
-        "comment": "SMC_PRO_V100",
-        "type_filling": mt5.ORDER_FILLING_FOK,
-        "type_time": mt5.ORDER_TIME_GTC,
-    }
-
-    result = mt5.order_send(request)
-    if result.retcode == mt5.TRADE_RETCODE_DONE:
-        msg = (f"🚀 POSITION {signal['type']} | Lot: {lot}\n"
-               f"Entrée: {result.price:.2f}\nSL: {signal['sl']:.2f} | TP: {signal['tp']:.2f}")
-        print(f"\n--- EXECUTION ---\n{msg}\n-----------------\n")
-        send_telegram_alert(msg, force=True)
-        save_open(result.order, signal['type'], result.price)
-        return result.order, lot
-    else:
-        print(f"❌ Erreur ouverture : {result.comment}")
-        return None, 0
-
 def update_db_profit(ticket, profit, close_price, status="CLOSED"):
     """Met à jour MongoDB en ajoutant le profit (gère partiels et BE)"""
     collection.update_one(
@@ -277,93 +231,6 @@ def update_db_profit(ticket, profit, close_price, status="CLOSED"):
         {"$inc": {"profit": float(profit)}, 
          "$set": {"close_price": float(close_price), "status": status, "close_time": datetime.utcnow()}}
     )
-
-def handle_trade_closure(ticket, lot, reason):
-    """Notification finale lors du SL ou TP avec profit réel BD"""
-    # Attendre la synchro historique
-    time.sleep(1)
-    history = mt5.history_deals_get(position=ticket)
-    if history:
-        total_profit = sum(deal.profit for deal in history)
-        msg = (f"🏁 TRADE TERMINE ({reason})\nTicket: {ticket} | Lot: {lot}\n"
-               f"Résultat Final: {total_profit:.2f} USD")
-        print(f"\n--- CLOTURE ---\n{msg}\n---------------\n")
-        send_telegram_alert(msg, force=True)
-
-def close_partial_v100(ticket, vol):
-    """Ferme 50% et notifie le retrait partiel"""
-    pos_list = mt5.positions_get(ticket=ticket)
-    if not pos_list: return False
-    
-    pos = pos_list[0]
-    tick = mt5.symbol_info_tick(SYMBOL)
-    
-    request = {
-        "action": mt5.TRADE_ACTION_DEAL,
-        "symbol": SYMBOL,
-        "volume": float(vol),
-        "type": mt5.ORDER_TYPE_SELL if pos.type == mt5.ORDER_TYPE_BUY else mt5.ORDER_TYPE_BUY,
-        "position": ticket,
-        "price": tick.bid if pos.type == mt5.ORDER_TYPE_BUY else tick.ask,
-        "magic": MAGIC_NUMBER,
-        "comment": "PARTIEL 50%",
-        "type_filling": mt5.ORDER_FILLING_FOK,
-    }
-    
-    result = mt5.order_send(request)
-    if result.retcode == mt5.TRADE_RETCODE_DONE:
-        time.sleep(0.5)
-        deal = mt5.history_deals_get(ticket=result.order)[0]
-        update_db_profit(ticket, deal.profit, result.price, status="PARTIAL_TAKEN")
-        msg = f"💰 PARTIEL ENCAISSÉ : +{deal.profit:.2f} USD pour le ticket {ticket}"
-        print(msg)
-        send_telegram_alert(msg)
-        return True
-    return False
-
-def move_sl_to_be(ticket):
-    """Déplace le SL au prix d'entrée (Break-Even)"""
-    pos_list = mt5.positions_get(ticket=ticket)
-    if not pos_list: return False
-    
-    pos = pos_list[0]
-    request = {
-        "action": mt5.TRADE_ACTION_SLTP,
-        "position": ticket,
-        "sl": pos.price_open,
-        "tp": pos.tp
-    }
-    result = mt5.order_send(request)
-    if result.retcode == mt5.TRADE_RETCODE_DONE:
-        msg = f"🛡️ BREAK-EVEN : SL sécurisé à {pos.price_open} pour {ticket}"
-        print(msg)
-        send_telegram_alert(msg)
-        return True
-    return False
-
-def is_volatility_good():
-    """Vérifie l'heure et la volatilité via l'ATR"""
-    now = datetime.utcnow().hour
-    
-    # 1. Vérification Horaire
-    if not (START_HOUR <= now < END_HOUR):
-        msg = f"⏳ Marché hors session : {now}h GMT. Bonne volatilité entre {START_HOUR}h et {END_HOUR}h GMT."
-        return False, msg
-
-    # 2. Vérification Technique (ATR)
-    df = get_price_data(SYMBOL, mt5.TIMEFRAME_M5, 50)
-    if df.empty: return False, "Données indisponibles"
-    
-    atr = ta.atr(df['high'], df['low'], df['close'], length=14)
-    current_atr = atr.iloc[-1]
-    avg_atr = atr.mean()
-
-    # Si la volatilité actuelle est 20% sous la moyenne, on évite
-    if current_atr < (avg_atr * 0.8):
-        msg = f"📉 Volatilité trop faible (ATR: {current_atr:.2f}). Le marché dort."
-        return False, msg
-
-    return True, "Volatilité OK"
 
 def detect_chart_patterns(df):
     """Détecte les figures chartistes redoutables (W, M, ETE)"""
@@ -389,7 +256,7 @@ def detect_chart_patterns(df):
 
 def analyze_amd_cycle(symbol, timeframe):
     """Logique Accumulation - Manipulation - Distribution"""
-    df = get_price_data(symbol, timeframe, 100)
+    df = get_price_data(symbol, timeframe, 400)
     if df.empty: return None
     
     # 1. Accumulation : Range étroit et volume faible
@@ -417,7 +284,6 @@ def get_best_timeframe_amd():
     timeframes = [
         (mt5.TIMEFRAME_H4, "H4"),
         (mt5.TIMEFRAME_H1, "H1"),
-        (mt5.TIMEFRAME_M30, "M30")
     ]
     
     for tf, name in timeframes:
@@ -428,3 +294,227 @@ def get_best_timeframe_amd():
             
     return None, None
 
+def move_sl_to_be(symbol, ticket):
+    """Sécurise la position au prix d'entrée (Break-Even)"""
+    pos = mt5.positions_get(ticket=ticket)
+    if not pos: return False
+    
+    p = pos[0]
+    # Si le SL est déjà au prix d'entrée, on ne fait rien
+    if p.sl == p.price_open: return True
+
+    request = {
+        "action": mt5.TRADE_ACTION_SLTP,
+        "symbol": symbol,
+        "position": ticket,
+        "sl": float(p.price_open),
+        "tp": float(p.tp)
+    }
+    
+    res = mt5.order_send(request)
+    if res.retcode == mt5.TRADE_RETCODE_DONE:
+        logging.info(f"🛡️ [{symbol}] SL déplacé au Break-Even pour {ticket}")
+        return True
+    else:
+        logging.error(f"❌ Erreur BE sur {symbol}: {res.comment}")
+        return False
+    
+def monitor_active_trade(symbol, ticket, lot, signal_data):
+    """Surveille une position spécifique et gère le cycle de vie complet"""
+    half_done = False
+    logging.info(f"👀 [{symbol}] Surveillance active du ticket {ticket}...")
+
+    while True:
+        positions = mt5.positions_get(ticket=ticket)
+        
+        # SI LA POSITION N'EXISTE PLUS (Clôture Totale)
+        if not positions:
+            time.sleep(1) # Attendre que l'historique se mette à jour
+            history = mt5.history_deals_get(ticket=ticket)
+            
+            total_profit = 0
+            exit_price = 0
+            if history:
+                total_profit = sum(deal.profit for deal in history)
+                exit_price = history[-1].price
+            
+            status = "✅ TP TOUCHÉ" if total_profit > 0 else "❌ SL TOUCHÉ"
+            
+            msg = (
+                f"🏁 **POSITION FERMÉE**\n"
+                f"━━━━━━━━━━━━━━━━━━━━\n"
+                f"📊 **Statut:** {status}\n"
+                f"📈 **Marché:** {symbol}\n"
+                f"💰 Profit/Perte Total: {total_profit:.2f} USD\n"
+                f"Prix Sortie: {exit_price}\n"
+                f"Lot total géré: {lot}\n"
+                f"━━━━━━━━━━━━━━━━━━━━"
+            )
+            send_telegram_alert(msg)
+            handle_trade_closure(symbol, ticket, lot, status)
+            break
+        
+        # GESTION EN COURS (BE et Partiel)
+        pos = positions[0]
+        current_price = pos.price_current
+        
+        if not half_done and 'tp_half' in signal_data:
+            target_reached = False
+            if pos.type == mt5.ORDER_TYPE_BUY:
+                target_reached = current_price >= signal_data['tp_half']
+            elif pos.type == mt5.ORDER_TYPE_SELL:
+                target_reached = current_price <= signal_data['tp_half']
+            
+            if target_reached:
+                logging.info(f"🎯 [{symbol}] Objectif partiel atteint.")
+                # On ferme 50% du volume actuel
+                if close_partial(symbol, ticket, pos.volume / 2):
+                    if move_sl_to_be(symbol, ticket):
+                        half_done = True
+                        # Le message de succès est déjà envoyé par close_partial
+        
+        time.sleep(1)
+        
+    
+
+def monitor_active_trade(symbol, ticket, lot, signal_data):
+    """Surveille une position spécifique sans bloquer les autres analyses"""
+    half_done = False
+    logging.info(f"👀 [{symbol}] Surveillance active du ticket {ticket}...")
+
+    while True:
+        positions = mt5.positions_get(ticket=ticket)
+        
+        if not positions:
+            handle_trade_closure(symbol, ticket, lot, "SL/TP SERVEUR")
+            break
+        
+        pos = positions[0]
+        current_price = pos.price_current
+        
+        if not half_done:
+            target_reached = False
+            if pos.type == mt5.ORDER_TYPE_BUY:
+                
+                target_reached = current_price >= signal_data['tp_half']
+            elif pos.type == mt5.ORDER_TYPE_SELL:
+                target_reached = current_price <= signal_data['tp_half']
+            
+            if target_reached:
+                logging.info(f"🎯 [{symbol}] Objectif partiel atteint.")
+                if close_partial(symbol, ticket, pos.volume / 2):
+                    if move_sl_to_be(symbol, ticket):
+                        half_done = True
+                        send_telegram_alert(f"🛡️ [{symbol}] Partiel encaissé et BE activé.")
+
+        time.sleep(1)
+
+
+def close_partial(symbol, ticket, vol):
+    """Clôture partielle sécurisée avec reporting de profit"""
+    pos = mt5.positions_get(ticket=ticket)
+    if not pos: return False
+    
+    tick = mt5.symbol_info_tick(symbol)
+    request = {
+        "action": mt5.TRADE_ACTION_DEAL,
+        "symbol": symbol,
+        "volume": float(vol),
+        "type": mt5.ORDER_TYPE_SELL if pos[0].type == mt5.ORDER_TYPE_BUY else mt5.ORDER_TYPE_BUY,
+        "position": ticket,
+        "price": tick.bid if pos[0].type == mt5.ORDER_TYPE_BUY else tick.ask,
+        "magic": MAGIC_NUMBER,
+        "type_filling": mt5.ORDER_FILLING_FOK,
+    }
+    
+    res = mt5.order_send(request)
+    if res.retcode == mt5.TRADE_RETCODE_DONE:
+        time.sleep(0.5)  # Petit délai pour laisser MT5 enregistrer le deal
+        # Récupération du deal pour avoir le profit réel encaissé
+        history = mt5.history_deals_get(ticket=ticket)
+        partial_profit = 0
+        if history:
+            # On prend le dernier deal (celui de la clôture partielle)
+            partial_profit = history[-1].profit
+            
+        update_db_profit(ticket, partial_profit, res.price, status="PARTIAL_TAKEN")
+        
+        msg = (
+            f"💰 **PARTIEL ENCAISSÉ**\n"
+            f"━━━━━━━━━━━━━━━━━━━━\n"
+            f"📈 **Marché:** {symbol}\n"
+            f"Ticket: {ticket}\n"
+            f"Profit: +{partial_profit:.2f} USD\n"
+            f"Volume restant: {pos[0].volume - vol}\n"
+            f"━━━━━━━━━━━━━━━━━━━━"
+        )
+        send_telegram_alert(msg)
+        return True
+    return False
+
+def is_volatility_good(symbol):
+    """Vérifie si l'indice est assez 'excité' pour être tradé"""
+    df = get_price_data(symbol, mt5.TIMEFRAME_H1, 50)
+    if df.empty: return False, "Pas de data"
+    
+    atr = ta.atr(df['high'], df['low'], df['close'], length=14)
+    if atr is None or len(atr) < 1: return False, "ATR Error"
+    
+    current_atr = atr.iloc[-1]
+    avg_atr = atr.mean()
+
+    if current_atr < (avg_atr * 0.7):
+        return False, f"{symbol} trop calme"
+    return True, "OK"
+
+def handle_trade_closure(symbol, ticket, lot, reason):
+    """Gère la fin d'un trade et log le résultat"""
+    logging.info(f"🏁 [{symbol}] Position {ticket} fermée ({reason})")
+    send_telegram_alert(f"🏁 [{symbol}] Trade fermé : {reason}")
+    
+def open_trade(symbol, signal):
+    """Exécution d'ordre universelle pour Indices Synthétiques avec rapport complet"""
+    tick = mt5.symbol_info_tick(symbol)
+    if not tick:
+        logging.error(f"Impossible de récupérer le tick pour {symbol}")
+        return None, 0
+        
+    lot = get_dynamic_lot(symbol)
+    price = tick.ask if signal['type'] == "BUY" else tick.bid
+    
+    request = {
+        "action": mt5.TRADE_ACTION_DEAL,
+        "symbol": symbol,
+        "volume": float(lot),
+        "type": mt5.ORDER_TYPE_BUY if signal['type'] == "BUY" else mt5.ORDER_TYPE_SELL,
+        "price": price,
+        "sl": float(signal['sl']),
+        "tp": float(signal['tp']),
+        "magic": MAGIC_NUMBER,
+        "comment": f"BOT_{symbol[:3]}",
+        "type_filling": mt5.ORDER_FILLING_FOK,
+        "type_time": mt5.ORDER_TIME_GTC,
+    }
+
+    result = mt5.order_send(request)
+    if result.retcode == mt5.TRADE_RETCODE_DONE:
+        # Message Telegram de Bienvenue sur le Marché
+        msg = (
+            f"🔔 **NOUVELLE POSITION OUVERTE**\n"
+            f"━━━━━━━━━━━━━━━━━━━━\n"
+            f"📈 **Marché:** {symbol}\n"
+            f"Type: {'🔵 BUY' if signal['type'] == 'BUY' else '🔴 SELL'}\n"
+            f"Lot: {lot}\n"
+            f"Prix Entrée: {result.price}\n"
+            f"🚫 SL: {signal['sl']}\n"
+            f"🟡 Middle TP (50%): {signal.get('tp_half', 'N/A')}\n"
+            f"🎯 TP Final: {signal['tp']}\n"
+            f"💡 **Raison:** {signal['reason']}\n"
+            f"━━━━━━━━━━━━━━━━━━━━"
+        )
+        send_telegram_alert(msg)
+        save_open(result.order, signal['type'], result.price)
+        return result.order, lot
+    else:
+        logging.error(f"Échec {symbol}: {result.comment}")
+        return None, 0

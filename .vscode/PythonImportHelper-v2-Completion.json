@@ -215,14 +215,6 @@
         "documentation": {}
     },
     {
-        "label": "LOT_SIZE",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
         "label": "SYMBOL",
         "importPath": "config",
         "description": "config",
@@ -232,22 +224,6 @@
     },
     {
         "label": "MAGIC_NUMBER",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "START_HOUR",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "END_HOUR",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -280,14 +256,6 @@
     },
     {
         "label": "setup_logging",
-        "importPath": "utils",
-        "description": "utils",
-        "isExtraImport": true,
-        "detail": "utils",
-        "documentation": {}
-    },
-    {
-        "label": "send_telegram_alert",
         "importPath": "utils",
         "description": "utils",
         "isExtraImport": true,
@@ -343,11 +311,12 @@
         "documentation": {}
     },
     {
-        "label": "close_partial_v100",
-        "importPath": "strategy",
-        "description": "strategy",
+        "label": "threading",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "strategy",
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
         "documentation": {}
     },
     {
@@ -359,7 +328,7 @@
         "documentation": {}
     },
     {
-        "label": "get_smart_signal",
+        "label": "monitor_active_trade",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,
@@ -367,7 +336,7 @@
         "documentation": {}
     },
     {
-        "label": "handle_trade_closure",
+        "label": "get_smart_signal",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,
@@ -383,15 +352,7 @@
         "documentation": {}
     },
     {
-        "label": "move_sl_to_be",
-        "importPath": "strategy",
-        "description": "strategy",
-        "isExtraImport": true,
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "open_trade_v100",
+        "label": "open_trade",
         "importPath": "strategy",
         "description": "strategy",
         "isExtraImport": true,
@@ -591,7 +552,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "ACCOUNT_NUMBER = int(os.getenv(\"ACCOUNT_NUMBER\", \"0\"))\nPASSWORD = os.getenv(\"PASSWORD\", \"\")\nSERVER = os.getenv(\"SERVER\", \"\")\nMT5_TERMINAL_PATH = r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n# Uniquement V100\nSYMBOL = \"Volatility 100 Index\"\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")",
+        "peekOfCode": "ACCOUNT_NUMBER = int(os.getenv(\"ACCOUNT_NUMBER\", \"0\"))\nPASSWORD = os.getenv(\"PASSWORD\", \"\")\nSERVER = os.getenv(\"SERVER\", \"\")\nMT5_TERMINAL_PATH = r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n# Uniquement V100\nSYMBOL = [\"Volatility 25 Index\", \"Volatility 50 Index\", \"Volatility 75 Index\", \"Volatility 100 Index\"]\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")",
         "detail": "config",
         "documentation": {}
     },
@@ -600,7 +561,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "PASSWORD = os.getenv(\"PASSWORD\", \"\")\nSERVER = os.getenv(\"SERVER\", \"\")\nMT5_TERMINAL_PATH = r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n# Uniquement V100\nSYMBOL = \"Volatility 100 Index\"\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")",
+        "peekOfCode": "PASSWORD = os.getenv(\"PASSWORD\", \"\")\nSERVER = os.getenv(\"SERVER\", \"\")\nMT5_TERMINAL_PATH = r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n# Uniquement V100\nSYMBOL = [\"Volatility 25 Index\", \"Volatility 50 Index\", \"Volatility 75 Index\", \"Volatility 100 Index\"]\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")",
         "detail": "config",
         "documentation": {}
     },
@@ -609,7 +570,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "SERVER = os.getenv(\"SERVER\", \"\")\nMT5_TERMINAL_PATH = r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n# Uniquement V100\nSYMBOL = \"Volatility 100 Index\"\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB",
+        "peekOfCode": "SERVER = os.getenv(\"SERVER\", \"\")\nMT5_TERMINAL_PATH = r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n# Uniquement V100\nSYMBOL = [\"Volatility 25 Index\", \"Volatility 50 Index\", \"Volatility 75 Index\", \"Volatility 100 Index\"]\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB",
         "detail": "config",
         "documentation": {}
     },
@@ -618,7 +579,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MT5_TERMINAL_PATH = r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n# Uniquement V100\nSYMBOL = \"Volatility 100 Index\"\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")",
+        "peekOfCode": "MT5_TERMINAL_PATH = r\"C:\\Program Files\\MetaTrader 5\\terminal64.exe\"\n# Uniquement V100\nSYMBOL = [\"Volatility 25 Index\", \"Volatility 50 Index\", \"Volatility 75 Index\", \"Volatility 100 Index\"]\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")",
         "detail": "config",
         "documentation": {}
     },
@@ -627,7 +588,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "SYMBOL = \"Volatility 100 Index\"\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"",
+        "peekOfCode": "SYMBOL = [\"Volatility 25 Index\", \"Volatility 50 Index\", \"Volatility 75 Index\", \"Volatility 100 Index\"]\nLOT_SIZE = 1.0  # Volume fixe pour le test\nMAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"",
         "detail": "config",
         "documentation": {}
     },
@@ -645,7 +606,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
+        "peekOfCode": "MAGIC_NUMBER = 123456\n# Telegram\nTELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 23",
         "detail": "config",
         "documentation": {}
     },
@@ -654,7 +615,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
+        "peekOfCode": "TELEGRAM_TOKEN = os.getenv(\"TELEGRAM_TOKEN\", \"\")\nTELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 23",
         "detail": "config",
         "documentation": {}
     },
@@ -663,7 +624,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "TELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
+        "peekOfCode": "TELEGRAM_CHAT_ID = os.getenv(\"TELEGRAM_CHAT_ID\", \"\")\n# MongoDB\nMONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 23",
         "detail": "config",
         "documentation": {}
     },
@@ -672,7 +633,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
+        "peekOfCode": "MONGODB_URI = os.getenv(\"MONGODB_URI\", \"\")\nDB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 23",
         "detail": "config",
         "documentation": {}
     },
@@ -681,7 +642,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "DB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
+        "peekOfCode": "DB_NAME = os.getenv(\"MONGODB_DB\", \"trading_bot_V100\")\nCOLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 23",
         "detail": "config",
         "documentation": {}
     },
@@ -690,7 +651,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "COLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 20",
+        "peekOfCode": "COLLECTION_NAME = \"trades_v100\"\nSTART_HOUR = 8 \nEND_HOUR = 23",
         "detail": "config",
         "documentation": {}
     },
@@ -699,7 +660,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "START_HOUR = 8 \nEND_HOUR = 20",
+        "peekOfCode": "START_HOUR = 8 \nEND_HOUR = 23",
         "detail": "config",
         "documentation": {}
     },
@@ -708,7 +669,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "END_HOUR = 20",
+        "peekOfCode": "END_HOUR = 23",
         "detail": "config",
         "documentation": {}
     },
@@ -767,11 +728,11 @@
         "documentation": {}
     },
     {
-        "label": "monitor_active_trade",
+        "label": "run_bot_for_symbol",
         "kind": 2,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "def monitor_active_trade(ticket, lot, signal_data):\n    \"\"\"\n    Surveille la position ouverte en temps réel pour gérer :\n    1. La clôture partielle (50% du volume)\n    2. Le passage en Break-Even (sécurisation du SL)\n    3. La détection de clôture finale (SL ou TP touché)\n    \"\"\"\n    half_done = False\n    print(f\"👀 Surveillance active du ticket {ticket} lancée...\")\n    while True:",
+        "peekOfCode": "def run_bot_for_symbol(symbol):\n    \"\"\"Boucle d'analyse indépendante pour chaque indice\"\"\"\n    logging.info(f\"🚀 Analyse du marché {symbol}\")\n    while True:\n        try:\n            if not mt5.terminal_info().connected:\n                time.sleep(5)\n                continue\n            # Vérification de la volatilité propre à l'indice\n            vol_ok, _ = is_volatility_good(symbol)",
         "detail": "main",
         "documentation": {}
     },
@@ -780,7 +741,16 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_price_data(symbol, timeframe, n_bars=300):\n    \"\"\"Récupère les données OHLCV\"\"\"\n    rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)\n    if rates is None or len(rates) == 0:\n        return pd.DataFrame()\n    df = pd.DataFrame(rates)\n    df['time'] = pd.to_datetime(df['time'], unit='s')\n    return df\ndef get_zigzag(df, depth=10, zz_column_name='zz'):\n    zz_result = ta.zigzag(high=df['high'], low=df['low'], depth=depth)",
+        "peekOfCode": "def get_price_data(symbol, timeframe, n_bars=400):\n    \"\"\"Récupère les données OHLCV pour un symbole spécifique\"\"\"\n    rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)\n    if rates is None or len(rates) == 0:\n        logging.warning(f\"Données indisponibles pour {symbol} en TF {timeframe}\")\n        return pd.DataFrame()\n    df = pd.DataFrame(rates)\n    df['time'] = pd.to_datetime(df['time'], unit='s')\n    return df\ndef get_dynamic_lot(symbol, risk_percent=0.01):",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "get_dynamic_lot",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def get_dynamic_lot(symbol, risk_percent=0.01):\n    \"\"\"Calcule le lot minimal ou basé sur le risque pour chaque indice\"\"\"\n    symbol_info = mt5.symbol_info(symbol)\n    if symbol_info is None:\n        return 0.1\n    # Pour les indices synthétiques, on commence souvent par le lot minimal autorisé\n    # car la volatilité est déjà intrinsèquement élevée.\n    min_lot = symbol_info.volume_min\n    return min_lot\ndef get_zigzag(df, depth=10):",
         "detail": "strategy",
         "documentation": {}
     },
@@ -789,7 +759,7 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_zigzag(df, depth=10, zz_column_name='zz'):\n    zz_result = ta.zigzag(high=df['high'], low=df['low'], depth=depth)\n    if isinstance(zz_result, pd.Series):\n        df[zz_column_name] = zz_result\n    elif isinstance(zz_result, pd.DataFrame):\n        # Prendre la colonne qui contient le plus de valeurs non-null\n        best_col = zz_result.notna().sum().idxmax()\n        df[zz_column_name] = zz_result[best_col]\n        # logging.info(f\"Colonne zigzag sélectionnée automatiquement : {best_col}\")\n    else:",
+        "peekOfCode": "def get_zigzag(df, depth=10):\n    \"\"\"Calcule les points hauts et bas (ZigZag) avec sécurité\"\"\"\n    try:\n        zz_df = ta.zigzag(df['high'], df['low'], depth=depth)\n        zigzag_col = None\n        for col in zz_df.columns:\n            if col.startswith('ZIGZAGs'):\n                zigzag_col = col\n                break\n        if zigzag_col is None:",
         "detail": "strategy",
         "documentation": {}
     },
@@ -798,16 +768,7 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def detect_advanced_patterns(df):\n    \"\"\"Détection simple W / M via ZigZag\"\"\"\n    peaks = get_zigzag(df)\n    if len(peaks) < 5:\n        return None\n    p = peaks['zz'].values\n    # Double Bottom (W)\n    if p[-1] > p[-2] and abs(p[-2] - p[-4]) < (p[-1] * 0.002) and p[-3] > p[-2]:\n        return \"DOUBLE_BOTTOM_W\"\n    # Double Top (M)",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "analyze_market_structure",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def analyze_market_structure(df):\n    \"\"\"État du marché : tendance ou range (M30 ou H1 recommandé)\"\"\"\n    if len(df) < 50:\n        return \"INSUFFISANT\", 0, 0\n    adx = ta.adx(df['high'], df['low'], df['close'], length=14)\n    current_adx = adx['ADX_14'].iloc[-1]\n    resistance = df['high'].rolling(window=20).max().iloc[-1]\n    support    = df['low'].rolling(window=20).min().iloc[-1]\n    if current_adx < 22:\n        return \"ACCUMULATION (RANGE)\", support, resistance",
+        "peekOfCode": "def detect_advanced_patterns(symbol, df):\n    \"\"\"Détection W / M via ZigZag adaptée au symbole\"\"\"\n    peaks = get_zigzag(df, depth=6)\n    if len(peaks) < 5:\n        return None\n    p = peaks['zz'].values\n    # Seuil de tolérance adapté à la volatilité de l'indice\n    tolerance = p[-1] * 0.002 \n    # Double Bottom (W)\n    if p[-1] > p[-2] and abs(p[-2] - p[-4]) < tolerance and p[-3] > p[-2]:",
         "detail": "strategy",
         "documentation": {}
     },
@@ -816,16 +777,7 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_market_trend_h4():\n    \"\"\"Filtre de tendance haute timeframe (H4)\"\"\"\n    df = get_price_data(SYMBOL, mt5.TIMEFRAME_H4, 100)\n    if df.empty:\n        return \"NEUTRAL\"\n    df['ema_50'] = ta.ema(df['close'], length=EMA_PERIOD_H4)\n    return \"UP\" if df['close'].iloc[-1] > df['ema_50'].iloc[-1] else \"DOWN\"\ndef check_fvg(df):\n    \"\"\"Fair Value Gap simple sur les 3 dernières bougies\"\"\"\n    if len(df) < 3:",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "check_fvg",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def check_fvg(df):\n    \"\"\"Fair Value Gap simple sur les 3 dernières bougies\"\"\"\n    if len(df) < 3:\n        return False, None\n    if df['high'].iloc[-3] < df['low'].iloc[-1]:\n        return True, \"BULLISH\"\n    if df['low'].iloc[-3] > df['high'].iloc[-1]:\n        return True, \"BEARISH\"\n    return False, None\ndef analyze_amd_priority(symbol):",
+        "peekOfCode": "def get_market_trend_h4(symbol):\n    \"\"\"Filtre de tendance haute timeframe (H4) pour un symbole\"\"\"\n    df = get_price_data(symbol, mt5.TIMEFRAME_H4, 200)\n    if df.empty: return \"NEUTRAL\"\n    df['ema_50'] = ta.ema(df['close'], length=EMA_PERIOD_H4)\n    if df['ema_50'].isna().all(): return \"NEUTRAL\"\n    trend = \"UP\" if df['close'].iloc[-1] > df['ema_50'].iloc[-1] else \"DOWN\"\n    return trend\ndef analyze_amd_priority(symbol):\n    \"\"\"Logique Accumulation -> Manipulation sur H1 avec gestion d'erreur robuste\"\"\"",
         "detail": "strategy",
         "documentation": {}
     },
@@ -834,7 +786,25 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def analyze_amd_priority(symbol):\n    \"\"\"Priorise l'accumulation → manipulation sur les TF hautes\"\"\"\n    tfs = [\n        (mt5.TIMEFRAME_H4,  \"H4\"),\n        (mt5.TIMEFRAME_H1,  \"H1\"),\n        (mt5.TIMEFRAME_M30, \"M30\")\n    ]\n    for tf_val, tf_name in tfs:\n        df = get_price_data(symbol, tf_val, 120)\n        if df.empty:",
+        "peekOfCode": "def analyze_amd_priority(symbol):\n    \"\"\"Logique Accumulation -> Manipulation sur H1 avec gestion d'erreur robuste\"\"\"\n    # Augmenter le nombre de bougies pour être sûr d'avoir assez de data\n    df = get_price_data(symbol, mt5.TIMEFRAME_H1, 200) \n    if df.empty or len(df) < 50: \n        return None\n    # Calcul des Bandes de Bollinger\n    bb = ta.bbands(df['close'], length=20, std=2)\n    # Correction : On cherche les colonnes dynamiquement pour éviter l'erreur de nom\n    if bb is None or bb.empty:",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_market_structure",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def analyze_market_structure(df):\n    \"\"\"État du marché : tendance ou range (M30 ou H1 recommandé)\"\"\"\n    logging.info(f\"[MARKET STRUCTURE] Analyse sur {len(df)} bougies\")\n    if len(df) < 50:\n        logging.warning(\"[MARKET STRUCTURE] Données insuffisantes pour analyse.\")\n        return \"INSUFFISANT\", 0, 0\n    adx = ta.adx(df['high'], df['low'], df['close'], length=14)\n    current_adx = adx['ADX_14'].iloc[-1]\n    logging.info(f\"[MARKET STRUCTURE] ADX actuel : {current_adx:.2f}\")\n    resistance = df['high'].rolling(window=20).max().iloc[-1]",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "check_fvg",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def check_fvg(df, lookback=5, min_gap=0.50):\n    logging.info(\"[FVG] Vérification Fair Value Gap\")\n    \"\"\"Fair Value Gap simple sur les 3 dernières bougies\"\"\"\n    if len(df) < 3:\n        logging.warning(\"[FVG] Données insuffisantes pour analyse FVG. Pas assezde de bougies.\")\n        return False, None\n    if df['high'].iloc[-3] < df['low'].iloc[-1]:\n        logging.info(\"[FVG] Fair Value Gap BULLISH détecté.\")\n        logging.info(f\"[FVG] Gap détecté → zone : {df['high'].iloc[-3]:.5f} - {df['low'].iloc[-1]:.5f}\")\n        return True, \"BULLISH\"",
         "detail": "strategy",
         "documentation": {}
     },
@@ -843,7 +813,7 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_smart_signal():\n    \"\"\"\n    Stratégie principale – Ordre de priorité :\n      1. AMD Manipulation (H4 > H1 > M30)\n      2. Figures chartistes W/M sur M5\n      3. Rebond sur support dynamique M5\n      4. (optionnel) Structure + OTE + FVG alignés\n    \"\"\"\n    # ── 1. Priorité AMD Manipulation ─────────────────────────────────────\n    amd_signal = analyze_amd_priority(SYMBOL)",
+        "peekOfCode": "def get_smart_signal(symbol):\n    \"\"\"Analyse complète pour un symbole donné\"\"\"\n    tick = mt5.symbol_info_tick(symbol)\n    if not tick: return None\n    # 1. Priorité AMD\n    amd = analyze_amd_priority(symbol)\n    if amd: return amd\n    # 2. Figures Chartistes H1\n    df_h1 = get_price_data(symbol, mt5.TIMEFRAME_H1, 200)\n    pattern = detect_advanced_patterns(symbol, df_h1)",
         "detail": "strategy",
         "documentation": {}
     },
@@ -857,56 +827,11 @@
         "documentation": {}
     },
     {
-        "label": "open_trade_v100",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def open_trade_v100(signal):\n    \"\"\"Exécute l'ordre et notifie la console/bot avec détails lot et prix\"\"\"\n    tick = mt5.symbol_info_tick(SYMBOL)\n    lot = float(max(MIN_LOT_V100, 1.0)) # Sécurité lot minimum\n    price = tick.ask if signal['type'] == \"BUY\" else tick.bid\n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,\n        \"symbol\": SYMBOL,\n        \"volume\": lot,\n        \"type\": mt5.ORDER_TYPE_BUY if signal['type'] == \"BUY\" else mt5.ORDER_TYPE_SELL,",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
         "label": "update_db_profit",
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def update_db_profit(ticket, profit, close_price, status=\"CLOSED\"):\n    \"\"\"Met à jour MongoDB en ajoutant le profit (gère partiels et BE)\"\"\"\n    collection.update_one(\n        {\"ticket\": ticket},\n        {\"$inc\": {\"profit\": float(profit)}, \n         \"$set\": {\"close_price\": float(close_price), \"status\": status, \"close_time\": datetime.utcnow()}}\n    )\ndef handle_trade_closure(ticket, lot, reason):\n    \"\"\"Notification finale lors du SL ou TP avec profit réel BD\"\"\"\n    # Attendre la synchro historique",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "handle_trade_closure",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def handle_trade_closure(ticket, lot, reason):\n    \"\"\"Notification finale lors du SL ou TP avec profit réel BD\"\"\"\n    # Attendre la synchro historique\n    time.sleep(1)\n    history = mt5.history_deals_get(position=ticket)\n    if history:\n        total_profit = sum(deal.profit for deal in history)\n        msg = (f\"🏁 TRADE TERMINE ({reason})\\nTicket: {ticket} | Lot: {lot}\\n\"\n               f\"Résultat Final: {total_profit:.2f} USD\")\n        print(f\"\\n--- CLOTURE ---\\n{msg}\\n---------------\\n\")",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "close_partial_v100",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def close_partial_v100(ticket, vol):\n    \"\"\"Ferme 50% et notifie le retrait partiel\"\"\"\n    pos_list = mt5.positions_get(ticket=ticket)\n    if not pos_list: return False\n    pos = pos_list[0]\n    tick = mt5.symbol_info_tick(SYMBOL)\n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,\n        \"symbol\": SYMBOL,\n        \"volume\": float(vol),",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "move_sl_to_be",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def move_sl_to_be(ticket):\n    \"\"\"Déplace le SL au prix d'entrée (Break-Even)\"\"\"\n    pos_list = mt5.positions_get(ticket=ticket)\n    if not pos_list: return False\n    pos = pos_list[0]\n    request = {\n        \"action\": mt5.TRADE_ACTION_SLTP,\n        \"position\": ticket,\n        \"sl\": pos.price_open,\n        \"tp\": pos.tp",
-        "detail": "strategy",
-        "documentation": {}
-    },
-    {
-        "label": "is_volatility_good",
-        "kind": 2,
-        "importPath": "strategy",
-        "description": "strategy",
-        "peekOfCode": "def is_volatility_good():\n    \"\"\"Vérifie l'heure et la volatilité via l'ATR\"\"\"\n    now = datetime.utcnow().hour\n    # 1. Vérification Horaire\n    if not (START_HOUR <= now < END_HOUR):\n        msg = f\"⏳ Marché hors session : {now}h GMT. Bonne volatilité entre {START_HOUR}h et {END_HOUR}h GMT.\"\n        return False, msg\n    # 2. Vérification Technique (ATR)\n    df = get_price_data(SYMBOL, mt5.TIMEFRAME_M5, 50)\n    if df.empty: return False, \"Données indisponibles\"",
+        "peekOfCode": "def update_db_profit(ticket, profit, close_price, status=\"CLOSED\"):\n    \"\"\"Met à jour MongoDB en ajoutant le profit (gère partiels et BE)\"\"\"\n    collection.update_one(\n        {\"ticket\": ticket},\n        {\"$inc\": {\"profit\": float(profit)}, \n         \"$set\": {\"close_price\": float(close_price), \"status\": status, \"close_time\": datetime.utcnow()}}\n    )\ndef detect_chart_patterns(df):\n    \"\"\"Détecte les figures chartistes redoutables (W, M, ETE)\"\"\"\n    if len(df) < 20: return None",
         "detail": "strategy",
         "documentation": {}
     },
@@ -924,7 +849,7 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def analyze_amd_cycle(symbol, timeframe):\n    \"\"\"Logique Accumulation - Manipulation - Distribution\"\"\"\n    df = get_price_data(symbol, timeframe, 100)\n    if df.empty: return None\n    # 1. Accumulation : Range étroit et volume faible\n    std_dev = df['close'].tail(20).std()\n    avg_std = df['close'].rolling(50).std().mean()\n    is_accumulating = std_dev < (avg_std * 0.7)\n    if is_accumulating:\n        # On définit les bornes du range",
+        "peekOfCode": "def analyze_amd_cycle(symbol, timeframe):\n    \"\"\"Logique Accumulation - Manipulation - Distribution\"\"\"\n    df = get_price_data(symbol, timeframe, 400)\n    if df.empty: return None\n    # 1. Accumulation : Range étroit et volume faible\n    std_dev = df['close'].tail(20).std()\n    avg_std = df['close'].rolling(50).std().mean()\n    is_accumulating = std_dev < (avg_std * 0.7)\n    if is_accumulating:\n        # On définit les bornes du range",
         "detail": "strategy",
         "documentation": {}
     },
@@ -933,7 +858,70 @@
         "kind": 2,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "def get_best_timeframe_amd():\n    \"\"\"Cherche l'accumulation sur les TF les plus hautes en priorité\"\"\"\n    timeframes = [\n        (mt5.TIMEFRAME_H4, \"H4\"),\n        (mt5.TIMEFRAME_H1, \"H1\"),\n        (mt5.TIMEFRAME_M30, \"M30\")\n    ]\n    for tf, name in timeframes:\n        amd_data = analyze_amd_cycle(SYMBOL, tf)\n        if amd_data:",
+        "peekOfCode": "def get_best_timeframe_amd():\n    \"\"\"Cherche l'accumulation sur les TF les plus hautes en priorité\"\"\"\n    timeframes = [\n        (mt5.TIMEFRAME_H4, \"H4\"),\n        (mt5.TIMEFRAME_H1, \"H1\"),\n    ]\n    for tf, name in timeframes:\n        amd_data = analyze_amd_cycle(SYMBOL, tf)\n        if amd_data:\n            print(f\"💎 Accumulation majeure détectée sur {name}. Priorité AMD activée.\")",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "move_sl_to_be",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def move_sl_to_be(symbol, ticket):\n    \"\"\"Sécurise la position au prix d'entrée (Break-Even)\"\"\"\n    pos = mt5.positions_get(ticket=ticket)\n    if not pos: return False\n    p = pos[0]\n    # Si le SL est déjà au prix d'entrée, on ne fait rien\n    if p.sl == p.price_open: return True\n    request = {\n        \"action\": mt5.TRADE_ACTION_SLTP,\n        \"symbol\": symbol,",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "monitor_active_trade",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def monitor_active_trade(symbol, ticket, lot, signal_data):\n    \"\"\"Surveille une position spécifique et gère le cycle de vie complet\"\"\"\n    half_done = False\n    logging.info(f\"👀 [{symbol}] Surveillance active du ticket {ticket}...\")\n    while True:\n        positions = mt5.positions_get(ticket=ticket)\n        # SI LA POSITION N'EXISTE PLUS (Clôture Totale)\n        if not positions:\n            time.sleep(1) # Attendre que l'historique se mette à jour\n            history = mt5.history_deals_get(ticket=ticket)",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "monitor_active_trade",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def monitor_active_trade(symbol, ticket, lot, signal_data):\n    \"\"\"Surveille une position spécifique sans bloquer les autres analyses\"\"\"\n    half_done = False\n    logging.info(f\"👀 [{symbol}] Surveillance active du ticket {ticket}...\")\n    while True:\n        positions = mt5.positions_get(ticket=ticket)\n        if not positions:\n            handle_trade_closure(symbol, ticket, lot, \"SL/TP SERVEUR\")\n            break\n        pos = positions[0]",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "close_partial",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def close_partial(symbol, ticket, vol):\n    \"\"\"Clôture partielle sécurisée avec reporting de profit\"\"\"\n    pos = mt5.positions_get(ticket=ticket)\n    if not pos: return False\n    tick = mt5.symbol_info_tick(symbol)\n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,\n        \"symbol\": symbol,\n        \"volume\": float(vol),\n        \"type\": mt5.ORDER_TYPE_SELL if pos[0].type == mt5.ORDER_TYPE_BUY else mt5.ORDER_TYPE_BUY,",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "is_volatility_good",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def is_volatility_good(symbol):\n    \"\"\"Vérifie si l'indice est assez 'excité' pour être tradé\"\"\"\n    df = get_price_data(symbol, mt5.TIMEFRAME_H1, 50)\n    if df.empty: return False, \"Pas de data\"\n    atr = ta.atr(df['high'], df['low'], df['close'], length=14)\n    if atr is None or len(atr) < 1: return False, \"ATR Error\"\n    current_atr = atr.iloc[-1]\n    avg_atr = atr.mean()\n    if current_atr < (avg_atr * 0.7):\n        return False, f\"{symbol} trop calme\"",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "handle_trade_closure",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def handle_trade_closure(symbol, ticket, lot, reason):\n    \"\"\"Gère la fin d'un trade et log le résultat\"\"\"\n    logging.info(f\"🏁 [{symbol}] Position {ticket} fermée ({reason})\")\n    send_telegram_alert(f\"🏁 [{symbol}] Trade fermé : {reason}\")\ndef open_trade(symbol, signal):\n    \"\"\"Exécution d'ordre universelle pour Indices Synthétiques avec rapport complet\"\"\"\n    tick = mt5.symbol_info_tick(symbol)\n    if not tick:\n        logging.error(f\"Impossible de récupérer le tick pour {symbol}\")\n        return None, 0",
+        "detail": "strategy",
+        "documentation": {}
+    },
+    {
+        "label": "open_trade",
+        "kind": 2,
+        "importPath": "strategy",
+        "description": "strategy",
+        "peekOfCode": "def open_trade(symbol, signal):\n    \"\"\"Exécution d'ordre universelle pour Indices Synthétiques avec rapport complet\"\"\"\n    tick = mt5.symbol_info_tick(symbol)\n    if not tick:\n        logging.error(f\"Impossible de récupérer le tick pour {symbol}\")\n        return None, 0\n    lot = get_dynamic_lot(symbol)\n    price = tick.ask if signal['type'] == \"BUY\" else tick.bid\n    request = {\n        \"action\": mt5.TRADE_ACTION_DEAL,",
         "detail": "strategy",
         "documentation": {}
     },
@@ -942,7 +930,7 @@
         "kind": 5,
         "importPath": "strategy",
         "description": "strategy",
-        "peekOfCode": "MAX_ALLOWED_SPREAD = 0.60\ndef get_price_data(symbol, timeframe, n_bars=300):\n    \"\"\"Récupère les données OHLCV\"\"\"\n    rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)\n    if rates is None or len(rates) == 0:\n        return pd.DataFrame()\n    df = pd.DataFrame(rates)\n    df['time'] = pd.to_datetime(df['time'], unit='s')\n    return df\ndef get_zigzag(df, depth=10, zz_column_name='zz'):",
+        "peekOfCode": "MAX_ALLOWED_SPREAD = 0.60\ndef get_price_data(symbol, timeframe, n_bars=400):\n    \"\"\"Récupère les données OHLCV pour un symbole spécifique\"\"\"\n    rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, n_bars)\n    if rates is None or len(rates) == 0:\n        logging.warning(f\"Données indisponibles pour {symbol} en TF {timeframe}\")\n        return pd.DataFrame()\n    df = pd.DataFrame(rates)\n    df['time'] = pd.to_datetime(df['time'], unit='s')\n    return df",
         "detail": "strategy",
         "documentation": {}
     },
@@ -951,7 +939,7 @@
         "kind": 2,
         "importPath": "utils",
         "description": "utils",
-        "peekOfCode": "def setup_logging():\n    \"\"\"Configure logging : fichier quotidien + console\"\"\"\n    if not os.path.exists(\"logs\"):\n        os.makedirs(\"logs\")\n    log_filename = f\"logs/bot_{datetime.now().strftime('%Y%m%d')}.log\"\n    logging.basicConfig(\n        level=logging.INFO,\n        format=\"%(asctime)s | %(levelname)s | %(message)s\",\n        handlers=[\n            logging.StreamHandler(sys.stdout),",
+        "peekOfCode": "def setup_logging(\n    level=logging.INFO,\n    console_level=logging.INFO,      # niveau pour la console (peut être plus verbeux)\n    file_level=logging.DEBUG,        # niveau pour le fichier (plus détaillé)\n    log_dir=\"logs\"\n):\n    \"\"\"\n    Configure le logging :\n      - Console : INFO ou DEBUG selon besoin (immédiatement visible)\n      - Fichier : un log par jour avec niveau DEBUG (tout est tracé)",
         "detail": "utils",
         "documentation": {}
     },

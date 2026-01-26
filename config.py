@@ -10,7 +10,7 @@ SERVER = os.getenv("SERVER", "")
 MT5_TERMINAL_PATH = r"C:\Program Files\MetaTrader 5\terminal64.exe"
 
 # Uniquement V100
-SYMBOL = "Volatility 100 Index"
+SYMBOL = ["Volatility 25 Index", "Volatility 50 Index", "Volatility 75 Index", "Volatility 100 Index"]
 LOT_SIZE = 1.0  # Volume fixe pour le test
 MAGIC_NUMBER = 123456
 
@@ -24,4 +24,4 @@ DB_NAME = os.getenv("MONGODB_DB", "trading_bot_V100")
 COLLECTION_NAME = "trades_v100"
 
 START_HOUR = 8 
-END_HOUR = 20
+END_HOUR = 23
