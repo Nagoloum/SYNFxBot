@@ -22,6 +22,3 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 MONGODB_URI = os.getenv("MONGODB_URI", "")
 DB_NAME = os.getenv("MONGODB_DB", "trading_bot_V100")
 COLLECTION_NAME = "trades_v100"
-
-START_HOUR = 8 
-END_HOUR = 23

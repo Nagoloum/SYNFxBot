@@ -62,10 +62,7 @@ def setup_logging(
 
     # Message de démarrage visible
     logging.info("━" * 65)
-    # logging.info("Logging configuré")
-    logging.info(f"  • Console → niveau {logging.getLevelName(console_level)}")
-    logging.info(f"  • Fichier  → {log_filename} (niveau {logging.getLevelName(file_level)})")
-    logging.info("━" * 65)
+
 
     return root_logger
 
