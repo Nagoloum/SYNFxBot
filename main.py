@@ -1,29 +1,31 @@
 """
-BOT DE TRADING - STRATÉGIE DE CONFIRMATION DE STRUCTURE
-========================================================
-Stratégie : EMA + Donchian + ADX + RSI + Squeeze + Chandelier Exit
-Timeframes : M5 (contexte) + M1 (exécution)
+BOT DE TRADING — STRATÉGIE EMA 20/50
+======================================
 Symboles : Volatility 25, 50, 75, 100 Index
+Stratégie : Croisement EMA20/EMA50 avec filtre de tendance M5,
+            2% de risque par trade, break-even + trailing stop ATR.
 """
 
 import MetaTrader5 as mt5
 import time
 import logging
+import threading
 from datetime import datetime
+
 from config import SYMBOL, ACCOUNT_NUMBER
 from utils import setup_logging
 from database import init_db
 from connexion import connect_to_mt5, disconnect
-import threading
 from strategy import (
-    get_smart_signal,
+    get_signal,
+    open_trade,
     monitor_active_trade,
     is_volatility_good,
-    open_trade,
-    prepare_trade_request
+    prepare_trade_request,
+    _mt5_lock,          # Mutex partagé entre strategy et main
 )
 
-# Import multi-comptes (optionnel)
+# Import multi-comptes
 try:
     from multi_account import MultiAccountManager
     from accounts_config import ACCOUNTS, MODE
@@ -31,174 +33,158 @@ try:
 except ImportError:
     MULTI_ACCOUNT_AVAILABLE = False
     MODE = "SINGLE"
-    logging.warning("⚠️ Fichier accounts_config.py non trouvé. Mode SINGLE activé par défaut.")
+    logging.warning("⚠️ accounts_config.py non trouvé — Mode SINGLE activé")
 
 
-def get_account_number_for_monitoring(multi_account_manager):
-    """
-    Retourne le numéro de compte à utiliser pour le monitoring.
-    En mode multi, retourne le premier compte actif.
-    """
-    if multi_account_manager and MODE == "MULTI":
-        for acc in ACCOUNTS:
-            if acc.enabled:
-                return acc.account_number
-    return ACCOUNT_NUMBER
+# ═══════════════════════════════════════════════════════════════
+# EXÉCUTION TRADE (single ou multi-comptes)
+# ═══════════════════════════════════════════════════════════════
 
-
-def execute_trade_with_multi_account(symbol, signal, multi_account_manager=None):
+def execute_trade(symbol: str, signal: dict, multi_manager=None) -> tuple:
     """
-    Exécute un trade en utilisant le système multi-comptes si disponible,
-    sinon utilise le système classique.
+    Exécute le trade sur un ou plusieurs comptes.
+    Returns: (ticket, lot, account_number)
     """
-    if multi_account_manager and MODE == "MULTI":
-        request, lot, entry_price, tp1, tp2, tp3 = prepare_trade_request(symbol, signal)
+    if multi_manager and MODE == "MULTI":
+        request, lot, entry_price = prepare_trade_request(symbol, signal)
         if request is None:
             return None, 0, None
-        
-        results = multi_account_manager.execute_trade_all_accounts(request)
-        
+
+        results = multi_manager.execute_trade_all_accounts(request)
+
         if results:
-            first_result = results[0]
-            account_number = first_result.get("account", ACCOUNT_NUMBER)
+            first   = results[0]
+            acc_num = first.get("account", ACCOUNT_NUMBER)
             logging.info(f"✅ Trades exécutés sur {len(results)} compte(s)")
-            return first_result.get("ticket"), lot, account_number
+            return first.get("ticket"), lot, acc_num
         else:
-            logging.error(f"❌ Aucun trade exécuté sur les comptes")
+            logging.error(f"❌ Aucun trade exécuté (multi-comptes)")
             return None, 0, None
     else:
         ticket, lot = open_trade(symbol, signal)
         return ticket, lot, ACCOUNT_NUMBER
 
 
-def run_bot_for_symbol(symbol, multi_account_manager=None):
+# ═══════════════════════════════════════════════════════════════
+# BOUCLE D'ANALYSE PAR SYMBOLE
+# ═══════════════════════════════════════════════════════════════
+
+def run_bot_for_symbol(symbol: str, multi_manager=None):
     """
-    Boucle d'analyse indépendante pour chaque indice
-    
-    Args:
-        symbol: Symbole à trader (ex: "Volatility 100 Index")
-        multi_account_manager: Gestionnaire multi-comptes (optionnel)
+    Thread indépendant d'analyse et de trading pour un symbole.
     """
     logging.info(f"🔍 Démarrage analyse | {symbol}")
-    
-    # Obtenir le numéro de compte pour le monitoring
-    account_number = get_account_number_for_monitoring(multi_account_manager)
-    
+
     while True:
         try:
-            # Vérification de la connexion MT5
-            terminal_info = mt5.terminal_info()
-            if not terminal_info or not terminal_info.connected:
-                logging.warning(f"⚠️ MT5 non connecté, attente...")
+            # ── Vérification connexion MT5 ──
+            with _mt5_lock:
+                info = mt5.terminal_info()
+            if not info or not info.connected:
+                logging.warning(f"[{symbol}] MT5 non connecté, attente...")
                 time.sleep(5)
                 continue
-            
-            # Vérification de la volatilité de l'indice
+
+            # ── Filtre de volatilité ──
             vol_ok, reason = is_volatility_good(symbol)
             if not vol_ok:
-                logging.debug(f"📊 {symbol} | {reason}")
-                time.sleep(300)  # Attendre 5 minutes si marché trop calme
+                logging.debug(f"[{symbol}] {reason}")
+                time.sleep(300)
                 continue
-            
-            # Vérifier qu'il n'y a pas déjà une position ouverte sur ce symbole
-            existing = mt5.positions_get(symbol=symbol)
+
+            # ── Position déjà ouverte sur ce symbole ? ──
+            with _mt5_lock:
+                existing = mt5.positions_get(symbol=symbol)
             if existing:
-                logging.debug(f"⏸️ {symbol} | Position déjà ouverte, surveillance en cours...")
+                logging.debug(f"[{symbol}] Position déjà ouverte, surveillance...")
                 time.sleep(10)
                 continue
-            
-            # ANALYSE DU SIGNAL
-            signal = get_smart_signal(symbol)
-            
+
+            # ── Analyse du signal ──
+            signal = get_signal(symbol)
+
             if signal:
-                logging.info(f"🎯 [{symbol}] SIGNAL DÉTECTÉ | {signal['reason']}")
-                logging.info(f"   Type: {signal['type']} | Entry: {signal['entry_price']:.5f}")
-                logging.info(f"   SL: {signal['sl']:.5f} | TP: {signal['tp']:.5f}")
-                
-                # EXÉCUTION DU TRADE
-                ticket, lot, acc_num = execute_trade_with_multi_account(
-                    symbol, signal, multi_account_manager
+                logging.info(
+                    f"🎯 [{symbol}] SIGNAL {signal['type']} | {signal['reason']}"
                 )
-                
+
+                ticket, lot, acc_num = execute_trade(symbol, signal, multi_manager)
+
                 if ticket:
-                    # SURVEILLANCE DU TRADE
-                    logging.info(f"👁️ Démarrage surveillance | Ticket {ticket}")
                     monitor_active_trade(symbol, ticket, lot, signal, acc_num)
                 else:
                     logging.error(f"❌ Échec ouverture trade | {symbol}")
-            
-            # Pause avant prochaine analyse
-            time.sleep(10)
-        
-        except Exception as e:
-            logging.error(f"❌ Erreur dans le thread {symbol}: {e}", exc_info=True)
+
             time.sleep(10)
 
+        except Exception as e:
+            logging.error(f"❌ Exception thread [{symbol}] : {e}", exc_info=True)
+            time.sleep(10)
+
+
+# ═══════════════════════════════════════════════════════════════
+# POINT D'ENTRÉE
+# ═══════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    # Configuration du logging
     setup_logging(
         level=logging.INFO,
         console_level=logging.INFO,
         file_level=logging.DEBUG,
     )
-    
-    # Initialisation de la base de données
+
+    # Initialisation DB
     init_db()
-    
-    # Gestion multi-comptes (si disponible)
-    multi_account_manager = None
+
+    # Gestion multi-comptes
+    multi_manager = None
+
     if MULTI_ACCOUNT_AVAILABLE and MODE == "MULTI":
         logging.info("🔗 Mode MULTI-COMPTES activé")
-        multi_account_manager = MultiAccountManager(ACCOUNTS)
-        connection_results = multi_account_manager.connect_all()
-        
-        connected_count = sum(1 for v in connection_results.values() if v)
+        multi_manager      = MultiAccountManager(ACCOUNTS)
+        connection_results = multi_manager.connect_all()
+        connected_count    = sum(1 for v in connection_results.values() if v)
         logging.info(f"✅ {connected_count}/{len(ACCOUNTS)} compte(s) connecté(s)")
-        
+
         # Connexion du compte principal pour les analyses
-        if ACCOUNTS and ACCOUNTS[0].enabled:
-            if not connect_to_mt5():
-                logging.error("❌ Échec connexion compte principal pour analyses")
-                exit(1)
+        if not connect_to_mt5():
+            logging.error("❌ Échec connexion compte principal")
+            exit(1)
     else:
-        # Mode SINGLE : connexion simple
         if not connect_to_mt5():
             logging.error("❌ Échec connexion MT5")
             exit(1)
-    
-    # Démarrage du bot
-    threads = []
+
     logging.info("=" * 65)
-    logging.info(f"🚀 BOT DE TRADING DÉMARRÉ (Mode: {MODE})")
-    logging.info(f"📊 Stratégie : Confirmation de Structure")
-    logging.info(f"⏰ Timeframes : M5 (contexte) + M1 (exécution)")
+    logging.info(f"🚀 BOT DÉMARRÉ (Mode: {MODE})")
+    logging.info(f"📊 Stratégie : EMA 20/50 Crossover | 2% risque | R:R 1:2")
+    logging.info(f"⏰ Timeframes : M5 (tendance) + M1 (signal)")
     logging.info(f"📈 Symboles : {', '.join(SYMBOL)}")
     logging.info("=" * 65)
-    
-    # Création d'un thread par symbole
+
+    # Démarrage d'un thread par symbole
+    threads = []
     for symbol in SYMBOL:
         t = threading.Thread(
             target=run_bot_for_symbol,
-            args=(symbol, multi_account_manager),
+            args=(symbol, multi_manager),
             name=f"Thread-{symbol}",
-            daemon=True
+            daemon=True,
         )
         t.start()
         threads.append(t)
-        time.sleep(2)  # Décalage entre les démarrages
-    
-    # Boucle principale
+        time.sleep(2)   # Décalage pour éviter les pics de charge au démarrage
+
+    # Boucle principale — maintient le process vivant
     try:
         while True:
             time.sleep(2)
     except KeyboardInterrupt:
-        logging.info("⏹️ Arrêt du bot par l'utilisateur...")
+        logging.info("⏹️ Arrêt demandé par l'utilisateur...")
         for t in threads:
-            t.join(timeout=1)
+            t.join(timeout=2)
     finally:
-        # Déconnexion propre
-        if multi_account_manager:
-            multi_account_manager.disconnect_all()
+        if multi_manager:
+            multi_manager.disconnect_all()
         disconnect()
-        logging.info("🛑 Bot arrêté")
+        logging.info("🛑 Bot arrêté proprement")

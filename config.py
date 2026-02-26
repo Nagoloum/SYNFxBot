@@ -9,7 +9,6 @@ PASSWORD = os.getenv("PASSWORD", "")
 SERVER = os.getenv("SERVER", "")
 MT5_TERMINAL_PATH = r"C:\Program Files\MetaTrader 5\terminal64.exe"
 
-# Uniquement V100
 SYMBOL = ["Volatility 25 Index", "Volatility 50 Index", "Volatility 75 Index", "Volatility 100 Index"]
 LOT_SIZE = 1.0  # Volume fixe pour le test
 MAGIC_NUMBER = 123456

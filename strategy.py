@@ -1,17 +1,15 @@
 """
-STRATÉGIE DE CONFIRMATION DE STRUCTURE
-=======================================
-Philosophie : Ne trader que les mouvements explosifs confirmés
-- Filtre de tendance M5 (EMA 50)
-- Filtre de sécurité M1 (EMA 200)
-- Signal de croisement M1 (EMA 9 x EMA 21)
-- Confirmation de cassure (Donchian Channel)
-- Filtres de puissance (ADX, RSI)
-- Sizing intelligent (Squeeze)
-- Sortie dynamique (Chandelier Exit)
+STRATÉGIE DE TRADING — EMA 20/50 MULTI-TIMEFRAME
+==================================================
+Analyse en cascade : M30 → M15 → M1 (exécution)
+Tendance directrice : M30 (EMA 20/50)
+Signal d'entrée    : croisement EMA20/50 sur M1 aligné avec M30 et M15
+Risk Management    : 2% du capital | SL = 1.5×ATR | TP = SL×2 | Break-Even + Trailing ATR
+Fix appliqué       : respect du stop_level MT5 (Invalid stops 10016)
 """
 
 import time
+import threading
 import pandas as pd
 import pandas_ta as ta
 import MetaTrader5 as mt5
@@ -24,734 +22,637 @@ from utils import send_telegram_alert
 from config import SYMBOL, MAGIC_NUMBER, ACCOUNT_NUMBER
 
 # ═══════════════════════════════════════════════════════════════
-# PARAMÈTRES DE LA STRATÉGIE
+# PARAMÈTRES
 # ═══════════════════════════════════════════════════════════════
 
-# Timeframes
-TIMEFRAME_M5 = mt5.TIMEFRAME_M5
-TIMEFRAME_M1 = mt5.TIMEFRAME_M1
+TF_M30 = mt5.TIMEFRAME_M30
+TF_M15 = mt5.TIMEFRAME_M15
+TF_M1  = mt5.TIMEFRAME_M1
 
-# Indicateurs M5 (Contexte)
-EMA_M5_PERIOD = 50
+TF_LABELS = {
+    TF_M30: "M30",
+    TF_M15: "M15",
+    TF_M1:  "M1",
+}
 
-# Indicateurs M1 (Exécution)
-EMA_M1_KING = 200      # King Filter
-EMA_M1_FAST = 9        # Signal rapide
-EMA_M1_SLOW = 21       # Signal lent
+TF_BARS = {
+    TF_M30: 200,
+    TF_M15: 200,
+    TF_M1:  150,
+}
 
-# Donchian Channel
-DONCHIAN_PERIOD = 20
+EMA_FAST       = 20
+EMA_SLOW       = 50
+ATR_PERIOD     = 14
+ATR_SL_MULT    = 1.5
+ATR_TRAIL_MULT = 1.0
+RR_RATIO       = 2.0
+RISK_PER_TRADE = 0.02
+BREAKEVEN_R    = 1.0
 
-# ADX (Puissance)
-ADX_PERIOD = 14
-ADX_THRESHOLD = 20
-
-# RSI (Momentum)
-RSI_PERIOD = 14
-RSI_BUY_THRESHOLD = 55
-RSI_SELL_THRESHOLD = 45
-
-# Bollinger Bands (Squeeze Detection)
-BB_PERIOD = 20
-BB_STD = 2
-
-# ATR (Chandelier Exit)
-ATR_PERIOD = 14
-ATR_MULTIPLIER = 3.0    # Distance du Trailing Stop
-
-# Money Management
-RISK_PER_TRADE = 0.01   # 1% du capital par trade
-SQUEEZE_SIZE_MULTIPLIER = 1.5  # Multiplie la taille si squeeze détecté
-EXPANSION_SIZE_MULTIPLIER = 0.5  # Réduit la taille si expansion déjà faite
-
-# Seuils Squeeze
-SQUEEZE_THRESHOLD = 0.85  # BBW < 85% de la moyenne = Squeeze
+# Mutex global MT5 — partagé avec main.py et multi_account.py
+_mt5_lock = threading.Lock()
 
 
 # ═══════════════════════════════════════════════════════════════
-# FONCTIONS UTILITAIRES
+# LOGGING HELPER
 # ═══════════════════════════════════════════════════════════════
 
-def get_price_data(symbol, timeframe, bars=500):
-    """Récupère les données de prix"""
+def log_step(symbol: str, step: str, message: str, level: str = "info"):
+    """
+    Affiche chaque étape d'analyse clairement dans la console.
+    Format : [SYMBOLE           ] [ÉTAPE   ] message
+    """
+    tag  = f"[{symbol[:20]:<20}] [{step:<8}]"
+    full = f"{tag} {message}"
+    getattr(logging, level if level in ("debug", "warning", "error") else "info")(full)
+
+
+# ═══════════════════════════════════════════════════════════════
+# DONNÉES PRIX
+# ═══════════════════════════════════════════════════════════════
+
+def get_price_data(symbol: str, timeframe: int, bars: int = 200) -> pd.DataFrame:
+    """Récupère les données OHLCV."""
     try:
         rates = mt5.copy_rates_from_pos(symbol, timeframe, 0, bars)
         if rates is None or len(rates) == 0:
             return pd.DataFrame()
-        
         df = pd.DataFrame(rates)
         df['time'] = pd.to_datetime(df['time'], unit='s')
         return df
     except Exception as e:
-        logging.error(f"Erreur get_price_data {symbol}: {e}")
+        logging.error(f"get_price_data [{symbol}] tf={timeframe} : {e}")
         return pd.DataFrame()
 
 
-def get_dynamic_lot(symbol, entry_price, sl_price, risk_percent=RISK_PER_TRADE):
-    """
-    Calcule le lot en fonction du risque autorisé
-    
-    Args:
-        symbol: Symbole tradé
-        entry_price: Prix d'entrée
-        sl_price: Prix du Stop Loss
-        risk_percent: % du capital à risquer
-    
-    Returns:
-        float: Lot optimal
-    """
-    account_info = mt5.account_info()
-    if not account_info:
-        return 0.1
-    
-    balance = account_info.balance
-    risk_amount = balance * risk_percent
-    
-    # Distance du SL en points
-    distance_sl = abs(entry_price - sl_price)
-    if distance_sl == 0:
-        return 0.1
-    
-    symbol_info = mt5.symbol_info(symbol)
-    if not symbol_info:
-        return 0.1
-    
-    # Calcul du lot : Risque / (Distance SL * Valeur du point)
-    point_value = symbol_info.trade_tick_value
-    lot = risk_amount / (distance_sl * point_value)
-    
-    # Arrondi au lot minimum autorisé
-    lot_min = symbol_info.volume_min
-    lot_max = symbol_info.volume_max
-    lot_step = symbol_info.volume_step
-    
-    lot = max(lot_min, min(lot_max, round(lot / lot_step) * lot_step))
-    
-    return float(lot)
-
-
-# ═══════════════════════════════════════════════════════════════
-# CALCUL DES INDICATEURS
-# ═══════════════════════════════════════════════════════════════
-
-def calculate_ema(df, period):
-    """Calcule l'EMA"""
-    ema = ta.ema(df['close'], length=period)
-    return ema
-
-
-def calculate_donchian(df, period=DONCHIAN_PERIOD):
-    """
-    Calcule le Canal de Donchian
-    
-    Returns:
-        tuple: (upper_band, lower_band)
-    """
-    upper_band = df['high'].rolling(window=period).max()
-    lower_band = df['low'].rolling(window=period).min()
-    return upper_band, lower_band
-
-
-def calculate_adx(df, period=ADX_PERIOD):
-    """Calcule l'ADX"""
-    adx_data = ta.adx(df['high'], df['low'], df['close'], length=period)
-    if adx_data is None or adx_data.empty:
+def get_current_tick(symbol: str):
+    """Retourne le tick courant ou None."""
+    try:
+        return mt5.symbol_info_tick(symbol)
+    except Exception as e:
+        logging.error(f"get_current_tick [{symbol}] : {e}")
         return None
-    
-    # Retourne la colonne ADX
-    adx_col = [c for c in adx_data.columns if c.startswith('ADX')][0]
-    return adx_data[adx_col]
-
-
-def calculate_rsi(df, period=RSI_PERIOD):
-    """Calcule le RSI"""
-    rsi = ta.rsi(df['close'], length=period)
-    return rsi
-
-
-def calculate_bollinger_bands(df, period=BB_PERIOD, std=BB_STD):
-    """
-    Calcule les Bandes de Bollinger et le BBW (Bandwidth)
-    
-    Returns:
-        dict: {'upper', 'middle', 'lower', 'bbw'}
-    """
-    bb = ta.bbands(df['close'], length=period, std=std)
-    if bb is None or bb.empty:
-        return None
-    
-    col_upper = [c for c in bb.columns if c.startswith('BBU')][0]
-    col_lower = [c for c in bb.columns if c.startswith('BBL')][0]
-    col_mid = [c for c in bb.columns if c.startswith('BBM')][0]
-    
-    # Calcul du Bandwidth (Largeur relative)
-    bbw = (bb[col_upper] - bb[col_lower]) / bb[col_mid]
-    
-    return {
-        'upper': bb[col_upper],
-        'middle': bb[col_mid],
-        'lower': bb[col_lower],
-        'bbw': bbw
-    }
-
-
-def calculate_atr(df, period=ATR_PERIOD):
-    """Calcule l'ATR"""
-    atr = ta.atr(df['high'], df['low'], df['close'], length=period)
-    return atr
 
 
 # ═══════════════════════════════════════════════════════════════
-# DÉTECTION DU SQUEEZE
+# INDICATEURS
 # ═══════════════════════════════════════════════════════════════
 
-def detect_squeeze(df):
-    """
-    Détecte si le marché est en état de Squeeze (compression)
-    
-    Returns:
-        dict: {'is_squeeze': bool, 'multiplier': float}
-    """
-    bb = calculate_bollinger_bands(df)
-    if bb is None:
-        return {'is_squeeze': False, 'multiplier': 1.0}
-    
-    # Moyenne du BBW sur 30 périodes
-    avg_bbw = bb['bbw'].rolling(30).mean().iloc[-1]
-    current_bbw = bb['bbw'].iloc[-1]
-    
-    if pd.isna(avg_bbw) or pd.isna(current_bbw):
-        return {'is_squeeze': False, 'multiplier': 1.0}
-    
-    # Squeeze : BBW actuel < 85% de la moyenne
-    if current_bbw < avg_bbw * SQUEEZE_THRESHOLD:
-        logging.info(f"🔥 SQUEEZE DÉTECTÉ | BBW actuel: {current_bbw:.6f} < Moyenne: {avg_bbw:.6f}")
-        return {'is_squeeze': True, 'multiplier': SQUEEZE_SIZE_MULTIPLIER}
-    
-    # Expansion déjà faite : BBW actuel > 115% de la moyenne
-    elif current_bbw > avg_bbw * 1.15:
-        logging.info(f"⚠️ EXPANSION DÉTECTÉE | BBW actuel: {current_bbw:.6f} > Moyenne: {avg_bbw:.6f}")
-        return {'is_squeeze': False, 'multiplier': EXPANSION_SIZE_MULTIPLIER}
-    
-    return {'is_squeeze': False, 'multiplier': 1.0}
+def calc_ema(series: pd.Series, period: int) -> pd.Series:
+    result = ta.ema(series, length=period)
+    return result if result is not None else pd.Series(dtype=float)
+
+
+def calc_atr(df: pd.DataFrame, period: int = ATR_PERIOD) -> pd.Series:
+    result = ta.atr(df['high'], df['low'], df['close'], length=period)
+    return result if result is not None else pd.Series(dtype=float)
 
 
 # ═══════════════════════════════════════════════════════════════
-# LOGIQUE DE SIGNAL
+# STOP LEVEL — Correction erreur MT5 10016 "Invalid stops"
 # ═══════════════════════════════════════════════════════════════
 
-def get_market_context_m5(symbol):
+def get_min_stop_distance(symbol: str) -> float:
     """
-    Filtre de Tendance M5 via EMA 50
-    
-    Returns:
-        str: 'UP' / 'DOWN' / 'NEUTRAL'
+    Retourne la distance minimale autorisée pour le SL/TP en prix.
+    MT5 définit stops_level en 'points' → conversion en prix.
     """
-    df_m5 = get_price_data(symbol, TIMEFRAME_M5, 100)
-    if df_m5.empty or len(df_m5) < EMA_M5_PERIOD + 5:
+    try:
+        info = mt5.symbol_info(symbol)
+        if info is None:
+            return 0.0
+        return info.stops_level * info.point
+    except Exception as e:
+        logging.error(f"get_min_stop_distance [{symbol}] : {e}")
+        return 0.0
+
+
+def enforce_min_stop(symbol: str, entry: float, sl: float, tp: float,
+                     is_buy: bool) -> tuple:
+    """
+    Ajuste SL et TP pour respecter la distance minimale MT5 (+ 20% de buffer).
+    Returns: (sl_final, tp_final, sl_dist_finale)
+    """
+    min_dist      = get_min_stop_distance(symbol)
+    min_dist_safe = min_dist * 1.2   # Buffer 20%
+
+    sl_dist = abs(entry - sl)
+
+    if sl_dist < min_dist_safe:
+        log_step(symbol, "SL-ADJ",
+                 f"⚠️ Distance SL={sl_dist:.5f} < min={min_dist_safe:.5f} → ajustement forcé",
+                 level="warning")
+        sl_dist = min_dist_safe
+        sl = entry - sl_dist if is_buy else entry + sl_dist
+
+    tp_dist = sl_dist * RR_RATIO
+    tp = entry + tp_dist if is_buy else entry - tp_dist
+
+    return sl, tp, sl_dist
+
+
+# ═══════════════════════════════════════════════════════════════
+# SIZING DYNAMIQUE (2% du capital)
+# ═══════════════════════════════════════════════════════════════
+
+def get_dynamic_lot(symbol: str, entry_price: float, sl_price: float,
+                    risk_percent: float = RISK_PER_TRADE) -> float:
+    """Calcule le volume pour risquer exactement risk_percent du capital."""
+    try:
+        account_info = mt5.account_info()
+        if not account_info:
+            return 0.01
+
+        balance     = account_info.balance
+        risk_amount = balance * risk_percent
+        distance_sl = abs(entry_price - sl_price)
+
+        if distance_sl == 0:
+            return 0.01
+
+        info = mt5.symbol_info(symbol)
+        if not info:
+            return 0.01
+
+        distance_ticks = distance_sl / info.trade_tick_size
+        cost_per_lot   = distance_ticks * info.trade_tick_value
+
+        if cost_per_lot == 0:
+            return info.volume_min
+
+        lot = risk_amount / cost_per_lot
+        lot = round(lot / info.volume_step) * info.volume_step
+        lot = max(info.volume_min, min(info.volume_max, lot))
+
+        log_step(symbol, "LOT",
+                 f"Solde={balance:.2f} | Risque={risk_amount:.2f} | "
+                 f"SL_dist={distance_sl:.5f} | Lot calculé={lot:.2f}")
+        return float(lot)
+
+    except Exception as e:
+        logging.error(f"get_dynamic_lot [{symbol}] : {e}")
+        return 0.01
+
+
+# ═══════════════════════════════════════════════════════════════
+# ANALYSE D'UN TIMEFRAME
+# ═══════════════════════════════════════════════════════════════
+
+def analyze_timeframe(symbol: str, timeframe: int) -> str:
+    """
+    Analyse la tendance sur un timeframe via EMA20/EMA50.
+    Affiche le résultat dans la console.
+    Returns: 'UP' | 'DOWN' | 'NEUTRAL'
+    """
+    tf_label = TF_LABELS.get(timeframe, str(timeframe))
+    bars     = TF_BARS.get(timeframe, 200)
+
+    df = get_price_data(symbol, timeframe, bars)
+    if df.empty or len(df) < EMA_SLOW + 5:
+        log_step(symbol, tf_label, "❌ Données insuffisantes pour ce TF", level="warning")
         return 'NEUTRAL'
-    
-    ema50 = calculate_ema(df_m5, EMA_M5_PERIOD)
-    if ema50 is None or ema50.empty:
+
+    ema20 = calc_ema(df['close'], EMA_FAST)
+    ema50 = calc_ema(df['close'], EMA_SLOW)
+
+    if ema20.empty or ema50.empty:
+        log_step(symbol, tf_label, "❌ Calcul EMA échoué", level="warning")
         return 'NEUTRAL'
-    
-    last_close = df_m5['close'].iloc[-1]
-    last_ema = ema50.iloc[-1]
-    
-    if last_close > last_ema:
-        return 'UP'
-    elif last_close < last_ema:
-        return 'DOWN'
-    return 'NEUTRAL'
+
+    e20 = ema20.iloc[-1]
+    e50 = ema50.iloc[-1]
+    cl  = df['close'].iloc[-1]
+
+    if pd.isna(e20) or pd.isna(e50):
+        log_step(symbol, tf_label, "❌ Valeur EMA NaN", level="warning")
+        return 'NEUTRAL'
+
+    if cl > e50 and e20 > e50:
+        trend, emoji = 'UP',      '📈'
+    elif cl < e50 and e20 < e50:
+        trend, emoji = 'DOWN',    '📉'
+    else:
+        trend, emoji = 'NEUTRAL', '➡️'
+
+    log_step(symbol, tf_label,
+             f"{emoji} Tendance={trend} | Prix={cl:.5f} | EMA20={e20:.5f} | EMA50={e50:.5f}")
+    return trend
 
 
-def check_m1_filters(symbol, signal_type):
-    """
-    Vérifie les filtres M1 :
-    - EMA 200 (King Filter)
-    - ADX > 20
-    - RSI > 55 (BUY) ou < 45 (SELL)
-    
-    Returns:
-        bool: True si tous les filtres passent
-    """
-    df_m1 = get_price_data(symbol, TIMEFRAME_M1, 250)
-    if df_m1.empty or len(df_m1) < EMA_M1_KING + 5:
-        return False
-    
-    # Prix actuel
-    current_price = df_m1['close'].iloc[-1]
-    
-    # 1. King Filter (EMA 200)
-    ema200 = calculate_ema(df_m1, EMA_M1_KING)
-    if ema200 is None or ema200.empty:
-        return False
-    
-    last_ema200 = ema200.iloc[-1]
-    
-    if signal_type == 'BUY':
-        if current_price <= last_ema200:
-            logging.debug(f"❌ King Filter : Prix {current_price:.5f} <= EMA200 {last_ema200:.5f}")
-            return False
-    else:  # SELL
-        if current_price >= last_ema200:
-            logging.debug(f"❌ King Filter : Prix {current_price:.5f} >= EMA200 {last_ema200:.5f}")
-            return False
-    
-    # 2. ADX > 20
-    adx = calculate_adx(df_m1, ADX_PERIOD)
-    if adx is None or adx.empty:
-        return False
-    
-    last_adx = adx.iloc[-1]
-    if last_adx <= ADX_THRESHOLD:
-        logging.debug(f"❌ ADX faible : {last_adx:.2f} <= {ADX_THRESHOLD}")
-        return False
-    
-    # 3. RSI
-    rsi = calculate_rsi(df_m1, RSI_PERIOD)
-    if rsi is None or rsi.empty:
-        return False
-    
-    last_rsi = rsi.iloc[-1]
-    
-    if signal_type == 'BUY':
-        if last_rsi <= RSI_BUY_THRESHOLD:
-            logging.debug(f"❌ RSI faible pour BUY : {last_rsi:.2f} <= {RSI_BUY_THRESHOLD}")
-            return False
-    else:  # SELL
-        if last_rsi >= RSI_SELL_THRESHOLD:
-            logging.debug(f"❌ RSI élevé pour SELL : {last_rsi:.2f} >= {RSI_SELL_THRESHOLD}")
-            return False
-    
-    logging.info(f"✅ Filtres M1 validés | EMA200: {last_ema200:.5f}, ADX: {last_adx:.2f}, RSI: {last_rsi:.2f}")
-    return True
+# ═══════════════════════════════════════════════════════════════
+# SIGNAL M1 — CROISEMENT EMA20/50
+# ═══════════════════════════════════════════════════════════════
 
+def detect_ema_crossover_m1(symbol: str) -> dict | None:
+    """
+    Détecte un croisement EMA20/50 sur M1.
+    Calcule SL (1.5×ATR) et TP (2×SL) en respectant le stop level MT5.
+    """
+    df = get_price_data(symbol, TF_M1, TF_BARS[TF_M1])
 
-def detect_ema_cross_and_donchian_break(symbol):
-    """
-    Détecte le signal TRIGGER :
-    - Croisement EMA 9 x EMA 21
-    - ET Cassure du Canal de Donchian
-    
-    Returns:
-        dict or None: Signal avec type, entry, sl, tp, reason
-    """
-    df_m1 = get_price_data(symbol, TIMEFRAME_M1, 100)
-    if df_m1.empty or len(df_m1) < max(EMA_M1_SLOW, DONCHIAN_PERIOD) + 5:
+    if df.empty or len(df) < EMA_SLOW + 10:
+        log_step(symbol, "M1-SIG", "❌ Données M1 insuffisantes", level="warning")
         return None
-    
-    # Calcul des EMAs
-    ema9 = calculate_ema(df_m1, EMA_M1_FAST)
-    ema21 = calculate_ema(df_m1, EMA_M1_SLOW)
-    
-    if ema9 is None or ema21 is None or ema9.empty or ema21.empty:
+
+    ema20 = calc_ema(df['close'], EMA_FAST)
+    ema50 = calc_ema(df['close'], EMA_SLOW)
+    atr   = calc_atr(df, ATR_PERIOD)
+
+    if ema20.empty or ema50.empty or atr.empty:
+        log_step(symbol, "M1-SIG", "❌ Calcul indicateurs M1 échoué", level="warning")
         return None
-    
-    # Calcul du Donchian
-    donchian_upper, donchian_lower = calculate_donchian(df_m1, DONCHIAN_PERIOD)
-    
-    # Données actuelles et précédentes
-    current_close = df_m1['close'].iloc[-1]
-    current_ema9 = ema9.iloc[-1]
-    current_ema21 = ema21.iloc[-1]
-    prev_ema9 = ema9.iloc[-2]
-    prev_ema21 = ema21.iloc[-2]
-    
-    donchian_high = donchian_upper.iloc[-1]
-    donchian_low = donchian_lower.iloc[-1]
-    
-    # Calcul ATR pour le SL
-    atr = calculate_atr(df_m1, ATR_PERIOD)
-    if atr is None or atr.empty:
+
+    e20_cur  = ema20.iloc[-1]
+    e20_prev = ema20.iloc[-2]
+    e50_cur  = ema50.iloc[-1]
+    e50_prev = ema50.iloc[-2]
+    atr_val  = atr.iloc[-1]
+    close    = df['close'].iloc[-1]
+
+    if any(pd.isna(v) for v in [e20_cur, e20_prev, e50_cur, e50_prev, atr_val]):
+        log_step(symbol, "M1-SIG", "❌ Valeurs NaN dans les indicateurs M1", level="warning")
         return None
-    current_atr = atr.iloc[-1]
-    
-    # ──────────────────────────────────────────────────────────
-    # SIGNAL BUY
-    # ──────────────────────────────────────────────────────────
-    # Condition 1 : Croisement haussier EMA 9 > EMA 21
-    ema_bullish_cross = (prev_ema9 <= prev_ema21) and (current_ema9 > current_ema21)
-    
-    # Condition 2 : Cassure Donchian (prix clôture au-dessus du plus haut)
-    donchian_break_up = current_close > donchian_high
-    
-    if ema_bullish_cross and donchian_break_up:
-        # Calcul SL et TP
-        sl = current_close - (ATR_MULTIPLIER * current_atr)
-        tp = current_close + (ATR_MULTIPLIER * current_atr * 3)  # Ratio 1:3
-        
+
+    log_step(symbol, "M1-SIG",
+             f"EMA20={e20_cur:.5f} EMA50={e50_cur:.5f} ATR={atr_val:.5f} | "
+             f"Prev : EMA20={e20_prev:.5f} EMA50={e50_prev:.5f}")
+
+    sl_dist_raw = ATR_SL_MULT * atr_val
+
+    # ── CROISEMENT HAUSSIER ──
+    if (e20_prev <= e50_prev) and (e20_cur > e50_cur):
+        log_step(symbol, "M1-SIG", "🔀 Croisement HAUSSIER EMA20 > EMA50 détecté")
+        sl_raw = close - sl_dist_raw
+        tp_raw = close + sl_dist_raw * RR_RATIO
+        sl, tp, sl_dist = enforce_min_stop(symbol, close, sl_raw, tp_raw, is_buy=True)
         return {
-            'type': 'BUY',
-            'entry_price': current_close,
-            'sl': sl,
-            'tp': tp,
-            'reason': 'EMA_CROSS_UP_DONCHIAN_BREAK',
-            'ema9': current_ema9,
-            'ema21': current_ema21,
-            'donchian_high': donchian_high,
-            'atr': current_atr
+            'type':        'BUY',
+            'entry_price': close,
+            'sl':          sl,
+            'tp':          tp,
+            'atr':         atr_val,
+            'sl_dist':     sl_dist,
+            'reason':      f'EMA20_CROSS_UP_EMA50 | EMA20={e20_cur:.5f} EMA50={e50_cur:.5f}',
         }
-    
-    # ──────────────────────────────────────────────────────────
-    # SIGNAL SELL
-    # ──────────────────────────────────────────────────────────
-    # Condition 1 : Croisement baissier EMA 9 < EMA 21
-    ema_bearish_cross = (prev_ema9 >= prev_ema21) and (current_ema9 < current_ema21)
-    
-    # Condition 2 : Cassure Donchian (prix clôture en-dessous du plus bas)
-    donchian_break_down = current_close < donchian_low
-    
-    if ema_bearish_cross and donchian_break_down:
-        # Calcul SL et TP
-        sl = current_close + (ATR_MULTIPLIER * current_atr)
-        tp = current_close - (ATR_MULTIPLIER * current_atr * 3)
-        
+
+    # ── CROISEMENT BAISSIER ──
+    if (e20_prev >= e50_prev) and (e20_cur < e50_cur):
+        log_step(symbol, "M1-SIG", "🔀 Croisement BAISSIER EMA20 < EMA50 détecté")
+        sl_raw = close + sl_dist_raw
+        tp_raw = close - sl_dist_raw * RR_RATIO
+        sl, tp, sl_dist = enforce_min_stop(symbol, close, sl_raw, tp_raw, is_buy=False)
         return {
-            'type': 'SELL',
-            'entry_price': current_close,
-            'sl': sl,
-            'tp': tp,
-            'reason': 'EMA_CROSS_DOWN_DONCHIAN_BREAK',
-            'ema9': current_ema9,
-            'ema21': current_ema21,
-            'donchian_low': donchian_low,
-            'atr': current_atr
+            'type':        'SELL',
+            'entry_price': close,
+            'sl':          sl,
+            'tp':          tp,
+            'atr':         atr_val,
+            'sl_dist':     sl_dist,
+            'reason':      f'EMA20_CROSS_DOWN_EMA50 | EMA20={e20_cur:.5f} EMA50={e50_cur:.5f}',
         }
-    
+
+    log_step(symbol, "M1-SIG", "— Aucun croisement sur cette bougie")
     return None
 
 
-def get_smart_signal(symbol):
+# ═══════════════════════════════════════════════════════════════
+# ANALYSE MULTI-TIMEFRAME PRINCIPALE
+# ═══════════════════════════════════════════════════════════════
+
+def get_signal(symbol: str) -> dict | None:
     """
-    Signal Principal de la Stratégie
-    Combine tous les filtres et détections
-    
-    Returns:
-        dict or None: Signal complet si toutes les conditions sont remplies
+    Analyse complète M30 → M15 → M1.
+    La tendance M30 est directrice ; M15 doit être aligné avant de chercher le signal M1.
     """
-    # ÉTAPE 1 : Contexte M5 (Tendance globale)
-    context = get_market_context_m5(symbol)
-    if context == 'NEUTRAL':
+    logging.info("─" * 65)
+    log_step(symbol, "ANALYSE", f"🔎 Début analyse multi-timeframe (M30 → M15 → M1)")
+
+    # ÉTAPE 1 — Tendance M30 (directrice)
+    trend_m30 = analyze_timeframe(symbol, TF_M30)
+    if trend_m30 == 'NEUTRAL':
+        log_step(symbol, "ANALYSE",
+                 "⛔ Tendance M30 neutre → analyse arrêtée", level="warning")
         return None
-    
-    logging.debug(f"📊 Contexte M5 : {context}")
-    
-    # ÉTAPE 2 : Détection du signal TRIGGER (EMA Cross + Donchian)
-    trigger = detect_ema_cross_and_donchian_break(symbol)
-    if trigger is None:
+    log_step(symbol, "ANALYSE",
+             f"📌 Tendance directrice M30={trend_m30} → M15 et M1 doivent être alignés")
+
+    # ÉTAPE 2 — Confirmation M15
+    trend_m15 = analyze_timeframe(symbol, TF_M15)
+    if trend_m15 != trend_m30:
+        log_step(symbol, "ANALYSE",
+                 f"⛔ M15={trend_m15} ≠ M30={trend_m30} → pas de trade", level="warning")
         return None
-    
-    # ÉTAPE 3 : Vérification alignement contexte M5 vs signal M1
-    if context == 'UP' and trigger['type'] != 'BUY':
-        logging.debug(f"❌ Désalignement : Contexte {context} vs Signal {trigger['type']}")
+    log_step(symbol, "ANALYSE", f"✅ M15 aligné avec M30 ({trend_m15})")
+
+    log_step(symbol, "ANALYSE",
+             f"🟢 M30 + M15 ALIGNÉS ({trend_m30}) → recherche signal M1")
+
+    # ÉTAPE 3 — Signal M1
+    signal = detect_ema_crossover_m1(symbol)
+
+    if signal is None:
+        log_step(symbol, "ANALYSE", "— Pas de signal M1 pour l'instant")
         return None
-    
-    if context == 'DOWN' and trigger['type'] != 'SELL':
-        logging.debug(f"❌ Désalignement : Contexte {context} vs Signal {trigger['type']}")
+
+    if (trend_m30 == 'UP' and signal['type'] != 'BUY') or \
+       (trend_m30 == 'DOWN' and signal['type'] != 'SELL'):
+        log_step(symbol, "ANALYSE",
+                 f"⛔ Signal M1={signal['type']} opposé à M30={trend_m30} → ignoré",
+                 level="warning")
         return None
-    
-    # ÉTAPE 4 : Filtres M1 (King Filter, ADX, RSI)
-    if not check_m1_filters(symbol, trigger['type']):
-        return None
-    
-    # ÉTAPE 5 : Détection Squeeze (ajustement sizing)
-    df_m1 = get_price_data(symbol, TIMEFRAME_M1, 100)
-    squeeze_info = detect_squeeze(df_m1)
-    trigger['size_multiplier'] = squeeze_info['multiplier']
-    trigger['is_squeeze'] = squeeze_info['is_squeeze']
-    
-    logging.info(f"🎯 SIGNAL VALIDÉ | {symbol} | {trigger['type']} | {trigger['reason']}")
-    logging.info(f"   Entry: {trigger['entry_price']:.5f} | SL: {trigger['sl']:.5f} | TP: {trigger['tp']:.5f}")
-    logging.info(f"   Size Multiplier: {trigger['size_multiplier']}x")
-    
-    return trigger
+
+    log_step(symbol, "SIGNAL",
+             f"🎯 SIGNAL VALIDÉ : {signal['type']} | "
+             f"Entry={signal['entry_price']:.5f} SL={signal['sl']:.5f} TP={signal['tp']:.5f}")
+    return signal
 
 
 # ═══════════════════════════════════════════════════════════════
-# EXÉCUTION DES TRADES
+# FILTRE VOLATILITÉ
 # ═══════════════════════════════════════════════════════════════
 
-def prepare_trade_request(symbol, signal):
+def is_volatility_good(symbol: str) -> tuple:
+    """Vérifie si l'ATR M30 est > 70% de sa moyenne → marché actif."""
+    log_step(symbol, "VOL", "Vérification volatilité (ATR M30)...")
+    df = get_price_data(symbol, TF_M30, 50)
+    if df.empty:
+        log_step(symbol, "VOL", "❌ Pas de données M30", level="warning")
+        return False, "Pas de données M30"
+
+    atr = calc_atr(df, ATR_PERIOD)
+    if atr.empty or len(atr.dropna()) < 5:
+        log_step(symbol, "VOL", "❌ ATR insuffisant", level="warning")
+        return False, "ATR insuffisant"
+
+    current_atr = atr.iloc[-1]
+    avg_atr     = atr.dropna().mean()
+
+    if current_atr < avg_atr * 0.70:
+        msg = f"⚠️ Marché calme : ATR={current_atr:.5f} < 70% moy={avg_atr:.5f}"
+        log_step(symbol, "VOL", msg, level="warning")
+        return False, msg
+
+    log_step(symbol, "VOL",
+             f"✅ Volatilité OK : ATR={current_atr:.5f} / moy={avg_atr:.5f}")
+    return True, "OK"
+
+
+# ═══════════════════════════════════════════════════════════════
+# PRÉPARATION ET EXÉCUTION DES TRADES
+# ═══════════════════════════════════════════════════════════════
+
+def prepare_trade_request(symbol: str, signal: dict) -> tuple:
     """
-    Prépare la requête de trade (compatible multi-comptes)
-    
-    Returns:
-        tuple: (request_dict, lot, entry_price, tp1, tp2, tp3)
+    Prépare la requête MT5 avec SL/TP validés.
+    Returns: (request_dict, lot, entry_price) ou (None, 0, 0)
     """
-    tick = mt5.symbol_info_tick(symbol)
+    tick = get_current_tick(symbol)
     if not tick:
-        logging.error(f"Impossible de récupérer le tick pour {symbol}")
-        return None, 0, 0, 0, 0, 0
-    
-    is_buy = signal['type'] == "BUY"
+        log_step(symbol, "EXEC", "❌ Tick indisponible", level="error")
+        return None, 0, 0
+
+    is_buy      = signal['type'] == 'BUY'
     entry_price = tick.ask if is_buy else tick.bid
-    
-    # Calcul du lot avec ajustement Squeeze
-    base_lot = get_dynamic_lot(symbol, entry_price, signal['sl'], risk_percent=RISK_PER_TRADE)
-    lot = base_lot * signal.get('size_multiplier', 1.0)
-    
-    # Arrondi au lot step
-    symbol_info = mt5.symbol_info(symbol)
-    if symbol_info:
-        lot_step = symbol_info.volume_step
-        lot = round(lot / lot_step) * lot_step
-        lot = max(symbol_info.volume_min, min(symbol_info.volume_max, lot))
-    
-    lot = float(lot)
-    
-    # TPs multiples (3 niveaux)
-    tp_final = signal['tp']
-    distance_tp = abs(tp_final - entry_price)
-    
-    tp1 = entry_price + (distance_tp * 0.33 * (1 if is_buy else -1))
-    tp2 = entry_price + (distance_tp * 0.66 * (1 if is_buy else -1))
-    tp3 = tp_final
-    
+
+    # Recalcul avec prix d'exécution réel + validation stop level
+    sl_dist      = signal['sl_dist']
+    sl_raw       = entry_price - sl_dist if is_buy else entry_price + sl_dist
+    tp_raw       = entry_price + sl_dist * RR_RATIO if is_buy else entry_price - sl_dist * RR_RATIO
+    sl, tp, sl_dist_final = enforce_min_stop(symbol, entry_price, sl_raw, tp_raw, is_buy)
+
+    lot = get_dynamic_lot(symbol, entry_price, sl, RISK_PER_TRADE)
+
+    log_step(symbol, "EXEC",
+             f"Ordre préparé | {signal['type']} @ {entry_price:.5f} | "
+             f"SL={sl:.5f} TP={tp:.5f} | Lot={lot:.2f}")
+
     order_type = mt5.ORDER_TYPE_BUY if is_buy else mt5.ORDER_TYPE_SELL
-    
+
     request = {
-        "action": mt5.TRADE_ACTION_DEAL,
-        "symbol": symbol,
-        "volume": lot,
-        "type": order_type,
-        "price": entry_price,
-        "sl": float(signal['sl']),
-        "tp": float(signal['tp']),
-        "magic": MAGIC_NUMBER,
-        "comment": f"STRUCTURE_{symbol[:3]}",
+        "action":       mt5.TRADE_ACTION_DEAL,
+        "symbol":       symbol,
+        "volume":       lot,
+        "type":         order_type,
+        "price":        entry_price,
+        "sl":           float(sl),
+        "tp":           float(tp),
+        "magic":        MAGIC_NUMBER,
+        "comment":      f"EMA_{signal['type'][:1]}_{symbol[:4]}",
         "type_filling": mt5.ORDER_FILLING_FOK,
-        "type_time": mt5.ORDER_TIME_GTC,
+        "type_time":    mt5.ORDER_TIME_GTC,
     }
-    
-    return request, lot, entry_price, tp1, tp2, tp3
+
+    signal['_exec_entry'] = entry_price
+    signal['_exec_sl']    = sl
+    signal['_exec_tp']    = tp
+    signal['_exec_lot']   = lot
+    signal['sl_dist']     = sl_dist_final
+
+    return request, lot, entry_price
 
 
-def open_trade(symbol, signal):
-    """
-    Exécute un trade avec la nouvelle stratégie
-    
-    Returns:
-        tuple: (ticket, lot)
-    """
-    request, lot, entry_price, tp1, tp2, tp3 = prepare_trade_request(symbol, signal)
+def open_trade(symbol: str, signal: dict) -> tuple:
+    """Exécute un trade (single-account). Returns: (ticket, lot)."""
+    request, lot, entry_price = prepare_trade_request(symbol, signal)
     if request is None:
         return None, 0
-    
-    result = mt5.order_send(request)
-    
+
+    log_step(symbol, "EXEC", "📤 Envoi ordre MT5...")
+
+    with _mt5_lock:
+        result = mt5.order_send(request)
+
+    if result is None:
+        log_step(symbol, "EXEC", "❌ order_send a retourné None", level="error")
+        return None, 0
+
     if result.retcode == mt5.TRADE_RETCODE_DONE:
+        sl_price = request['sl']
+        tp_price = request['tp']
+        rr = round(abs(tp_price - entry_price) / abs(sl_price - entry_price), 2) \
+             if abs(sl_price - entry_price) > 0 else 0
+
         account = mt5.account_info()
         balance = float(account.balance) if account else 0.0
-        
-        distance_sl = abs(entry_price - signal['sl'])
-        distance_tp = abs(signal['tp'] - entry_price)
-        rr = round(distance_tp / distance_sl, 2) if distance_sl > 0 else 0
-        
-        is_buy = signal['type'] == "BUY"
-        squeeze_tag = "🔥 SQUEEZE" if signal.get('is_squeeze') else ""
-        
+
+        log_step(symbol, "EXEC",
+                 f"✅ TRADE OUVERT | Ticket={result.order} | {signal['type']} @ {entry_price:.5f} "
+                 f"| SL={sl_price:.5f} TP={tp_price:.5f} | Lot={lot:.2f} | R:R=1:{rr}")
+
         msg = (
-            f"🔔 <b>NOUVELLE POSITION</b> {squeeze_tag}\n"
+            f"🔔 <b>NOUVELLE POSITION</b>\n"
             f"━━━━━━━━━━━━━━━━━━━━\n"
-            f"📈 Marché : <b>{symbol}</b>\n"
-            f"Direction : {'🔵 BUY' if is_buy else '🔴 SELL'}\n"
-            f"Lot : {lot:.3f} (Multiplier: {signal.get('size_multiplier', 1.0)}x)\n"
-            f"Prix entrée : {entry_price:.5f}\n"
-            f"SL : {signal['sl']:.5f}\n"
-            f"TP1 (33%) : {tp1:.5f}\n"
-            f"TP2 (66%) : {tp2:.5f}\n"
-            f"TP FINAL : {tp3:.5f}\n"
-            f"Risque : {RISK_PER_TRADE * 100:.1f}%\n"
-            f"Ratio R:R : {rr}R\n"
-            f"Solde : {balance:.2f} USD\n"
-            f"Raison : {signal['reason']}\n"
+            f"📈 Marché   : <b>{symbol}</b>\n"
+            f"Direction   : {'🔵 BUY' if signal['type'] == 'BUY' else '🔴 SELL'}\n"
+            f"Lot         : {lot:.2f}\n"
+            f"Entrée      : {entry_price:.5f}\n"
+            f"Stop Loss   : {sl_price:.5f}\n"
+            f"Take Profit : {tp_price:.5f}\n"
+            f"Ratio R:R   : 1:{rr}\n"
+            f"Risque      : {RISK_PER_TRADE * 100:.0f}%\n"
+            f"Solde       : {balance:.2f} USD\n"
+            f"Signal      : {signal['reason']}\n"
             f"━━━━━━━━━━━━━━━━━━━━"
         )
         send_telegram_alert(msg)
-        
         save_open(ACCOUNT_NUMBER, symbol, result.order, signal['type'], entry_price)
-        logging.info(f"✅ Trade ouvert | Ticket: {result.order} | {symbol} | {signal['type']} | Prix {entry_price:.5f}")
-        
         return result.order, lot
-    
-    logging.error(f"❌ Échec {symbol}: {result.comment}")
+
+    log_step(symbol, "EXEC",
+             f"❌ ÉCHEC ORDRE | {result.comment} (code {result.retcode})", level="error")
     return None, 0
 
 
 # ═══════════════════════════════════════════════════════════════
-# CHANDELIER EXIT (Trailing Stop Dynamique)
+# MODIFICATION SL/TP
 # ═══════════════════════════════════════════════════════════════
 
-def update_chandelier_exit(symbol, ticket, lot, signal, account_number=None):
-    """
-    Mise à jour du Chandelier Exit (Trailing Stop basé sur ATR)
-    
-    Règle :
-    - Pour un BUY : SL = Plus Haut atteint - (3 x ATR)
-    - Pour un SELL : SL = Plus Bas atteint + (3 x ATR)
-    - Le SL ne redescend JAMAIS (BUY) ou ne remonte JAMAIS (SELL)
-    """
-    pos = mt5.positions_get(ticket=ticket)
-    if not pos:
-        return False
-    
-    position = pos[0]
-    is_buy = (position.type == mt5.ORDER_TYPE_BUY)
-    current_sl = position.sl
-    current_tp = position.tp
-    
-    # Récupération des données M1 pour ATR
-    df_m1 = get_price_data(symbol, TIMEFRAME_M1, 50)
-    if df_m1.empty:
-        return False
-    
-    atr = calculate_atr(df_m1, ATR_PERIOD)
-    if atr is None or atr.empty:
-        return False
-    
-    current_atr = atr.iloc[-1]
-    
-    # Prix actuel
-    tick = mt5.symbol_info_tick(symbol)
-    if not tick:
-        return False
-    
-    current_price = tick.bid if is_buy else tick.ask
-    
-    # Calcul du nouveau SL Chandelier
-    if is_buy:
-        # Pour un BUY : SL = Prix actuel - (3 x ATR)
-        new_sl = current_price - (ATR_MULTIPLIER * current_atr)
-        
-        # Le SL ne peut que monter
-        if new_sl > current_sl:
-            modify_sl_tp(symbol, ticket, new_sl, current_tp)
-            logging.info(f"📈 Chandelier Exit BUY | {symbol} Ticket {ticket} | SL: {current_sl:.5f} → {new_sl:.5f}")
-            return True
-    
-    else:  # SELL
-        # Pour un SELL : SL = Prix actuel + (3 x ATR)
-        new_sl = current_price + (ATR_MULTIPLIER * current_atr)
-        
-        # Le SL ne peut que descendre
-        if new_sl < current_sl or current_sl == 0:
-            modify_sl_tp(symbol, ticket, new_sl, current_tp)
-            logging.info(f"📉 Chandelier Exit SELL | {symbol} Ticket {ticket} | SL: {current_sl:.5f} → {new_sl:.5f}")
-            return True
-    
-    return False
-
-
-def modify_sl_tp(symbol, ticket, new_sl, new_tp):
-    """Modifie le SL et TP d'une position"""
+def modify_sl_tp(symbol: str, ticket: int, new_sl: float, new_tp: float) -> bool:
+    """Modifie SL et TP d'une position ouverte."""
     request = {
-        "action": mt5.TRADE_ACTION_SLTP,
-        "symbol": symbol,
+        "action":   mt5.TRADE_ACTION_SLTP,
+        "symbol":   symbol,
         "position": ticket,
-        "sl": float(new_sl),
-        "tp": float(new_tp),
-        "magic": MAGIC_NUMBER,
+        "sl":       float(new_sl),
+        "tp":       float(new_tp),
+        "magic":    MAGIC_NUMBER,
     }
-    
-    result = mt5.order_send(request)
-    
-    if result.retcode != mt5.TRADE_RETCODE_DONE:
-        logging.error(f"Échec modification SL/TP : {result.comment}")
+    with _mt5_lock:
+        result = mt5.order_send(request)
+
+    if result is None or result.retcode != mt5.TRADE_RETCODE_DONE:
+        comment = result.comment if result else "None"
+        log_step(symbol, "TRAIL",
+                 f"❌ Échec modify SL/TP #{ticket} : {comment}", level="error")
         return False
-    
     return True
 
 
-def monitor_active_trade(symbol, ticket, lot, signal, account_number=None):
-    """
-    Surveillance active du trade avec Chandelier Exit
-    
-    Args:
-        symbol: Symbole tradé
-        ticket: Numéro du ticket
-        lot: Volume du trade
-        signal: Dictionnaire du signal (contient tp1, tp2, tp3)
-        account_number: Numéro de compte (pour multi-comptes)
-    """
-    logging.info(f"👁️ Surveillance démarrée | {symbol} Ticket {ticket}")
-    
-    highest_reached = 0
-    lowest_reached = float('inf')
-    
-    acc_num = account_number if account_number is not None else ACCOUNT_NUMBER
-    
+# ═══════════════════════════════════════════════════════════════
+# SURVEILLANCE — Break-Even + Trailing Stop
+# ═══════════════════════════════════════════════════════════════
+
+def monitor_active_trade(symbol: str, ticket: int, lot: float,
+                          signal: dict, account_number: int = None):
+    """Surveillance active avec break-even et trailing stop basé sur ATR."""
+    acc_num      = account_number if account_number is not None else ACCOUNT_NUMBER
+    entry_price  = signal.get('_exec_entry', signal['entry_price'])
+    sl_dist      = signal['sl_dist']
+    risk_amount  = sl_dist * lot
+    is_buy       = signal['type'] == 'BUY'
+    breakeven_ok = False
+    best_price   = entry_price
+
+    log_step(symbol, "WATCH",
+             f"👁️ Surveillance | Ticket={ticket} | {signal['type']} @ {entry_price:.5f} "
+             f"| Lot={lot:.2f} | Risk≈{risk_amount:.2f}")
+
     while True:
-        time.sleep(5)  # Vérification toutes les 5 secondes
-        
-        # Vérifier si la position existe encore
-        pos = mt5.positions_get(ticket=ticket)
-        if not pos:
-            logging.info(f"🏁 Position {ticket} fermée | {symbol}")
-            
-            # Enregistrement en DB
-            time.sleep(1)
-            history = mt5.history_deals_get(ticket=ticket)
-            if history:
-                total_profit = sum(deal.profit for deal in history)
-                last_price = history[-1].price
-                save_close(acc_num, symbol, ticket, total_profit, last_price, status="CLOSED")
-                
-                # Message Telegram
-                status_emoji = "✅" if total_profit > 0 else "❌"
-                msg = (
-                    f"🏁 <b>POSITION FERMÉE</b>\n"
-                    f"━━━━━━━━━━━━━━━━━━━━\n"
-                    f"📊 Statut : {status_emoji}\n"
-                    f"📈 Marché : <b>{symbol}</b>\n"
-                    f"🎫 Ticket : {ticket}\n"
-                    f"💰 P&L : {total_profit:+.2f} USD\n"
-                    f"━━━━━━━━━━━━━━━━━━━━"
-                )
-                send_telegram_alert(msg)
-            
+        time.sleep(5)
+
+        with _mt5_lock:
+            pos_list = mt5.positions_get(ticket=ticket)
+
+        if not pos_list:
+            log_step(symbol, "WATCH", f"🏁 Position #{ticket} fermée")
+            _record_trade_close(acc_num, symbol, ticket)
             break
-        
-        position = pos[0]
-        current_profit = position.profit
-        
-        # Mise à jour du Chandelier Exit
-        update_chandelier_exit(symbol, ticket, lot, signal, acc_num)
-        
-        # Tracking du plus haut/bas atteint (pour info)
-        tick = mt5.symbol_info_tick(symbol)
-        if tick:
-            if position.type == mt5.ORDER_TYPE_BUY:
-                if tick.bid > highest_reached:
-                    highest_reached = tick.bid
-            else:
-                if tick.ask < lowest_reached:
-                    lowest_reached = tick.ask
+
+        position   = pos_list[0]
+        current_sl = position.sl
+        current_tp = position.tp
+        profit_usd = position.profit
+
+        tick = get_current_tick(symbol)
+        if not tick:
+            continue
+
+        current_price = tick.bid if is_buy else tick.ask
+
+        df_m1   = get_price_data(symbol, TF_M1, 50)
+        atr_now = calc_atr(df_m1, ATR_PERIOD)
+        if atr_now.empty or pd.isna(atr_now.iloc[-1]):
+            continue
+        atr_val = atr_now.iloc[-1]
+
+        new_sl  = current_sl
+        updated = False
+
+        if is_buy:
+            if current_price > best_price:
+                best_price = current_price
+
+            if not breakeven_ok and profit_usd >= risk_amount * BREAKEVEN_R:
+                new_sl       = entry_price + (atr_val * 0.1)
+                breakeven_ok = True
+                log_step(symbol, "BE",
+                         f"🔒 BREAK-EVEN activé #{ticket} | SL → {new_sl:.5f} | "
+                         f"P&L flottant={profit_usd:+.2f}")
+
+            trailing_sl = best_price - (ATR_TRAIL_MULT * atr_val)
+            if trailing_sl > new_sl:
+                new_sl  = trailing_sl
+                updated = True
+
+        else:
+            if current_price < best_price or best_price == entry_price:
+                best_price = current_price
+
+            if not breakeven_ok and profit_usd >= risk_amount * BREAKEVEN_R:
+                new_sl       = entry_price - (atr_val * 0.1)
+                breakeven_ok = True
+                log_step(symbol, "BE",
+                         f"🔒 BREAK-EVEN activé #{ticket} | SL → {new_sl:.5f} | "
+                         f"P&L flottant={profit_usd:+.2f}")
+
+            trailing_sl = best_price + (ATR_TRAIL_MULT * atr_val)
+            if current_sl == 0 or trailing_sl < new_sl:
+                new_sl  = trailing_sl
+                updated = True
+
+        if new_sl != current_sl and (updated or (breakeven_ok and new_sl != current_sl)):
+            if modify_sl_tp(symbol, ticket, new_sl, current_tp):
+                log_step(symbol, "TRAIL",
+                         f"{'📈' if is_buy else '📉'} SL mis à jour #{ticket} | "
+                         f"{current_sl:.5f} → {new_sl:.5f} | "
+                         f"Best={best_price:.5f} | P&L={profit_usd:+.2f}")
 
 
-# ═══════════════════════════════════════════════════════════════
-# FILTRE DE VOLATILITÉ (Check si l'indice est assez actif)
-# ═══════════════════════════════════════════════════════════════
+def _record_trade_close(account_number: int, symbol: str, ticket: int):
+    """Récupère le profit réel depuis MT5 et sauvegarde en base."""
+    time.sleep(1)
+    try:
+        with _mt5_lock:
+            history = mt5.history_deals_get(position=ticket)
 
-def is_volatility_good(symbol):
-    """
-    Vérifie si l'indice est assez volatil pour être tradé
-    
-    Returns:
-        tuple: (bool, str) - (OK ou pas, Raison)
-    """
-    df = get_price_data(symbol, mt5.TIMEFRAME_H1, 50)
-    if df.empty:
-        return False, "Pas de données"
-    
-    atr = calculate_atr(df, 14)
-    if atr is None or len(atr) < 1:
-        return False, "ATR Error"
-    
-    current_atr = atr.iloc[-1]
-    avg_atr = atr.mean()
-    
-    if current_atr < (avg_atr * 0.7):
-        return False, f"{symbol} trop calme (ATR faible)"
-    
-    return True, "OK"
+        if not history:
+            log_step(symbol, "DB",
+                     f"⚠️ Aucun historique deal pour #{ticket}", level="warning")
+            return
+
+        total_profit = sum(d.profit + d.commission + d.swap for d in history)
+        exit_deals   = [d for d in history if d.entry == mt5.DEAL_ENTRY_OUT]
+        close_price  = exit_deals[-1].price if exit_deals else history[-1].price
+
+        save_close(account_number, symbol, ticket, round(total_profit, 2), close_price, "CLOSED")
+
+        status_emoji = "✅" if total_profit > 0 else "❌"
+        log_step(symbol, "DB",
+                 f"{status_emoji} Enregistré #{ticket} | Profit={total_profit:+.2f} USD "
+                 f"| Close @ {close_price:.5f}")
+
+        msg = (
+            f"🏁 <b>POSITION FERMÉE</b>\n"
+            f"━━━━━━━━━━━━━━━━━━━━\n"
+            f"Statut  : {status_emoji}\n"
+            f"Marché  : <b>{symbol}</b>\n"
+            f"Ticket  : {ticket}\n"
+            f"💰 P&L  : {total_profit:+.2f} USD\n"
+            f"━━━━━━━━━━━━━━━━━━━━"
+        )
+        send_telegram_alert(msg)
+
+    except Exception as e:
+        log_step(symbol, "DB",
+                 f"❌ Erreur enregistrement #{ticket} : {e}", level="error")
